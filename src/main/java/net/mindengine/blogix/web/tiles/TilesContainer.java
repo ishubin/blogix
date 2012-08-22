@@ -35,7 +35,7 @@ public class TilesContainer {
         if ( tileLine.isExtending()) {
             tile.setExtendsTile(tileLine.getExtendedBaseName());
             tile.setTiles(new HashMap<String, Tile>());
-            extendTile(tile, tileLine);
+            extendTile(tile, tileLine, new LinkedList<String>());
         }
         else {
             tile.setValue(tileLine.value);
@@ -50,10 +50,15 @@ public class TilesContainer {
         return tile;
     }
 
-    private void extendTile(Tile tile, TileLine lookOutsideTileLine) {
+    private void extendTile(Tile tile, TileLine lookOutsideTileLine, LinkedList<String> extensionChainList) {
+        if ( extensionChainList.contains(lookOutsideTileLine.getExtendedBaseName())) {
+            throw new IllegalArgumentException("There is a cross reference in extension chain of tiles");
+        }
+        extensionChainList.add(lookOutsideTileLine.getExtendedBaseName());
+        
         TileLine baseTileLine = findBaseTileLineFor(lookOutsideTileLine);
         if ( baseTileLine.isExtending() ) {
-            extendTile(tile, baseTileLine);
+            extendTile(tile, baseTileLine, extensionChainList);
         }
         else {
             tile.setValue(baseTileLine.value);

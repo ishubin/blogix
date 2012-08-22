@@ -16,6 +16,7 @@ import net.mindengine.blogix.web.tiles.TilesContainer;
 import org.testng.annotations.Test;
 
 public class TilesContainerAccTest {
+    private static final String BASE_TESTS = "shouldLoadPropertiesFromSpecifiedFile";
     private TilesContainer container;
     
     @Test
@@ -26,7 +27,7 @@ public class TilesContainerAccTest {
         assertThat(container.getTiles().size(), is(4));
     }
     
-    @Test(dependsOnMethods="shouldLoadPropertiesFromSpecifiedFile")
+    @Test(dependsOnMethods=BASE_TESTS)
     public void canLoadSimpleTileWithTrimedValue() {
         Tile simpleTile = container.findTile("simple-tile");
         assertThat(simpleTile, is(notNullValue()));
@@ -36,7 +37,7 @@ public class TilesContainerAccTest {
         assertThat(simpleTile.getTiles().size(), is(0));
     }
     
-    @Test(dependsOnMethods="shouldLoadPropertiesFromSpecifiedFile")
+    @Test(dependsOnMethods=BASE_TESTS)
     public void canLoadTileWithSubtiles() throws Exception{
         assertThat(container.findTile("some-unexistent-tile"), is(nullValue()));
         
@@ -64,7 +65,7 @@ public class TilesContainerAccTest {
         assertThat(mainChildTiles.get("footer").getName(), is("footer"));
     }
     
-    @Test(dependsOnMethods="shouldLoadPropertiesFromSpecifiedFile")
+    @Test(dependsOnMethods=BASE_TESTS)
     public void canExtendAllSubtilesFromParentTile() {
         Tile tile = container.findTile("child-tile");
         assertThat(tile, is(notNullValue()));
@@ -91,7 +92,7 @@ public class TilesContainerAccTest {
 
     }
     
-    @Test(dependsOnMethods="shouldLoadPropertiesFromSpecifiedFile")
+    @Test(dependsOnMethods=BASE_TESTS)
     public void canExtendAllSubtilesFromExtendedTile() {
         Tile tile = container.findTile("2nd-extension-child-tile");
         assertThat(tile, is(notNullValue()));
@@ -115,5 +116,13 @@ public class TilesContainerAccTest {
         assertThat(mainChildTiles.get("footer").getValue(), is("view/2ndfooter.ftl"));
         assertThat(mainChildTiles.get("footer").getExtendsTile(), is(nullValue()));
         assertThat(mainChildTiles.get("footer").getName(), is("footer"));
+    }
+    
+    @Test(dependsOnMethods=BASE_TESTS, 
+            expectedExceptions=IllegalArgumentException.class,
+            expectedExceptionsMessageRegExp="There is a cross reference in extension chain of tiles")
+    public void shouldGiveErrorIfThereIsACrossReferenceInTilesExtensionChain() throws IOException, URISyntaxException {
+        TilesContainer tileContainer = new TilesContainer();
+        tileContainer.load(new File(getClass().getResource("/tiles-error-cross-ref.cfg").toURI()));
     }
 }
