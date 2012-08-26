@@ -2,7 +2,6 @@ package net.mindengine.blogix.tests.acceptance;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -11,6 +10,7 @@ import static org.hamcrest.Matchers.nullValue;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.mindengine.blogix.components.MockedController;
@@ -19,14 +19,11 @@ import net.mindengine.blogix.web.routes.Route;
 import net.mindengine.blogix.web.routes.RouteParserException;
 import net.mindengine.blogix.web.routes.RouteProviderDefinition;
 import net.mindengine.blogix.web.routes.RoutesContainer;
-import net.mindengine.blogix.web.tiles.TilesContainer;
 
-import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import providers.DefaultMockedProvider;
-
 import controllers.DefaultMockedController;
 
 public class RoutesContainerAccTest {
@@ -67,14 +64,12 @@ public class RoutesContainerAccTest {
         assertThat(urlParametersInRoute(2), is(empty()));
     }
     
-    @SuppressWarnings("unchecked")
     @Test(dependsOnMethods = BASE_TEST)
     public void shouldParseParameterizedRoute() {
         assertThat(urlPatternInRoute(3), is("/parameterized/rout/[a-zA-Z0-9_\\-]*/gap/[a-zA-Z0-9_\\-]*"));
-        assertThat(urlParametersInRoute(3), hasItems(is("param1"), is("param2")));
+        assertThat(urlParametersInRoute(3), is(list("param1","param2")));
     }
     
-
     @Test(dependsOnMethods = BASE_TEST)
     public void shouldFindControllerClassInControllersPackageByDefault() {
         assertThat(controllerInRoute(0).getControllerClass().getName(), is(MockedController.class.getName()));
@@ -96,7 +91,7 @@ public class RoutesContainerAccTest {
         assertThat(controllerInRoute(1).getParameters(), is (empty()));
         assertThat(controllerInRoute(2).getParameters(), is (empty()));
         assertThat(controllerInRoute(3).getParameters(), is(not(empty())));
-        assertThat(controllerInRoute(3).getParameters(), hasItems("param1", "param2"));
+        assertThat(controllerInRoute(3).getParameters(), is(list("param1", "param2")));
     }
     
     @Test(dependsOnMethods = BASE_TEST)
@@ -186,4 +181,13 @@ public class RoutesContainerAccTest {
     private String urlPatternInRoute(int number) {
         return container.getRoutes().get(number).getUrl().getUrlPattern();
     }
+    
+    private List<String> list(String ... items) {
+        List<String> list = new LinkedList<String>();
+        for ( String item : items ) {
+            list.add(item);
+        }
+        return list;
+    }
+
 }
