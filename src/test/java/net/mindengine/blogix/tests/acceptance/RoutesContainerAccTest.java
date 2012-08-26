@@ -16,8 +16,10 @@ import java.util.List;
 import net.mindengine.blogix.components.MockedController;
 import net.mindengine.blogix.web.routes.ControllerDefinition;
 import net.mindengine.blogix.web.routes.Route;
+import net.mindengine.blogix.web.routes.RouteParserException;
 import net.mindengine.blogix.web.routes.RouteProviderDefinition;
 import net.mindengine.blogix.web.routes.RoutesContainer;
+import net.mindengine.blogix.web.tiles.TilesContainer;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
@@ -122,16 +124,54 @@ public class RoutesContainerAccTest {
         return container.getRoutes().get(index).getProvider();
     }
 
-    @Test(dependsOnMethods = BASE_TEST)
-    public void shouldGiveErrorIfParameterizedRouteDoesNotHaveProviderSpecified() {
-        throw new RuntimeException("Test is not yet done");
+    @Test(  expectedExceptions=RouteParserException.class,
+            expectedExceptionsMessageRegExp="Provider is not defined for parameterized route: /route/\\{param1\\}/and/\\{param2\\}")
+    public void shouldGiveErrorIfParameterizedRouteDoesNotHaveProviderSpecified() throws IOException, URISyntaxException {
+        new RoutesContainer().load(new File(getClass().getResource("/routes-no-provider-for-parametrized-route-error.cfg").toURI()));
     }
     
-    @Test(dependsOnMethods = BASE_TEST)
-    public void shouldGiveErrorIfRouteDoesNotStartWithSlash () {
-        throw new RuntimeException("Test is not yet done");
+    @Test(expectedExceptions=RouteParserException.class,
+            expectedExceptionsMessageRegExp="Route url should start with /")
+    public void shouldGiveErrorIfRouteDoesNotStartWithSlash () throws IOException, URISyntaxException {
+        new RoutesContainer().load(new File(getClass().getResource("/routes-no-slash-url-error.cfg").toURI()));
     }
-
+    
+    @Test (expectedExceptions=RouteParserException.class,
+            expectedExceptionsMessageRegExp="Route url parameter 'param1' is not used in controller arguments for route: /route/\\{param1\\}/and/\\{param2\\}")
+    public void shouldGiveErrorIfUrlParamsDoNotMatchWithControllerArguments() throws IOException, URISyntaxException {
+        new RoutesContainer().load(new File(getClass().getResource("/routes-no-param-arg-match-error.cfg").toURI()));
+    }
+    
+    @Test (expectedExceptions=RouteParserException.class,
+            expectedExceptionsMessageRegExp="Controller controllers.DefaultMockedController.voidMethod returns void type")
+    public void shouldGiveErrorIfControllerMethodReturnsVoidType() throws IOException, URISyntaxException {
+        new RoutesContainer().load(new File(getClass().getResource("/routes-void-controller-error.cfg").toURI()));
+    }
+    
+    @Test (expectedExceptions=RouteParserException.class,
+            expectedExceptionsMessageRegExp="Provider providers.DefaultMockedProvider.someNonArrayMethod does not return Map\\[\\] type")
+    public void shouldGiveErrorIfProviderMethodDoesNotReturnArrayOfMapType() throws IOException, URISyntaxException {
+        new RoutesContainer().load(new File(getClass().getResource("/routes-non-list-provider-error.cfg").toURI()));
+    }
+    
+    @Test(  expectedExceptions=RouteParserException.class,
+            expectedExceptionsMessageRegExp="Non-parameterized route /some-route does not need a provider")
+    public void shouldGiveErrorIfSimpleUrlHasAProvider() throws IOException, URISyntaxException {
+        new RoutesContainer().load(new File(getClass().getResource("/routes-simple-url-with-provider-error.cfg").toURI()));
+    }
+    
+    @Test(  expectedExceptions=RouteParserException.class,
+            expectedExceptionsMessageRegExp="Controller is not defined for route: /url")
+    public void shouldGiveErrorIfControllerIsNotDefined() throws IOException, URISyntaxException {
+        new RoutesContainer().load(new File(getClass().getResource("/routes-no-controller-error.cfg").toURI()));
+    }
+    
+    @Test(expectedExceptions=RouteParserException.class,
+            expectedExceptionsMessageRegExp="View is not defined for route: /url")
+    public void shouldGiveErrorIfViewIsNotDefined() throws IOException, URISyntaxException {
+        new RoutesContainer().load(new File(getClass().getResource("/routes-no-view-error.cfg").toURI()));
+    }
+    
     private ControllerDefinition controllerInRoute(int index) {
         return container.getRoutes().get(index).getController();
     }

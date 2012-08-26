@@ -2,8 +2,8 @@ package net.mindengine.blogix.components;
 
 public class MockedController {
     
-    public static void someMethod() {
-        
+    public static String someMethod() {
+        return null;
     }
 
 }

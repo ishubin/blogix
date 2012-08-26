@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -43,10 +44,51 @@ public class DefaultRoutesParser implements RoutesParser {
     }
 
     private Route parseLine(String line) throws IOException {
-        return new LineReader().readLine(line);
+        return verified(new LineReader().readLine(line));
     }
     
     
+    private Route verified(Route route) {
+        if ( route != null  ) {
+            if ( route.getController() == null || route.getController().getControllerClass() == null || route.getController().getControllerMethod() == null ) {
+                throw new RouteParserException("Controller is not defined for route: " + prettyPrintUrl(route));
+            }
+            
+            if ( route.getView() == null || route.getView().isEmpty() ) {
+                throw new RouteParserException("View is not defined for route: " + prettyPrintUrl(route));
+            }
+            
+            if ( route.getUrl().getParameters().size() > 0 ) {
+                if ( route.getProvider() == null || route.getProvider().getProviderClass() == null || route.getProvider().getProviderMethod() == null ) {
+                    throw new RouteParserException("Provider is not defined for parameterized route: " + prettyPrintUrl(route));
+                }
+                
+                for ( String param : route.getUrl().getParameters() ) {
+                    if (!route.getController().getParameters().contains(param)) {
+                        throw new RouteParserException("Route url parameter '" + param + "' is not used in controller arguments for route: "+ prettyPrintUrl(route));
+                    }
+                }
+            }
+            else {
+                if ( route.getProvider() != null) {
+                    throw new RouteParserException("Non-parameterized route " + prettyPrintUrl(route) + " does not need a provider");
+                }
+            }
+            
+        }
+        return route;
+    }
+
+
+    private static String prettyPrintUrl(Route route) {
+        String url = route.getUrl().getUrlPattern();
+        for ( String param : route.getUrl().getParameters() ) {
+            url = StringUtils.replaceOnce(url, URL_PARAM_REGEX, "{" + param + "}");
+        }
+        return url;
+    }
+
+
     private abstract class State {
         protected Route route;
         public State(Route route) {
@@ -170,7 +212,7 @@ public class DefaultRoutesParser implements RoutesParser {
                 if ( alreadyStarted() ) {
                     return nextStateParseArgs();
                 }
-                else throw new RouteParserException("There is no controller found in route " + route.getUrl().getUrlPattern());
+                else throw new RouteParserException("There is no controller found in route " + prettyPrintUrl(route));
             }
             else {
                 append(ch);
@@ -196,6 +238,10 @@ public class DefaultRoutesParser implements RoutesParser {
             Pair<Class<?>, Method> pair = readClassAndMethodFromParsedString(controller.toString(), "controllers");
             route.getController().setControllerClass(pair.getLeft());
             route.getController().setControllerMethod(pair.getRight());
+            
+            if (pair.getRight().getReturnType().equals(Void.TYPE )) {
+                throw new RouteParserException("Controller " + pair.getLeft().getName() + "." + pair.getRight().getName() + " returns void type");
+            }
         }
 
         private boolean alreadyStarted() {
@@ -314,7 +360,7 @@ public class DefaultRoutesParser implements RoutesParser {
         private void done() {
             String view = getParsedString();
             if ( view.isEmpty() ) {
-                throw new RouteParserException("View is not defined for route: " + route.getUrl().getUrlPattern());
+                throw new RouteParserException("View is not defined for route: " + prettyPrintUrl(route));
             }
             route.setView(view);
         }
@@ -344,6 +390,12 @@ public class DefaultRoutesParser implements RoutesParser {
                 Pair<Class<?>, Method> pair = readClassAndMethodFromParsedString(provider, "providers");
                 rpd.setProviderClass(pair.getLeft());
                 rpd.setProviderMethod(pair.getRight());
+                
+                Class<?> returnType = pair.getRight().getReturnType();
+                if ( !returnType.equals(Map[].class)) {
+                    throw new RouteParserException("Provider " + pair.getLeft().getName() + "." + pair.getRight().getName() + " does not return Map[] type");
+                }
+                
                 route.setProvider(rpd);
             }
         }

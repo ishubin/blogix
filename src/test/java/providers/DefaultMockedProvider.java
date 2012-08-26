@@ -1,8 +1,17 @@
 package providers;
 
+import java.util.Map;
+
 public class DefaultMockedProvider {
 
-    public static void someProviderMethod() {
-        
+    @SuppressWarnings("rawtypes")
+    public static Map[] someProviderMethod() {
+        return null;
     }
+    
+    public static String[] someNonArrayMethod() {
+        return null;
+    }
+    
+    
 }
