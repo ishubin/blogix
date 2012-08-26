@@ -6,6 +6,7 @@ import net.mindengine.blogix.components.ThreadChecker;
 import net.mindengine.blogix.components.ThreadRunnable;
 import net.mindengine.blogix.web.BlogixServer;
 
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class BlogixServerAccTest {
@@ -13,13 +14,17 @@ public class BlogixServerAccTest {
     private BlogixServer server;
     private ThreadChecker serverThread;
     
+    @BeforeTest
+    public void initialize() {
+        server = new BlogixServer();
+    }
+    
     @Test
     public void serverShouldHaveDefault8080Port() {
-        server = new BlogixServer();
         assertThat("Port should be 8080 be deafult", server.getPort(), is(8080));
     }
     
-    @Test(dependsOnMethods="serverShouldHaveDefault8080Port")
+    @Test
     public void serverShouldStartupAndLockThread() throws Exception{
         final StringBuffer threadOutput = new StringBuffer();
         serverThread = ThreadChecker.runThread(new ThreadRunnable() {

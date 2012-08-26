@@ -28,7 +28,7 @@ public class BlogixServer {
         return connector;
     }
 
-    private ServletContextHandler createContext() {
+    private ServletContextHandler createContext() throws Exception {
         ServletContextHandler context = new ServletContextHandler();
         context.addServlet(createServletHolder(), "/*");
         
@@ -37,7 +37,7 @@ public class BlogixServer {
         return context;
     }
 
-    private ServletHolder createServletHolder() {
+    private ServletHolder createServletHolder() throws Exception {
         ServletHolder holder = new ServletHolder();
         servlet = new BlogixServlet();
         holder.setServlet(servlet);
