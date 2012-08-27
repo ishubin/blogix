@@ -1,0 +1,11 @@
+==============
+/
+<header>
+this is a header
+</header>
+<body>
+home content
+</body>
+<footer>
+and this is a footer
+</footer>

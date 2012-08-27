@@ -1,0 +1,9 @@
+
+
+main-container:  main-container.ftl
+    header:             header.ftl
+    content:
+    footer:             footer.ftl
+
+home: @main-container
+    content:        home.ftl 

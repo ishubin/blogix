@@ -2,10 +2,12 @@ package net.mindengine.blogix.web.routes;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class RouteURL {
     
     private String urlPattern;
+    private Pattern pattern;
     
     // List of names that would match the corresponding regex group.
     // e.g. Given a following url
@@ -39,6 +41,11 @@ public class RouteURL {
         this.parameters = parameters;
     }
     
-    
+    public Pattern asRegexPattern() {
+        if ( pattern == null ) {
+            pattern = Pattern.compile( getUrlPattern() );
+        }
+        return pattern;
+    }
 
 }

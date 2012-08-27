@@ -1,5 +1,6 @@
 package net.mindengine.blogix.tests.acceptance;
 
+import static net.mindengine.blogix.tests.TestGroups.ACCEPTANCE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -10,11 +11,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import net.mindengine.blogix.tests.TestGroups;
 import net.mindengine.blogix.web.tiles.Tile;
 import net.mindengine.blogix.web.tiles.TilesContainer;
 
 import org.testng.annotations.Test;
 
+@Test(groups=ACCEPTANCE)
 public class TilesContainerAccTest {
     private static final String BASE_TESTS = "shouldLoadPropertiesFromSpecifiedFile";
     private TilesContainer container;
