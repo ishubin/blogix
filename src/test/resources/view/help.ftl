@@ -1,0 +1,1 @@
+This is just a plain view without subtiles and controller

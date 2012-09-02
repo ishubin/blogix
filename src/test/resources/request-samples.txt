@@ -10,16 +10,16 @@ home content
 and this is a footer
 </footer>
 ==================================================================================================
-/article
+/article/123
 <header>
 this is a header
 </header>
 <body>
-article content
+article content for id 123
 </body>
 <footer>
 and this is a footer
 </footer>
 ==================================================================================================
 /help
-This is just a help message without any subtiles
+This is just a plain view without subtiles and controller

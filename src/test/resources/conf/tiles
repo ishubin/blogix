@@ -6,4 +6,7 @@ main-container:  main-container.ftl
     footer:             footer.ftl
 
 home: @main-container
-    content:        home.ftl 
+    content:        home.ftl
+    
+
+help: help.ftl 
