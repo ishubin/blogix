@@ -67,18 +67,27 @@ public class RouteInvoker {
     }
 
     private Map<String, String> createParametersMap(RouteURL url, String uri) {
+        if ( !uri.endsWith("/") ) {
+            uri = uri + "/";
+        }
+        
         
         if ( url.getParameters() != null && !url.getParameters().isEmpty() ) {
             Matcher matcher = url.asRegexPattern().matcher(uri);
             
-            if ( matcher.groupCount() > url.getParameters().size()) {
-                Map<String, String> parametersMap = new HashMap<String, String>();
-                int i = 0;
-                for (String parameter : url.getParameters() ) {
-                    i++;
-                    parametersMap.put(parameter, matcher.group(i));
+            if ( matcher.find() ) {
+                if ( matcher.groupCount() >= url.getParameters().size()) {
+                    Map<String, String> parametersMap = new HashMap<String, String>();
+                    int i = 0;
+                    for (String parameter : url.getParameters() ) {
+                        i++;
+                        parametersMap.put(parameter, matcher.group(i));
+                    }
+                    return parametersMap;
                 }
             }
+            
+            throw new IllegalArgumentException("Can't extract controller arguments from uri: " + uri);
         }
         return Collections.emptyMap();
     }

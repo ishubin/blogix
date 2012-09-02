@@ -111,7 +111,7 @@ public class RoutesContainerAccTest {
     
     @Test(dependsOnMethods = BASE_TEST)
     public void shouldParseParameterizedRoute() {
-        assertThat(urlInRoute(3).getUrlPattern(), is("/parameterized/rout/[a-zA-Z0-9_\\-]*/gap/[a-zA-Z0-9_\\-]*/"));
+        assertThat(urlInRoute(3).getUrlPattern(), is("/parameterized/rout/([a-zA-Z0-9_\\-]*)/gap/([a-zA-Z0-9_\\-]*)/"));
         assertThat(urlInRoute(3).getParameters(), is(list("param1","param2")));
     }
     

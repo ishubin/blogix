@@ -4,18 +4,20 @@
 this is a header
 </header>
 <body>
-home content
+Home text is: home value from controller
 </body>
 <footer>
 and this is a footer
 </footer>
 ==================================================================================================
-/article/123
+/article/123/2012-06-07
 <header>
 this is a header
 </header>
 <body>
-article content for id 123
+<article-title>Title for 123</article-title>
+<article-description>Article description for 123</article-description>
+<article-date>2012-06-07</article-date>
 </body>
 <footer>
 and this is a footer

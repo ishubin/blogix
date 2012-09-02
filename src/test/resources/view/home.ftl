@@ -1,1 +1,1 @@
-home content
+Home text is: ${model}

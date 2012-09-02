@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import net.mindengine.blogix.tests.TestGroups;
 import net.mindengine.blogix.web.tiles.Tile;
 import net.mindengine.blogix.web.tiles.TilesContainer;
 
