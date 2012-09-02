@@ -1,5 +1,12 @@
 package net.mindengine.blogix.web;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Properties;
+
+import net.mindengine.blogix.utils.BlogixFileUtils;
+
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -11,8 +18,14 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class BlogixServer {
     private Integer port = 8080;
     
+    private Properties properties = new Properties();
+    
     private Server jettyServer;
     private BlogixServlet servlet;
+    
+    public BlogixServer() throws IOException, URISyntaxException {
+        getProperties().load(FileUtils.openInputStream(BlogixFileUtils.findFile("conf/properties")));
+    }
     
     public void startServer() throws Exception {
         jettyServer = new Server();
@@ -39,7 +52,7 @@ public class BlogixServer {
 
     private ServletHolder createServletHolder() throws Exception {
         ServletHolder holder = new ServletHolder();
-        servlet = new BlogixServlet();
+        servlet = new BlogixServlet(getProperties());
         holder.setServlet(servlet);
         return holder;
     }
@@ -49,6 +62,14 @@ public class BlogixServer {
     }
     public void setPort(Integer port) {
         this.port = port;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
     
 }

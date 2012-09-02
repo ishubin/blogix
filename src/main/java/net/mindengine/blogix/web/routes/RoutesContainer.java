@@ -8,8 +8,6 @@ public class RoutesContainer {
 
     private List<Route> routes;
     
-    private RoutesParser parser = new DefaultRoutesParser();
-
     public List<Route> getRoutes() {
         return routes;
     }
@@ -18,7 +16,8 @@ public class RoutesContainer {
         this.routes = routes;
     }
 
-    public void load(File file) throws IOException {
+    public void load(File file, String[] defaultControllerPackages, String[] defaultProviderPackages) throws IOException {
+        RoutesParser parser = new DefaultRoutesParser(defaultControllerPackages, defaultProviderPackages);
         setRoutes(parser.parseRoutes(file));
     }
 

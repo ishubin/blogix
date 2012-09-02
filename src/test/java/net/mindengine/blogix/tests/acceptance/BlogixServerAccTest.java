@@ -38,7 +38,7 @@ public class BlogixServerAccTest {
     private HttpClient httpClient = new DefaultHttpClient();
     
     @BeforeTest
-    public void initialize() {
+    public void initialize() throws IOException, URISyntaxException {
         server = new BlogixServer();
     }
     

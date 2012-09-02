@@ -1,7 +1,7 @@
 package net.mindengine.blogix.web;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +18,10 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class BlogixServlet extends HttpServlet {
 
+    private static final String DEFAULT_CONTROLLER_PACKAGES = "default.controller.packages";
+
+    private static final String DEFAULT_PROVIDER_PACKAGES = "default.provider.packages";
+
     /**
      * 
      */
@@ -26,14 +30,41 @@ public class BlogixServlet extends HttpServlet {
     TilesContainer tilesContainer = new TilesContainer();
     RoutesContainer routesContainer = new RoutesContainer();
     RouteInvoker routeInvoker = new RouteInvoker();
-    TilesRenderer tilesRenderer = new TilesRenderer(); 
+    TilesRenderer tilesRenderer = new TilesRenderer();
+
+    private Properties properties; 
     
-    public BlogixServlet() throws IOException, URISyntaxException {
-        tilesContainer.load( BlogixFileUtils.findFile( "conf/tiles" ) );
-        routesContainer.load( BlogixFileUtils.findFile( "conf/routes" ) );
+    public BlogixServlet(Properties properties) {
+        this.properties = properties;
+        try {
+            tilesContainer.load( BlogixFileUtils.findFile( "conf/tiles" ));
+            routesContainer.load( BlogixFileUtils.findFile( "conf/routes" ), getDefaultControllerPackages(), getDefaultProviderPackages()  );
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Could not load properties");
+        }
     }
     
     
+
+    private String[] getDefaultProviderPackages() {
+        String value = (String) properties.get(DEFAULT_PROVIDER_PACKAGES);
+        if ( value != null && !value.isEmpty() ) {
+            return value.trim().split(",");
+        }
+        return new String[]{};
+    }
+
+
+    private String[] getDefaultControllerPackages() {
+        String value = (String) properties.get(DEFAULT_CONTROLLER_PACKAGES);
+        if ( value != null && !value.isEmpty() ) {
+            return value.trim().split(",");
+        }
+        return new String[]{};
+    }
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) {
         String uri = req.getRequestURI();

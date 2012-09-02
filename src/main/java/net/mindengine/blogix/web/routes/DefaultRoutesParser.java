@@ -26,7 +26,14 @@ public class DefaultRoutesParser implements RoutesParser {
     private static final char URL_PARAM_END = '}';
     private static final char METHOD_ARGUMENTS_START = '(';
     private static final char METHOD_ARGUMENTS_END = ')';
+    private String[] defaultControllerPackages;
+    private String[] defaultProviderPackages;
     
+
+    public DefaultRoutesParser(String[] defaultControllerPackages, String[] defaultProviderPackages) {
+        this.defaultControllerPackages = defaultControllerPackages;
+        this.defaultProviderPackages = defaultProviderPackages;
+    }
 
     @Override
     public List<Route> parseRoutes(File file) throws IOException {
@@ -275,7 +282,7 @@ public class DefaultRoutesParser implements RoutesParser {
         }
 
         private void processParsedString() {
-            Pair<Class<?>, Method> pair = readClassAndMethodFromParsedString(controller.toString(), "controllers");
+            Pair<Class<?>, Method> pair = readClassAndMethodFromParsedString(controller.toString(), DefaultRoutesParser.this.defaultControllerPackages);
             route.getController().setControllerClass(pair.getLeft());
             route.getController().setControllerMethod(pair.getRight());
             
@@ -427,7 +434,7 @@ public class DefaultRoutesParser implements RoutesParser {
             String provider = getParsedString();
             if ( !provider.isEmpty() ) {
                 RouteProviderDefinition rpd = new RouteProviderDefinition();
-                Pair<Class<?>, Method> pair = readClassAndMethodFromParsedString(provider, "providers");
+                Pair<Class<?>, Method> pair = readClassAndMethodFromParsedString(provider, DefaultRoutesParser.this.defaultProviderPackages);
                 rpd.setProviderClass(pair.getLeft());
                 rpd.setProviderMethod(pair.getRight());
                 
@@ -480,29 +487,36 @@ public class DefaultRoutesParser implements RoutesParser {
     
     
     
-    private static Pair<Class<?>, Method> readClassAndMethodFromParsedString(String parsedString, String defaultPackage) {
+    private static Pair<Class<?>, Method> readClassAndMethodFromParsedString(String parsedString, String[] defaultPackages) {
         int id = StringUtils.lastIndexOf(parsedString, ".");
         
         if (id > 0 ) {
             String methodName = parsedString.substring(id + 1);
             String classPath = parsedString.substring(0, id);
-            return findClassAndMethod(classPath, methodName, defaultPackage);
+            return findClassAndMethod(classPath, methodName, defaultPackages);
         }
         else throw new RouteParserException("Cannot parse controller definition '" + parsedString + "'");
     }
 
-    private static Pair<Class<?>, Method> findClassAndMethod(String classPath, String methodName, String defaultPackage) {
+    private static Pair<Class<?>, Method> findClassAndMethod(String classPath, String methodName, String[] defaultPackages) {
         Class<?> controllerClass = null;
-        try {
-            controllerClass = Class.forName(classPath);
-        } catch (ClassNotFoundException e) {
+        
+        for ( String defaultPackage : defaultPackages ) {
             try {
                 controllerClass = Class.forName(defaultPackage + "." + classPath);
-            } catch (ClassNotFoundException e1) {
+                break;
+            }
+            catch (Exception e) {
+            }
+            
+        }
+        if ( controllerClass == null ) {
+            try {
+                controllerClass = Class.forName(classPath);
+            } catch (ClassNotFoundException e) {
                 throw new RouteParserException("Cannot find a class for controller: " + classPath);
             }
         }
-        
         
         Method method = findMethodInClass(controllerClass, methodName);
         if ( method != null ) {
