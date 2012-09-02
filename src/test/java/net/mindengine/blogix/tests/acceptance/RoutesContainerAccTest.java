@@ -46,7 +46,7 @@ public class RoutesContainerAccTest {
     public void shouldLoadFromSpecifiedFile() throws URISyntaxException, IOException {
         container.load(new File(getClass().getResource("/routes-test.cfg").toURI()));
         assertThat("Routes list should be not null", container.getRoutes(), is(notNullValue()));
-        assertThat("Routes list should contain 4 routes", container.getRoutes().size(), is(4));
+        assertThat("Routes list should contain 4 routes", container.getRoutes().size(), is(5));
     }
     
     @Test(dependsOnMethods = BASE_TEST)
@@ -63,10 +63,18 @@ public class RoutesContainerAccTest {
         assertThat( urlInRoute(0).getUrlPattern(), is("/"));
         assertThat( urlInRoute(1).getUrlPattern(), is("/another/route/"));
         assertThat( urlInRoute(2).getUrlPattern(), is("/another/route2/"));
+        assertThat( urlInRoute(4).getUrlPattern(), is("/simple/view/route/"));
         
         assertThat( urlInRoute(0).getParameters(), is( empty() ));
         assertThat( urlInRoute(1).getParameters(), is( empty() ));
         assertThat( urlInRoute(2).getParameters(), is( empty() ));
+        assertThat( urlInRoute(4).getParameters(), is( empty() ));
+    }
+    
+    @Test(dependsOnMethods = BASE_TEST)
+    public void shouldParseSimpleRouteWithoutController() {
+        assertThat( controllerInRoute(4), is (nullValue()));
+        assertThat( viewNameInRoute(4), is ("some-simple-view"));
     }
     
     @Test(dependsOnMethods = BASE_TEST)
@@ -193,8 +201,8 @@ public class RoutesContainerAccTest {
     }
     
     @Test(  expectedExceptions=RouteParserException.class,
-            expectedExceptionsMessageRegExp="Controller is not defined for route: /url/")
-    public void shouldGiveErrorIfControllerIsNotDefined() throws IOException, URISyntaxException {
+            expectedExceptionsMessageRegExp="View is not defined for route: /url/")
+    public void shouldGiveErrorIfControllerAndViewAreNotDefined() throws IOException, URISyntaxException {
         new RoutesContainer().load(new File(getClass().getResource("/routes-no-controller-error.cfg").toURI()));
     }
     

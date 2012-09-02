@@ -50,8 +50,13 @@ public class DefaultRoutesParser implements RoutesParser {
     
     private Route verified(Route route) {
         if ( route != null  ) {
+            /*
+             * Checking that parameterized routes should always have controllers 
+             */
             if ( route.getController() == null || route.getController().getControllerClass() == null || route.getController().getControllerMethod() == null ) {
-                throw new RouteParserException("Controller is not defined for route: " + prettyPrintUrl(route));
+                if ( route.getUrl().getParameters() != null && route.getUrl().getParameters().size() > 0 ) {
+                    throw new RouteParserException("Controller is not defined for route: " + prettyPrintUrl(route));
+                }
             }
             
             if ( route.getView() == null || route.getView().isEmpty() ) {
@@ -197,6 +202,24 @@ public class DefaultRoutesParser implements RoutesParser {
     }
 
     
+    private class ParsingSkipWord extends State {
+        private State nextState;
+
+        public ParsingSkipWord(State nextState) {
+            super(null);
+            this.nextState = nextState;
+        }
+
+        @Override
+        public State processChar(char ch) {
+            if ( ch == SPACE ) {
+                return nextState;
+            }
+            return this;
+        }
+        
+    }
+    
     private class ParsingController extends State {
         private StringBuffer controller = new StringBuffer("");
         
@@ -207,7 +230,20 @@ public class DefaultRoutesParser implements RoutesParser {
 
         @Override
         public State processChar(char ch) {
-            if ( ch == SPACE ) {
+            if ( ch == '-') {
+                if ( alreadyStarted() ) {
+                    throw new IllegalArgumentException("Controller for route " + prettyPrintUrl(route) + " is incorrect");
+                }
+                else {
+                    /*
+                     * Means that there is no controller for handling this route
+                     * Instead just the view tile will be processed without controller processing
+                     */
+                    route.setController(null);
+                    return new ParsingSkipWord(new ParsingView(route));
+                }
+            }
+            else if ( ch == SPACE ) {
                 if ( alreadyStarted() ) {
                     return nextStateYetUnclearIfArgsAreThere();
                 }
