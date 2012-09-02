@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 public class RouteURL {
     
     private String urlPattern;
+    private String originalUrl;
     private Pattern pattern;
     
     // List of names that would match the corresponding regex group.
@@ -46,6 +47,14 @@ public class RouteURL {
             pattern = Pattern.compile( getUrlPattern() );
         }
         return pattern;
+    }
+
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
+
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
     }
 
 }

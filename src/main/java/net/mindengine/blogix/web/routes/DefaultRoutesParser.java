@@ -93,11 +93,7 @@ public class DefaultRoutesParser implements RoutesParser {
 
 
     private static String prettyPrintUrl(Route route) {
-        String url = route.getUrl().getUrlPattern();
-        for ( String param : route.getUrl().getParameters() ) {
-            url = StringUtils.replaceOnce(url, URL_PARAM_REGEX, "{" + param + "}");
-        }
-        return url;
+        return route.getUrl().getOriginalUrl();
     }
 
 
@@ -130,6 +126,7 @@ public class DefaultRoutesParser implements RoutesParser {
         }
         
         private StringBuffer url = new StringBuffer("");
+        private StringBuffer originalUrl = new StringBuffer("");
         
         @Override
         public State processChar(char ch) {
@@ -162,18 +159,21 @@ public class DefaultRoutesParser implements RoutesParser {
         }
         private State doneCompletely() {
             if ( !url.toString().endsWith( "/" ) ) {
-                url.append( "/" );
+                append('/');
             }
             route.getUrl().setUrlPattern( url.toString() );
+            route.getUrl().setOriginalUrl(originalUrl.toString());
             
             return null;
         }
         private void append(char ch) {
             url.append(ch);
+            originalUrl.append(ch);
         }
         
-        public void append(String url) {
+        public void append(String url, String toOriginalUrl) {
             this.url.append(url);
+            this.originalUrl.append(toOriginalUrl);
         }
 
         private boolean alreadyStarted() {
@@ -201,7 +201,7 @@ public class DefaultRoutesParser implements RoutesParser {
                 return this;
             }
             else {
-                parsingUrl.append(URL_PARAM_REGEX);
+                parsingUrl.append(URL_PARAM_REGEX, URL_PARAM_START  + param.toString() + URL_PARAM_END);
                 route.getUrl().getParameters().add(param.toString());
                 return parsingUrl;
             }
