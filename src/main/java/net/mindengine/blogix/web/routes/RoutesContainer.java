@@ -21,5 +21,22 @@ public class RoutesContainer {
     public void load(File file) throws IOException {
         setRoutes(parser.parseRoutes(file));
     }
+
+    public Route findRouteMatchingUri(String uri) {
+        if ( routes == null ) {
+            throw new RuntimeException("Routes container was not initialized");
+        }
+        
+        for (Route route : routes) {
+            if ( matches(route, uri) ) {
+                return route;
+            }
+        }
+        return null;
+    }
+
+    private boolean matches(Route route, String uri) {
+        return route.getUrl().asRegexPattern().matcher(uri).matches();
+    }
     
 }

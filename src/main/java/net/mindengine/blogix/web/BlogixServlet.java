@@ -1,6 +1,7 @@
 package net.mindengine.blogix.web;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServlet;
@@ -8,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import net.mindengine.blogix.utils.BlogixFileUtils;
 import net.mindengine.blogix.web.routes.Route;
 import net.mindengine.blogix.web.routes.RoutesContainer;
+import net.mindengine.blogix.web.tiles.Tile;
 import net.mindengine.blogix.web.tiles.TilesContainer;
 
 public class BlogixServlet extends HttpServlet {
@@ -22,7 +25,9 @@ public class BlogixServlet extends HttpServlet {
     private static final long serialVersionUID = -4418319612555096438L;
     
     TilesContainer tilesContainer = new TilesContainer();
-    RoutesContainer routesContainer = new RoutesContainer(); 
+    RoutesContainer routesContainer = new RoutesContainer();
+    RouteInvoker routeInvoker = new RouteInvoker();
+    TilesRenderer tilesRenderer = new TilesRenderer(); 
     
     public BlogixServlet() throws IOException, URISyntaxException {
         tilesContainer.load( BlogixFileUtils.findFile( "conf/tiles" ) );
@@ -35,8 +40,27 @@ public class BlogixServlet extends HttpServlet {
         String uri = req.getRequestURI();
         
         Route route = findRouteMatchingUri(uri);
-        if ( route != null ) { 
-            printResponseText(res, "OK");
+        if ( route != null ) {
+            try {
+                Object model = routeInvoker.invokeRoute(route, uri);
+                String view = route.getView();
+                Tile tile = tilesContainer.findTile(view);
+                if ( tile == null ) {
+                    throw new IllegalArgumentException("Cannot find tile for view: " + view);
+                }
+                res.setStatus(200);
+                tilesRenderer.renderTile(model, tile, res.getOutputStream());
+                
+              //TODO process model with tiles and Freemarker templates
+                //printResponseText(res, model.toString());
+            }
+            catch (Throwable e) {
+                res.setStatus(400);
+                
+                printResponseText(res, ExceptionUtils.getMessage(e) + "\n" + ExceptionUtils.getStackTrace(e));
+            }
+            
+            
         }
         else  {
             res.setStatus(404);
@@ -58,9 +82,7 @@ public class BlogixServlet extends HttpServlet {
         if ( !uri.endsWith( "/" )) {
             uri = uri + "/";
         }
-        
-        
-        return null;
+        return routesContainer.findRouteMatchingUri(uri);        
     }
 
 }

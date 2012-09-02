@@ -1,4 +1,4 @@
-==============
+==================================================================================================
 /
 <header>
 this is a header
@@ -9,3 +9,17 @@ home content
 <footer>
 and this is a footer
 </footer>
+==================================================================================================
+/article
+<header>
+this is a header
+</header>
+<body>
+article content
+</body>
+<footer>
+and this is a footer
+</footer>
+==================================================================================================
+/help
+This is just a help message without any subtiles

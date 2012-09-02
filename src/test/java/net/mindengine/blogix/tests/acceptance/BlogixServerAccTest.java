@@ -70,7 +70,8 @@ public class BlogixServerAccTest {
             dataProvider="provideRequestUrlsWithExpectedResponses")
     public void serverShouldProcessRequestsAndGiveProperResponse(String requestUri, String expectedResponse) throws Exception {
         assertThat( "Incorrect configuration of sample requests", requestUri, Matchers.startsWith("/") );
-        assertThat( readResponseFromUri( HTTP_LOCALHOST_8080 + requestUri ), is( expectedResponse ) );
+        String response = readResponseFromUri( HTTP_LOCALHOST_8080 + requestUri );
+        assertThat( response , is( expectedResponse ) );
     }
     
     private String readResponseFromUri(String requestUrl) throws Exception {
@@ -78,7 +79,8 @@ public class BlogixServerAccTest {
         HttpResponse response = httpClient.execute(httpget);
         int statusCode = response.getStatusLine().getStatusCode();
         if ( statusCode != 200 ) {
-            throw new Exception(requestUrl + " returned " + statusCode + " status code");
+            String error = EntityUtils.toString(response.getEntity());
+            throw new Exception(requestUrl + " returned " + statusCode + " status code \n**************\n" + error + "\n****************\n");
         }
         
         HttpEntity entity = response.getEntity();
