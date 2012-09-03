@@ -13,22 +13,9 @@ import net.mindengine.blogix.web.routes.RouteURL;
 
 public class RouteInvoker {
 
-    public Object invokeRoute(Route route, String uri) throws Throwable {
+    public Object invokeRoute(Route route, String uri) {
         Map<String, String> parametersMap = createParametersMap(route.getUrl(), uri);
-        Method controllerMethod = route.getController().getControllerMethod();
-        
-        Object[] arguments = createArguments(parametersMap, route.getController().getParameters(), controllerMethod.getParameterTypes());
-        
-        try {
-            Object model = controllerMethod.invoke(null, arguments);
-            return model;
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
-            throw e;
-        } catch (InvocationTargetException e) {
-            throw e.getTargetException();
-        }
+        return invokeRoute(route, parametersMap);
     }
 
     private Object[] createArguments(Map<String, String> parametersMap, List<String> parameters, Class<?>[] parameterTypes) {
@@ -71,7 +58,6 @@ public class RouteInvoker {
             uri = uri + "/";
         }
         
-        
         if ( url.getParameters() != null && !url.getParameters().isEmpty() ) {
             Matcher matcher = url.asRegexPattern().matcher(uri);
             
@@ -90,6 +76,20 @@ public class RouteInvoker {
             throw new IllegalArgumentException("Can't extract controller arguments from uri: " + uri);
         }
         return Collections.emptyMap();
+    }
+
+    public Object invokeRoute(Route route, Map<String, String> parametersMap) {
+        Method controllerMethod = route.getController().getControllerMethod();
+        Object[] arguments = createArguments(parametersMap, route.getController().getParameters(), controllerMethod.getParameterTypes());
+        
+        try {
+            Object model = controllerMethod.invoke(null, arguments);
+            return model;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Not allowed to access controller for route " + route.getUrl().getOriginalUrl(), e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException("An error occured from controller for route " + route.getUrl().getOriginalUrl(), e.getTargetException());
+        }
     }
     
     

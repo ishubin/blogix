@@ -1,0 +1,40 @@
+==================================================================================================
+/index.html
+<header>
+this is a header
+</header>
+<body>
+Home text is: home value from controller
+</body>
+<footer>
+and this is a footer
+</footer>
+==================================================================================================
+/help/index.html
+This is just a plain view without subtiles and controller
+==================================================================================================
+/article/123/2012-01-12/index.html
+<header>
+this is a header
+</header>
+<body>
+<article-title>Title for 123</article-title>
+<article-description>Article description for 123</article-description>
+<article-date>2012-01-12</article-date>
+</body>
+<footer>
+and this is a footer
+</footer>
+==================================================================================================
+/article/1/2012-01-13/index.html
+<header>
+this is a header
+</header>
+<body>
+<article-title>Title for 1</article-title>
+<article-description>Article description for 1</article-description>
+<article-date>2012-01-13</article-date>
+</body>
+<footer>
+and this is a footer
+</footer>

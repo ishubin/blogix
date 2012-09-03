@@ -57,4 +57,8 @@ public class RouteURL {
         this.originalUrl = originalUrl;
     }
 
+    public boolean isParameterized() {
+        return parameters != null && !parameters.isEmpty();
+    }
+
 }
