@@ -4,6 +4,8 @@
 
 /                       Main.home                   home
 
-/article/{id}/{date}    Main.showArticle(date, id)        article             Main.provideArticles
+/article/{id}/{date}/   Main.showArticle(date, id)  article             Main.provideArticles
 
-/help                   -                           help
+/help/                  -                           help
+
+/file/someFile.txt      -                           simpleFile      

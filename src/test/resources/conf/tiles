@@ -14,3 +14,6 @@ help: help.ftl
 
 article: @main-container
     content:    article.ftl
+    
+    
+simpleFile: simple-file.ftl

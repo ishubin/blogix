@@ -10,7 +10,7 @@ Home text is: home value from controller
 and this is a footer
 </footer>
 ==================================================================================================
-/article/123/2012-06-07
+/article/123/2012-06-07/
 <header>
 this is a header
 </header>
@@ -23,5 +23,5 @@ this is a header
 and this is a footer
 </footer>
 ==================================================================================================
-/help
+/help/
 This is just a plain view without subtiles and controller

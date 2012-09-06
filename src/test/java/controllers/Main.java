@@ -15,4 +15,5 @@ public class Main {
         }
         return new Article(id, date, "Title for " + id, "Article description for " + id);
     }
+    
 }

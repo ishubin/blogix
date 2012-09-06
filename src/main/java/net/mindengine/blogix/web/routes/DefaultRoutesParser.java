@@ -158,9 +158,6 @@ public class DefaultRoutesParser implements RoutesParser {
             return this;
         }
         private State doneCompletely() {
-            if ( !url.toString().endsWith( "/" ) ) {
-                append('/');
-            }
             route.getUrl().setUrlPattern( url.toString() );
             route.getUrl().setOriginalUrl(originalUrl.toString());
             

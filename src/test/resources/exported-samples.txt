@@ -38,3 +38,6 @@ this is a header
 <footer>
 and this is a footer
 </footer>
+==================================================================================================
+/file/someFile.txt
+File content
