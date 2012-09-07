@@ -56,6 +56,7 @@ public class BlogixExporter {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void exportParameterizedRoute(Route route) throws Exception {
         if ( route.getProvider() == null ) {
             throw new NullPointerException("Provider is not specified for parameterized route " + route.getUrl().getOriginalUrl());

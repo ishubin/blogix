@@ -10,35 +10,31 @@ import java.util.Properties;
 import javax.servlet.ServletOutputStream;
 
 import net.mindengine.blogix.utils.BlogixFileUtils;
+import net.mindengine.blogix.web.DefaultViewResolver;
 import net.mindengine.blogix.web.RouteInvoker;
-import net.mindengine.blogix.web.TilesRenderer;
+import net.mindengine.blogix.web.ViewResolver;
 import net.mindengine.blogix.web.routes.Route;
 import net.mindengine.blogix.web.routes.RoutesContainer;
-import net.mindengine.blogix.web.tiles.Tile;
-import net.mindengine.blogix.web.tiles.TilesContainer;
 
 import org.apache.commons.io.FileUtils;
-
-import freemarker.template.TemplateException;
 
 public class Blogix {
     private static final HashMap<String, String> EMPTY_CONTROLLER_ARGS = new HashMap<String, String>();
     private static final String DEFAULT_CONTROLLER_PACKAGES = "default.controller.packages";
     private static final String DEFAULT_PROVIDER_PACKAGES = "default.provider.packages";
+    public static final String VIEW_MAIN_PATH = "view/";
 
     
     private Properties properties = new Properties();
     
-    private TilesContainer tilesContainer = new TilesContainer();
+    private ViewResolver viewResolver = new DefaultViewResolver();
     private RoutesContainer routesContainer = new RoutesContainer();
     private RouteInvoker routeInvoker = new RouteInvoker();
-    private TilesRenderer tilesRenderer = new TilesRenderer();
     
     public Blogix() throws IOException, URISyntaxException {
         getProperties().load(FileUtils.openInputStream(BlogixFileUtils.findFile("conf/properties")));
         
         try {
-            tilesContainer.load( BlogixFileUtils.findFile( "conf/tiles" ));
             routesContainer.load( BlogixFileUtils.findFile( "conf/routes" ), getDefaultControllerPackages(), getDefaultProviderPackages()  );
         }
         catch (Exception e) {
@@ -72,14 +68,6 @@ public class Blogix {
         this.properties = properties;
     }
 
-    public TilesContainer getTilesContainer() {
-        return tilesContainer;
-    }
-
-    public void setTilesContainer(TilesContainer tilesContainer) {
-        this.tilesContainer = tilesContainer;
-    }
-
     public RoutesContainer getRoutesContainer() {
         return routesContainer;
     }
@@ -96,15 +84,7 @@ public class Blogix {
         this.routeInvoker = routeInvoker;
     }
 
-    public TilesRenderer getTilesRenderer() {
-        return tilesRenderer;
-    }
-
-    public void setTilesRenderer(TilesRenderer tilesRenderer) {
-        this.tilesRenderer = tilesRenderer;
-    }
-
-    public void processUri(String uri, ServletOutputStream outputStream) throws IOException, TemplateException, URISyntaxException {
+    public void processUri(String uri, ServletOutputStream outputStream) throws Exception {
         Route route = findRouteMatchingUri(uri);
         
         if ( route != null ) {
@@ -114,11 +94,7 @@ public class Blogix {
             }
             
             String view = route.getView();
-            Tile tile = tilesContainer.findTile(view);
-            if ( tile == null ) {
-                throw new IllegalArgumentException("Cannot find tile for view: " + view);
-            }
-            tilesRenderer.renderTile(model, tile, outputStream);
+            viewResolver.resolveViewAndRender(model, view, outputStream);
         }
         else throw new IllegalArgumentException("Cannot find route for uri: " + uri);
     }
@@ -130,22 +106,35 @@ public class Blogix {
         return routesContainer.findRouteMatchingUri(uri);        
     }
 
-    public void processRoute(Route route, Map<String,String> controllerArgs, OutputStream outputStream) throws IOException, TemplateException, URISyntaxException {
+    public void processRoute(Route route, Map<String,String> controllerArgs, OutputStream outputStream) throws Exception {
         Object model = null;
         if ( route.getController() != null ) {
             model = routeInvoker.invokeRoute(route, controllerArgs);
         }
         
         String view = route.getView();
-        Tile tile = tilesContainer.findTile(view);
-        if ( tile == null ) {
-            throw new IllegalArgumentException("Cannot find tile for view: " + view);
-        }
-        tilesRenderer.renderTile(model, tile, outputStream);
+        viewResolver.resolveViewAndRender(model, view, outputStream);
     }
 
-    public void processRoute(Route route, OutputStream outputStream) throws IOException, TemplateException, URISyntaxException  {
+    public void processRoute(Route route, OutputStream outputStream) throws Exception  {
         processRoute(route, EMPTY_CONTROLLER_ARGS, outputStream);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> convertModelToMap(Object model) {
+        Map<String, Object> modelMap = new HashMap<String, Object>();
+        if ( model != null ) {
+            if ( model instanceof Map ) {
+                Map<Object, Object> map = (Map<Object, Object>)model;
+                for ( Map.Entry<Object, Object> entry : map.entrySet() ) {
+                    modelMap.put(entry.getKey().toString(), entry.getValue());
+                }
+            }
+            else {
+                modelMap.put("model", model);
+            }
+        }
+        return modelMap;
     }
 
 

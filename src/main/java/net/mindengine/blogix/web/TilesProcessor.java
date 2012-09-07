@@ -9,11 +9,11 @@ import freemarker.template.TemplateException;
 import net.mindengine.blogix.web.tiles.Tile;
 
 public class TilesProcessor {
-    private TilesRenderer tilesRenderer;
+    private TilesResolver tilesRenderer;
     private Map<String, Object> modelMap;
     private Tile tile;
 
-    public TilesProcessor(Map<String, Object> modelMap, Tile tile, TilesRenderer tilesRenderer) {
+    public TilesProcessor(Map<String, Object> modelMap, Tile tile, TilesResolver tilesRenderer) {
         this.tile = tile;
         this.modelMap = modelMap;
         this.tilesRenderer = tilesRenderer;
