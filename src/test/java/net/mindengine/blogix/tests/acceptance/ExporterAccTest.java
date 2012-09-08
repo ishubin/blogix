@@ -25,7 +25,7 @@ public class ExporterAccTest {
     
     @BeforeClass
     public void init() throws IOException {
-        destinationDir = new File("target/exported-routes");
+        destinationDir = new File("target" + File.separator + "exported-routes");
         if ( destinationDir.exists() ) {
             FileUtils.cleanDirectory(destinationDir);
         }
@@ -75,7 +75,8 @@ public class ExporterAccTest {
     
     @Test (dependsOnMethods = BASE_TESTS)
     public void exportsImageFile() throws Exception {
-        throw new Exception("Not finished yet");
+        File file = new File(destinationDir.getAbsolutePath() + File.separator + "file" + File.separator + "customImage.jpg");
+        assertThat(file.getAbsolutePath() + " does not exist", file.exists(), is(true));
     }
     
     
