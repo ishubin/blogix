@@ -17,5 +17,14 @@ public class MyView {
             throw new RuntimeException("Couldn't find a file");
         }
     }
+    
+    
+    public static File customImage() {
+        try {
+            return new File(MyView.class.getResource("/sample-files/customImage.jpg").toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Couldn't find a file");
+        }
+    }
 
 }

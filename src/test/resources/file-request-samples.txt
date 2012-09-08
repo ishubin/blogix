@@ -1,0 +1,9 @@
+=======================================
+/file/customView.txt
+plain/text | sample-files/customView.txt
+=======================================
+/file/customFile.txt
+plain/text | sample-files/customFile.txt
+=======================================
+/file/customImage.jpg
+image/jpg | 

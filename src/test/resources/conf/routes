@@ -15,3 +15,5 @@
 /file/customView.txt    -                           MyView.customStringView
 
 /file/customFile.txt    -                           MyView.customFileView    
+
+/file/customImage.jpg   -                           MyView.customImage    

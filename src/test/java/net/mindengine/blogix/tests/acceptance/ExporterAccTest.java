@@ -73,7 +73,10 @@ public class ExporterAccTest {
         assertThat(checks.get(7).getLeft(), is("/file/customFile.txt"));
     }
     
-    
+    @Test (dependsOnMethods = BASE_TESTS)
+    public void exportsImageFile() throws Exception {
+        throw new Exception("Not finished yet");
+    }
     
     
     @DataProvider

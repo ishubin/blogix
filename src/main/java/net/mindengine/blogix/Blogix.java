@@ -100,9 +100,6 @@ public class Blogix {
     }
     
     private Route findRouteMatchingUri(String uri) {
-        if ( !uri.endsWith( "/" )) {
-            uri = uri + "/";
-        }
         return routesContainer.findRouteMatchingUri(uri);        
     }
 

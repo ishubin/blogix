@@ -1,7 +1,7 @@
 package net.mindengine.blogix.utils;
 
 import java.io.File;
-import java.net.URISyntaxException;
+import java.io.FileNotFoundException;
 
 public class BlogixFileUtils {
 
@@ -9,14 +9,19 @@ public class BlogixFileUtils {
      * Search for a file first in a root folder of a project, then in project resources
      * @param path
      * @return
-     * @throws URISyntaxException 
+     * @throws FileNotFoundException 
      */
-    public static File findFile(String path) throws URISyntaxException {
-        File tilesFile = new File(path);
-        if ( !tilesFile.exists() ) {
-            tilesFile = new File(BlogixFileUtils.class.getResource("/" + path).toURI());
+    public static File findFile(String path) throws FileNotFoundException {
+        try {
+            File file = new File(path);
+            if ( !file.exists() ) {
+                file = new File(BlogixFileUtils.class.getResource("/" + path).toURI());
+            }
+            return file;
         }
-        return tilesFile;
+        catch (Exception e) {
+            throw new FileNotFoundException(path);
+        }
     }
 
 }
