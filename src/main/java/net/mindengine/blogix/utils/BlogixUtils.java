@@ -12,23 +12,23 @@ import org.apache.commons.lang3.tuple.Pair;
 public class BlogixUtils {
 
     
-    public static Pair<Class<?>, Method> readClassAndMethodFromParsedString(String parsedString, String[] defaultPackages) {
+    public static Pair<Class<?>, Method> readClassAndMethodFromParsedString(ClassLoader[] classLoaders, String parsedString, String[] defaultPackages) {
         int id = StringUtils.lastIndexOf(parsedString, ".");
         
         if (id > 0 ) {
             String methodName = parsedString.substring(id + 1);
             String classPath = parsedString.substring(0, id);
-            return findClassAndMethod(classPath, methodName, defaultPackages);
+            return findClassAndMethod(classLoaders, classPath, methodName, defaultPackages);
         }
         else throw new RouteParserException("Cannot parse controller definition '" + parsedString + "'");
     }
 
-    private static Pair<Class<?>, Method> findClassAndMethod(String classPath, String methodName, String[] defaultPackages) {
+    private static Pair<Class<?>, Method> findClassAndMethod(ClassLoader[] classLoaders, String classPath, String methodName, String[] defaultPackages) {
         Class<?> controllerClass = null;
         
         for ( String defaultPackage : defaultPackages ) {
             try {
-                controllerClass = Class.forName(defaultPackage + "." + classPath);
+                controllerClass = findClassInClassLoaders(classLoaders, defaultPackage + "." + classPath);
                 break;
             }
             catch (Exception e) {
@@ -48,6 +48,16 @@ public class BlogixUtils {
             return new ImmutablePair<Class<?>, Method>(controllerClass, method);
         }
         else throw new RouteParserException("Cannot find method '" + methodName + "' for controller " + controllerClass.getName());
+    }
+
+    private static Class<?> findClassInClassLoaders(ClassLoader[] classLoaders, String classPath) throws ClassNotFoundException {
+        for (ClassLoader classLoader : classLoaders) {
+            try {
+                return classLoader.loadClass(classPath);
+            } catch (ClassNotFoundException e) {
+            }
+        }
+        throw new ClassNotFoundException(classPath);
     }
 
     private static Method findMethodInClass(Class<?> controllerClass, String methodName) {

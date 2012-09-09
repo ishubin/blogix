@@ -27,9 +27,11 @@ public class DefaultRoutesParser implements RoutesParser {
     private static final char METHOD_ARGUMENTS_END = ')';
     private String[] defaultControllerPackages;
     private String[] defaultProviderPackages;
+    private ClassLoader[] classLoaders;
     
 
-    public DefaultRoutesParser(String[] defaultControllerPackages, String[] defaultProviderPackages) {
+    public DefaultRoutesParser(ClassLoader[] classLoaders, String[] defaultControllerPackages, String[] defaultProviderPackages) {
+        this.classLoaders = classLoaders;
         this.defaultControllerPackages = defaultControllerPackages;
         this.defaultProviderPackages = defaultProviderPackages;
     }
@@ -278,7 +280,7 @@ public class DefaultRoutesParser implements RoutesParser {
         }
 
         private void processParsedString() {
-            Pair<Class<?>, Method> pair = BlogixUtils.readClassAndMethodFromParsedString(controller.toString(), DefaultRoutesParser.this.defaultControllerPackages);
+            Pair<Class<?>, Method> pair = BlogixUtils.readClassAndMethodFromParsedString(DefaultRoutesParser.this.classLoaders, controller.toString(), DefaultRoutesParser.this.defaultControllerPackages);
             route.getController().setControllerClass(pair.getLeft());
             route.getController().setControllerMethod(pair.getRight());
             
@@ -430,7 +432,7 @@ public class DefaultRoutesParser implements RoutesParser {
             String provider = getParsedString();
             if ( !provider.isEmpty() ) {
                 RouteProviderDefinition rpd = new RouteProviderDefinition();
-                Pair<Class<?>, Method> pair = BlogixUtils.readClassAndMethodFromParsedString(provider, DefaultRoutesParser.this.defaultProviderPackages);
+                Pair<Class<?>, Method> pair = BlogixUtils.readClassAndMethodFromParsedString(DefaultRoutesParser.this.classLoaders, provider, DefaultRoutesParser.this.defaultProviderPackages);
                 rpd.setProviderClass(pair.getLeft());
                 rpd.setProviderMethod(pair.getRight());
                 

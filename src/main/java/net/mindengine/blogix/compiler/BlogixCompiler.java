@@ -1,6 +1,8 @@
 package net.mindengine.blogix.compiler;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,6 +21,10 @@ public class BlogixCompiler {
     
     private File classesDir;
     private File sourceDir;
+    
+    public void loadClassesFromCompiledDirectory() throws Exception {
+        ClassLoader classLoader = new URLClassLoader(new URL[]{classesDir.toURI().toURL()});
+    }
     
     public void compile() throws Exception {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();

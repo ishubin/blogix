@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import javax.servlet.ServletOutputStream;
 
+import net.mindengine.blogix.compiler.BlogixClassLoader;
 import net.mindengine.blogix.utils.BlogixFileUtils;
 import net.mindengine.blogix.web.DefaultViewResolver;
 import net.mindengine.blogix.web.RouteInvoker;
@@ -19,6 +20,7 @@ import net.mindengine.blogix.web.routes.RoutesContainer;
 import org.apache.commons.io.FileUtils;
 
 public class Blogix {
+    private static final ClassLoader[] CLASS_LOADERS = new ClassLoader[]{Blogix.class.getClassLoader(), new BlogixClassLoader("src")};
     private static final HashMap<String, String> EMPTY_CONTROLLER_ARGS = new HashMap<String, String>();
     private static final String DEFAULT_CONTROLLER_PACKAGES = "default.controller.packages";
     private static final String DEFAULT_PROVIDER_PACKAGES = "default.provider.packages";
@@ -27,8 +29,8 @@ public class Blogix {
     
     private Properties properties = new Properties();
     
-    private ViewResolver viewResolver = new DefaultViewResolver();
-    private RoutesContainer routesContainer = new RoutesContainer();
+    private ViewResolver viewResolver = new DefaultViewResolver(defaultClassLoaders());
+    private RoutesContainer routesContainer = new RoutesContainer(defaultClassLoaders());
     private RouteInvoker routeInvoker = new RouteInvoker();
     
     public Blogix() throws IOException, URISyntaxException {
@@ -38,10 +40,14 @@ public class Blogix {
             routesContainer.load( BlogixFileUtils.findFile( "conf/routes" ), getDefaultControllerPackages(), getDefaultProviderPackages()  );
         }
         catch (Exception e) {
-            throw new RuntimeException("Could not load properties");
+            throw new RuntimeException("Could not load properties", e);
         }
     }
     
+    public static ClassLoader[] defaultClassLoaders() {
+        return CLASS_LOADERS;
+    }
+
     private String[] getDefaultProviderPackages() {
         String value = (String) properties.get(DEFAULT_PROVIDER_PACKAGES);
         if ( value != null && !value.isEmpty() ) {

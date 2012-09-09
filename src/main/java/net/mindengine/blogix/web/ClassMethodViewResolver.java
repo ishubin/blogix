@@ -12,6 +12,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class ClassMethodViewResolver implements ViewResolver {
 
+    private ClassLoader[] classLoaders;
+    
+    public ClassMethodViewResolver(ClassLoader[] classLoaders) {
+        this.classLoaders = classLoaders;
+    }
+
     @Override
     public boolean canResolve(String view) {
         try {
@@ -26,7 +32,7 @@ public class ClassMethodViewResolver implements ViewResolver {
     }
 
     private Pair<Class<?>, Method> extractClassAndMethod(String view) {
-        return BlogixUtils.readClassAndMethodFromParsedString(view, getDefaultPackages());
+        return BlogixUtils.readClassAndMethodFromParsedString(this.classLoaders, view, getDefaultPackages());
     }
 
     private String[] getDefaultPackages() {
