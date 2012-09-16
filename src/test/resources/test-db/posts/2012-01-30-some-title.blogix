@@ -1,0 +1,13 @@
+-----------------------
+title
+    Sample title
+-----------------------
+sections 
+    Section 1, Section 2, Section 3    
+========================
+This is just a body
+---------------This is actually not a delimiter
+
+-----------------------
+anotherField
+    field value after body
