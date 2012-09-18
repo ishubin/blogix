@@ -1,7 +1,9 @@
 package net.mindengine.blogix.db;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 public class Entry {
 
@@ -36,6 +38,16 @@ public class Entry {
 
     public String body() {
         return findData().get("body");
+    }
+
+    public Set<String> getAllFieldNames() {
+        Map<String, String> data = findData();
+        if (data != null) {
+            return data.keySet();
+        }
+        else {
+            return Collections.emptySet();
+        }
     }
 
 }

@@ -6,32 +6,35 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
+import net.mindengine.blogix.components.Post;
 import net.mindengine.blogix.db.Entry;
 import net.mindengine.blogix.db.FileDb;
 
+import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class FileDbAccTest {
 
-    private FileDb postDb;
+    private FileDb<Post> postDb;
     
     @BeforeClass
     public void init() throws Exception {
-        postDb = new FileDb(new File(getClass().getResource("/test-db/posts/").toURI()));
+        postDb = new FileDb<Post>(Post.class, new File(getClass().getResource("/test-db/posts/").toURI()));
     }
     
     @Test
     public void shouldGiveNullForUnexistentEntry() throws Exception {
-        Entry entry = postDb.findById("2012-01-30-some-unexistent-entry");
+        Entry entry = postDb.findEntryById("2012-01-30-some-unexistent-entry");
         assertThat(entry, is(nullValue()));
     }
     
     @Test
     public void shouldFindExistentEntry() throws Exception {
-        Entry entry = postDb.findById("2012-01-30-some-title");
+        Entry entry = postDb.findEntryById("2012-01-30-some-title");
         assertThat(entry, is(notNullValue()));
     }
     
@@ -46,7 +49,7 @@ public class FileDbAccTest {
     
     @Test
     public void shouldFindAllEntries() throws Exception {
-        List<Entry> entries = postDb.findAll();
+        List<Entry> entries = postDb.findAllEntries();
         assertThat(entries.size(), is(3));
         assertThat(entries.get(0).id(), is("2012-01-30-some-title"));
         assertThat(entries.get(1).id(), is("2012-02-01-some-title-2"));
@@ -63,7 +66,7 @@ public class FileDbAccTest {
     
     @Test
     public void shouldFindEntriesBySpecifiedIdRegexPattern() throws Exception {
-        List<Entry> entries = postDb.findAll("2012-(02|03).*");
+        List<Entry> entries = postDb.findAllEntries("2012-(02|03).*");
         assertThat(entries.size(), is(2));
         assertThat(entries.get(0).id(), is("2012-02-01-some-title-2"));
         assertThat(entries.get(1).id(), is("2012-03-02-some-title-3"));
@@ -79,25 +82,43 @@ public class FileDbAccTest {
     
     @Test
     public void shouldLoadSimpleEntryInSpecifiedPath() throws Exception {
-        Entry entry = postDb.findById("2012-01-30-some-title");
+        Entry entry = postDb.findEntryById("2012-01-30-some-title");
         assertThat(entry.id(), is("2012-01-30-some-title"));
         assertThat(entry.field("title"), is("Sample title"));
         assertThat(entry.field("sections"), is("Section 1, Section 2, Section 3"));
-        assertThat(entry.body(), is("This is just a body\n---------------This is actually not a delimiter\n"));
+        assertThat(entry.body(), is("This is just a body\n---------------This is actually not a delimiter"));
         assertThat(entry.field("anotherField"), is("field value after body"));
         assertThat(entry.field("someUnexistentField"), is(nullValue()));
     }
     
     @Test
+    public void shouldLoadSimpleEntryAndMapToJavaClass() throws Exception {
+        assertFirstPost(postDb.findById("2012-01-30-some-title"));
+    }
+    
+    @Test
+    public void shouldFindAllEntriesAndMapToJavaClasses() throws Exception {
+        List<Post> posts = postDb.findAll();
+        assertThat(posts.size(), is(3));
+        assertFirstPost(posts.get(0));
+    }
+    
+    private void assertFirstPost(Post post) {
+        assertThat(post.getTitle(), is("Sample title"));
+        assertThat(post.getId(), is("2012-01-30-some-title"));
+        assertThat(post.getSections(), is(notNullValue()));
+        assertThat(Arrays.asList(post.getSections()), Matchers.contains("Section 1", "Section 2", "Section 3"));
+        assertThat(post.getBody(), is("This is just a body\n---------------This is actually not a delimiter"));
+        assertThat(post.getCommentsEnabled(), is(true));
+    }
+
+    @Test
     public void shouldSearchOnContainingField() throws Exception {
-        List<Entry> entries = postDb.findByFieldContaining("sections", "Section 1");
+        List<Entry> entries = postDb.findEntriesByFieldContaining("sections", "Section 1");
         assertThat(entries.size(), is(2));
         assertThat(entries.get(0).id(), is("2012-01-30-some-title"));
         assertThat(entries.get(1).id(), is("2012-02-01-some-title-2"));        
     }
     
-    @Test(enabled = false)
-    public void shouldMapEntriesToJavaClasses() throws Exception {
-    }
-
+    
 }
