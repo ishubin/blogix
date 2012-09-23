@@ -23,17 +23,17 @@ public class BlogixCompiler {
     private File sourceDir;
     
     public void loadClassesFromCompiledDirectory() throws Exception {
-        ClassLoader classLoader = new URLClassLoader(new URL[]{classesDir.toURI().toURL()});
+        new URLClassLoader(new URL[]{classesDir.toURI().toURL()});
     }
     
-    public void compile() throws Exception {
+    public void compile() throws CompilationError {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, Locale.getDefault(), null);
         List<JavaFileObject> javaObjects = scanRecursivelyForJavaObjects(sourceDir, fileManager);
         
         if (javaObjects.size() == 0) {
-            throw new Exception("There are no source files to compile in " + sourceDir.getAbsolutePath());
+            throw new CompilationError("There are no source files to compile in " + sourceDir.getAbsolutePath());
         }
         String[] compileOptions = new String[]{"-d", classesDir.getAbsolutePath()} ;
         Iterable<String> compilationOptions = Arrays.asList(compileOptions);
@@ -44,6 +44,7 @@ public class BlogixCompiler {
             for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
                 System.err.format("Error on line %d in %s", diagnostic.getLineNumber(), diagnostic);
             }
+            throw new CompilationError("Could not compile project");
         }
     }
 

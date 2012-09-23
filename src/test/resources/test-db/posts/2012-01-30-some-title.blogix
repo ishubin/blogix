@@ -11,3 +11,6 @@ This is just a body
 -----------------------
 anotherField
     field value after body
+--------
+commentsEnabled
+    true

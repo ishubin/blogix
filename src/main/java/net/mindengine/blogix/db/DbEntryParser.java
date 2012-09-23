@@ -86,7 +86,7 @@ public class DbEntryParser {
         @Override
         public void done() {
             if (name != null) {
-                DbEntryParser.this.data.put(name, buffer.toString());
+                DbEntryParser.this.data.put(name, removeWhiteSpace(buffer.toString()));
             }
         }
     }
@@ -113,11 +113,14 @@ public class DbEntryParser {
 
         @Override
         public void done() {
-            DbEntryParser.this.data.put("body", buffer.toString());
+            DbEntryParser.this.data.put("body", removeWhiteSpace(buffer.toString()));
         }
         
     }
     
+    public String removeWhiteSpace(String text) {
+        return text.replaceAll("[\r\n]+$", "");
+    }
     private boolean lineContainsOnly(String line, char c) {
         if (line.length() > 3) {
             if (line.charAt(0) == c) {
