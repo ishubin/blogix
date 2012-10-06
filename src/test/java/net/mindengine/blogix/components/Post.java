@@ -1,7 +1,7 @@
 package net.mindengine.blogix.components;
 
 
-public class Post {
+public class Post implements Comparable<Post> {
 
     private String id;
     private String title;
@@ -37,6 +37,10 @@ public class Post {
     }
     public void setCommentsEnabled(Boolean commentsEnabled) {
         this.commentsEnabled = commentsEnabled;
+    }
+    @Override
+    public int compareTo(Post otherParam) {
+        return id.compareTo(otherParam.id);
     }
 
 }

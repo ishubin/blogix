@@ -1,0 +1,42 @@
+#!/bin/bash
+
+blogixCommand="java -jar blogix.jar"
+args=""
+function run {
+}
+function compile {
+}
+function export {
+}
+function help {
+    echo "Usage: blogix [ run | compile | export | help]"
+}
+
+
+case $1 in
+    run)
+        run $@
+        exit 0
+        ;;
+    compile)
+        compile $@
+        exit 0
+        ;;
+    export)
+        export $@
+        exit 0
+        ;;
+    help)
+        help $@
+        exit 0
+        ;;
+    *)
+        echo "Unknown command: '$1'"
+        help
+        exit 0
+        ;;
+esac
+
+help
+cmd="$blogixCommand $args"
+echo $cmd

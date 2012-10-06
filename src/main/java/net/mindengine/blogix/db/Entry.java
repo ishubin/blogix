@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-public class Entry {
+public class Entry implements Comparable<Entry> {
 
     private File file;
     private String id;
@@ -48,6 +48,11 @@ public class Entry {
         else {
             return Collections.emptySet();
         }
+    }
+
+    @Override
+    public int compareTo(Entry otherParam) {
+        return id.compareTo(otherParam.id);
     }
 
 }

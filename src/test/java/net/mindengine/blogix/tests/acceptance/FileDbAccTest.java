@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.mindengine.blogix.components.Post;
 import net.mindengine.blogix.db.Entry;
+import net.mindengine.blogix.db.EntryList;
 import net.mindengine.blogix.db.FileDb;
 
 import org.hamcrest.Matchers;
@@ -40,7 +41,7 @@ public class FileDbAccTest {
     
     @Test
     public void shouldFindOnlyIdsForAllEntries() throws Exception {
-        List<String> ids = postDb.findAllIds();
+        EntryList<String> ids = postDb.findAllIds();
         assertThat(ids.size(), is(3));
         assertThat(ids.get(0), is("2012-01-30-some-title"));
         assertThat(ids.get(1), is("2012-02-01-some-title-2"));
@@ -49,7 +50,7 @@ public class FileDbAccTest {
     
     @Test
     public void shouldFindAllEntries() throws Exception {
-        List<Entry> entries = postDb.findAllEntries();
+        EntryList<Entry> entries = postDb.findAllEntries();
         assertThat(entries.size(), is(3));
         assertThat(entries.get(0).id(), is("2012-01-30-some-title"));
         assertThat(entries.get(1).id(), is("2012-02-01-some-title-2"));
@@ -58,7 +59,7 @@ public class FileDbAccTest {
     
     @Test
     public void shouldFindOnlyIdsBySpecifiedIdRegexPattern() throws Exception {
-        List<String> ids = postDb.findAllIds("2012-(02|03).*");
+        EntryList<String> ids = postDb.findAllIds("2012-(02|03).*");
         assertThat(ids.size(), is(2));
         assertThat(ids.get(0), is("2012-02-01-some-title-2"));
         assertThat(ids.get(1), is("2012-03-02-some-title-3"));
@@ -66,7 +67,7 @@ public class FileDbAccTest {
     
     @Test
     public void shouldFindEntriesBySpecifiedIdRegexPattern() throws Exception {
-        List<Entry> entries = postDb.findAllEntries("2012-(02|03).*");
+        EntryList<Entry> entries = postDb.findAllEntries("2012-(02|03).*");
         assertThat(entries.size(), is(2));
         assertThat(entries.get(0).id(), is("2012-02-01-some-title-2"));
         assertThat(entries.get(1).id(), is("2012-03-02-some-title-3"));
@@ -74,7 +75,7 @@ public class FileDbAccTest {
     
     @Test
     public void shouldFindEntryAttachments() throws Exception {
-        List<String> attachments =  postDb.findAttachments("2012-01-30-some-title");
+        EntryList<String> attachments =  postDb.findAttachments("2012-01-30-some-title");
         assertThat(attachments.size(), is(2));
         assertThat(attachments.get(0), is("2012-01-30-some-title.1.jpg"));
         assertThat(attachments.get(1), is("2012-01-30-some-title.2.png"));
@@ -98,7 +99,7 @@ public class FileDbAccTest {
     
     @Test
     public void shouldFindAllEntriesAndMapToJavaClasses() throws Exception {
-        List<Post> posts = postDb.findAll();
+        EntryList<Post> posts = postDb.findAll();
         assertThat(posts.size(), is(3));
         assertFirstPost(posts.get(0));
     }
