@@ -118,18 +118,42 @@ public class BlogControllerTest {
         assertThat(section.getName(), is("Section 1"));
         
         List<Post> posts = (List<Post>) postsModel.get("posts");
-        assertThat(posts.size(), is(DEFAULT_NUMBER_OF_RECENT_POSTS));
+        assertThat(posts.size(), is(NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST));
+        
+        for (int i = 1; i <= NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST; i++) {
+            String strNumber = Integer.toString(i);
+            if (i<10) {
+                strNumber = "0" + strNumber;
+            }
+            assertThat(posts.get(i - 1).getId(), is("2012-01-01-title-" + strNumber));
+        }
+        
         assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(12));
         assertThat((Integer)postsModel.get(CURRENT_PAGE), is(1));
-        
-        
-        fail("not implemented");
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void searchesForPostsBySectionAndPage() throws Exception {
         Map<String, Object> postsModel = invokeController("postsBySectionAndPage", "section1", 2);
-        fail("not implemented");
+        
+        assertThat(postsModel, allOf(hasKey("posts"),
+                hasKey("section"),
+                hasKey(CURRENT_PAGE),
+                hasKey(ALL_POSTS_COUNT)));
+        
+        assertCommonModelDataForPosts(postsModel);
+        
+        Section section = (Section) postsModel.get("section");
+        assertThat(section.getId(), is("section1"));
+        assertThat(section.getName(), is("Section 1"));
+        
+        List<Post> posts = (List<Post>) postsModel.get("posts");
+        assertThat(posts.size(), is(2));
+        assertThat(posts.get(0).getId(), is("2012-01-01-title-11"));
+        assertThat(posts.get(1).getId(), is("2012-01-01-title-12"));
+        assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(12));
+        assertThat((Integer)postsModel.get(CURRENT_PAGE), is(2));
     }
     
     

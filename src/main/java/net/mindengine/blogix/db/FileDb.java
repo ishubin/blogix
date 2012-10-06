@@ -39,9 +39,9 @@ public class FileDb<T1 extends Comparable<T1>> {
         return findByIdAndConvert(id, _objectConverter);
     }
     
-    public List<T1> findByFieldContaining(String fieldName, String value) {
+    public EntryList<T1> findByFieldContaining(String fieldName, String value) {
         List<Entry> entries = findEntriesByFieldContaining(fieldName, value);
-        return convertEntriesToObjects(entries);
+        return new EntryList<T1>(convertEntriesToObjects(entries));
     }
 
     private List<T1> convertEntriesToObjects(List<Entry> entries) {
