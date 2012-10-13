@@ -1,3 +1,5 @@
 default.controller.packages = controllers,net.mindengine.blogix.blog.controllers
 
 default.provider.packages = providers,net.mindengine.blogix.blog.providers 
+
+public.path = sample-files/public

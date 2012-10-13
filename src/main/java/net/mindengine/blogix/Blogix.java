@@ -1,5 +1,8 @@
 package net.mindengine.blogix;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
@@ -18,8 +21,12 @@ import net.mindengine.blogix.web.routes.Route;
 import net.mindengine.blogix.web.routes.RoutesContainer;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 public class Blogix {
+    private static final String DEFAULT_PUBLIC_PATH = "public";
+    private static final String PUBLIC_PATH = "public.path";
+    private static final String PUBLIC = "/public/";
     private static final ClassLoader[] CLASS_LOADERS = new ClassLoader[]{Blogix.class.getClassLoader(), new BlogixClassLoader("src")};
     private static final HashMap<String, String> EMPTY_CONTROLLER_ARGS = new HashMap<String, String>();
     private static final String DEFAULT_CONTROLLER_PACKAGES = "default.controller.packages";
@@ -91,6 +98,35 @@ public class Blogix {
     }
 
     public void processUri(String uri, ServletOutputStream outputStream) throws Exception {
+        if (!isPublicResource(uri)) {
+            processRoute(uri, outputStream);
+        }
+        else {
+            processPublicResource(uri, outputStream);
+        }
+    }
+
+    private void processPublicResource(String uri, ServletOutputStream outputStream) throws FileNotFoundException, IOException {
+        //removing '/public/' part 
+        uri = uri.substring(PUBLIC.length());
+        File publicFile = findPublicResource(uri);
+        IOUtils.copy(new FileInputStream((File)publicFile), outputStream);
+    }
+
+    private File findPublicResource(String uri) throws FileNotFoundException {
+        String publicDirPath = properties.getProperty(PUBLIC_PATH, DEFAULT_PUBLIC_PATH);
+        String fullPath = publicDirPath + File.separator + uri;
+        return BlogixFileUtils.findFile(fullPath);
+    }
+
+    private boolean isPublicResource(String uri) {
+        if (uri.startsWith(PUBLIC)) {
+            return true;
+        }
+        else return false;
+    }
+
+    private void processRoute(String uri, ServletOutputStream outputStream) throws Exception {
         Route route = findRouteMatchingUri(uri);
         
         if ( route != null ) {

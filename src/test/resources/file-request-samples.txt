@@ -7,3 +7,9 @@ plain/text | sample-files/customFile.txt
 =======================================
 /file/customImage.jpg
 image/jpg | 
+=======================================
+/public/main.css
+text/css | sample-files/public/main.css
+=======================================
+/public/script.js
+application/javascript | sample-files/public/script.js
