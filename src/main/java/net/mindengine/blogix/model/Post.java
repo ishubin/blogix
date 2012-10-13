@@ -1,6 +1,8 @@
 package net.mindengine.blogix.model;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.mindengine.blogix.db.Entry;
 
@@ -14,6 +16,8 @@ public class Post implements Comparable<Post> {
     private String externalUrl;
     private Entry entry;
     private String displayExternalUrl;
+    
+    Pattern CONTENT_PREVIEW_BREAKER_PATTERN = Pattern.compile("\\n[>]+[\\s]*\\n");
 
     public String getTitle() {
         return title;
@@ -35,10 +39,25 @@ public class Post implements Comparable<Post> {
         if (entry == null) {
             throw new IllegalArgumentException("Entry is not set for post");
         }
-        return getEntry().body();
+        return stripContentPreviewBreakers(getEntry().body());
     }
 
+    public String getContentPreview() {
+        String content = getEntry().body();
+        Matcher matcher = CONTENT_PREVIEW_BREAKER_PATTERN.matcher(content);
+        if (matcher.find()) {
+            int index = matcher.start();
+            if (index > 0 && index < content.length()) {
+                return content.substring(0, index);
+            }    
+        }
+        return content;
+    }
     
+    private String stripContentPreviewBreakers(String content) {
+        return CONTENT_PREVIEW_BREAKER_PATTERN.matcher(content).replaceAll("\n");
+    }
+
     public Boolean getAllowComments() {
         return allowComments;
     }
@@ -103,4 +122,5 @@ public class Post implements Comparable<Post> {
     public String toString() {
         return "Post: " + id;
     }
+
 }

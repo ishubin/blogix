@@ -74,8 +74,8 @@ public class BlogControllerTest {
         List<Post> homePosts = (List<Post>) homePageModel.get(HOME_POSTS);
         assertHomeSecondPagePosts(homePosts);
         
-        assertThat("'" + ALL_POSTS_COUNT + "' field in homePageModel is invalid", (Integer) homePageModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_IN_TEST));
-        assertThat("'" + CURRENT_PAGE + "' field in homePageModel is invalid", (Integer) homePageModel.get(CURRENT_PAGE), is(1));
+        assertThat("'" + ALL_POSTS_COUNT + "' field in homePageModel should be", (Integer) homePageModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_IN_TEST));
+        assertThat("'" + CURRENT_PAGE + "' field in homePageModel should be", (Integer) homePageModel.get(CURRENT_PAGE), is(1));
     }
     
     
@@ -88,15 +88,16 @@ public class BlogControllerTest {
         
         Post post = (Post) postModel.get("post");
         
-        assertThat("Post is null", post, is(notNullValue()));
+        assertThat("Post should be not null", post, is(notNullValue()));
         assertThat(post.getId(), is(postId));
-        assertThat("title is incorect for post '" + postId + "'", post.getTitle(), is("Title 1"));
-        assertThat("content is incorect for post '" + postId + "'", post.getContent(), is("Content 1"));
-        assertThat("commentsAllowed is incorect for post '" + postId + "'", post.getAllowComments(), is(true));
-        assertThat("date is incorect for post '" + postId + "'", post.getDate(), is(new Date(1325374440000L)));
-        assertThat("sections is incorect for post '" + postId + "'", post.getSections(), is(new String[]{"section1", "section2"}));
-        assertThat("externalUrl is incorect for post '" + postId + "'", post.getExternalUrl(), is("www.google.com"));
-        assertThat("externalUrl is incorect for post '" + postId + "'", post.getDisplayExternalUrl(), is("Google It!"));
+        assertThat("title for post '" + postId + "' should be", post.getTitle(), is("Title 1"));
+        assertThat("content for post '" + postId + "' should be", post.getContent(), is("Content 1\nPart 1\nContent 1 part 2"));
+        assertThat("content preview part for '" + postId + "' should be", post.getContentPreview(), is("Content 1\nPart 1"));
+        assertThat("commentsAllowed for post '" + postId + "' should be", post.getAllowComments(), is(true));
+        assertThat("date for post '" + postId + "' should be", post.getDate(), is(new Date(1325374440000L)));
+        assertThat("sections for post '" + postId + "' should be", post.getSections(), is(new String[]{"section1", "section2"}));
+        assertThat("externalUrl for post '" + postId + "' should be", post.getExternalUrl(), is("www.google.com"));
+        assertThat("externalUrl for post '" + postId + "' should be", post.getDisplayExternalUrl(), is("Google It!"));
         
         //Verifying that post can access additional custom fields
         assertThat("customField is incorrect for post '" + postId + "'", post.field("customField"), is("customValue"));
@@ -180,13 +181,13 @@ public class BlogControllerTest {
     
 
     private void assertRecentPosts(List<Post> recentPosts) {
-        assertThat("List of recentPosts is null", recentPosts, is(notNullValue()));
-        assertThat("Size of recentPosts is incorrect", recentPosts.size(), is(DEFAULT_NUMBER_OF_RECENT_POSTS));
+        assertThat("List of recentPosts should be", recentPosts, is(notNullValue()));
+        assertThat("Size of recentPosts should be", recentPosts.size(), is(DEFAULT_NUMBER_OF_RECENT_POSTS));
     }
 
     private void assertHomeFirstPagePosts(List<Post> homePosts) {
-        assertThat("List of homePosts is null", homePosts, is(notNullValue()));
-        assertThat("Size of homePosts is incorrect", homePosts.size(), is(NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST));
+        assertThat("List of homePosts should be", homePosts, is(notNullValue()));
+        assertThat("Size of homePosts should be", homePosts.size(), is(NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST));
         
         Iterator<Post> it = homePosts.iterator();
         int index = NUMBER_OF_ALL_POSTS_IN_TEST;
@@ -198,8 +199,8 @@ public class BlogControllerTest {
     }
 
     private void assertHomeSecondPagePosts(List<Post> homePosts) {
-        assertThat("List of homePosts is null", homePosts, is(notNullValue()));
-        assertThat("Size of homePosts is incorrect", homePosts.size(), is(NUMBER_OF_SECOND_PAGE_POSTS_IN_TEST));
+        assertThat("List of homePosts should be not null", homePosts, is(notNullValue()));
+        assertThat("Size of homePosts should be", homePosts.size(), is(NUMBER_OF_SECOND_PAGE_POSTS_IN_TEST));
         
         Iterator<Post> it = homePosts.iterator();
         int index = NUMBER_OF_SECOND_PAGE_POSTS_IN_TEST;
