@@ -61,6 +61,18 @@ public class Blog {
         model.put("section", sectionsDb.findById(sectionId));
         return model;
     }
+    
+    public static Map<String, Object> rssFeedAll() {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("posts", postsDb.findAll().asJavaList());
+        return model;
+    }
+    
+    public static Map<String, Object> rssFeedForSection(String sectionId) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("posts", postsDb.findByFieldContaining("sections", sectionId).asJavaList());
+        return model;
+    }
 
     
 

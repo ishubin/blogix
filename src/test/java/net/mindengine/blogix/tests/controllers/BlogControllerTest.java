@@ -22,6 +22,8 @@ import org.testng.annotations.Test;
 
 public class BlogControllerTest {
     
+    private static final int NUMBER_OF_ALL_POSTS_FOR_SECTION_1 = 12;
+    private static final int NUMBER_OF_ALL_POSTS_FOR_SECTION_2 = 2;
     private static final int NUMBER_OF_SECOND_PAGE_POSTS_IN_TEST = 4;
     private static final int DEFAULT_NUMBER_OF_RECENT_POSTS = 5;
     private static final int NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST = 10;
@@ -30,6 +32,7 @@ public class BlogControllerTest {
     private static final String ALL_POSTS_COUNT = "allPostsCount";
     private static final String HOME_POSTS = "homePosts";
     private static final String CURRENT_PAGE = "currentPage";
+    
     
     private static Class<?> controllersClass;
     
@@ -153,33 +156,49 @@ public class BlogControllerTest {
         assertThat(posts.size(), is(2));
         assertThat(posts.get(0).getId(), is("2012-01-01-title-11"));
         assertThat(posts.get(1).getId(), is("2012-01-01-title-12"));
-        assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(12));
+        assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_1));
         assertThat((Integer)postsModel.get(CURRENT_PAGE), is(2));
     }
     
     
+    @SuppressWarnings("unchecked")
     @Test
-    public void rssFeedForAllPosts() {
-        fail("not implemented");
-    }
-    
-    @Test
-    public void rssFeedForAllPostsAndPage() {
-        fail("not implemented");
-    }
-    
-    @Test
-    public void rssFeedForPostsBySection() {
-        fail("not implemented");
-    }
-    
-    @Test
-    public void rssFeedForPostsBySectionAndPage() {
-        fail("not implemented");
+    public void rssFeedForAllPosts() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Map<String, Object> rssModel = invokeController("rssFeedAll");
+        assertThat(rssModel, allOf(hasKey("posts")));
+        List<Post> posts = (List<Post>) rssModel.get("posts");
+        assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_IN_TEST));
+        
+        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-01"));
+        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-02"));
     }
     
     
-
+    @SuppressWarnings("unchecked")
+    @Test
+    public void rssFeedForPostsBySection1() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Map<String, Object> rssModel = invokeController("rssFeedForSection", "section1");
+        assertThat(rssModel, allOf(hasKey("posts")));
+        List<Post> posts = (List<Post>) rssModel.get("posts");
+        assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_1));
+        
+        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-01"));
+        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-02"));
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void rssFeedForPostsBySection3() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Map<String, Object> rssModel = invokeController("rssFeedForSection", "section3");
+        assertThat(rssModel, allOf(hasKey("posts")));
+        List<Post> posts = (List<Post>) rssModel.get("posts");
+        assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_2));
+        
+        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-13"));
+        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-14"));
+    }
+    
+    
     private void assertRecentPosts(List<Post> recentPosts) {
         assertThat("List of recentPosts should be", recentPosts, is(notNullValue()));
         assertThat("Size of recentPosts should be", recentPosts.size(), is(DEFAULT_NUMBER_OF_RECENT_POSTS));
