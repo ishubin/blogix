@@ -1,6 +1,7 @@
 package net.mindengine.blogix.db;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -132,6 +133,14 @@ public class FileDb<T1 extends Comparable<T1>> {
             }
         }
         return new EntryList<T>(entries);
+    }
+
+    public File findAttachmentAsFile(String fullAttachmentName) throws FileNotFoundException {
+        File file = new File(directory.getAbsolutePath() + File.separator + fullAttachmentName);
+        if (file.exists()) {
+            return file;
+        }
+        else throw new FileNotFoundException(fullAttachmentName);
     }
 
     

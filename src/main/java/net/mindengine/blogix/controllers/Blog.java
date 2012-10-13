@@ -1,6 +1,7 @@
 package net.mindengine.blogix.controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,16 +33,6 @@ public class Blog {
         return model;
     }
 
-    private static Map<String, Object> loadCommonPostData() {
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("recentPosts", loadRecentPosts());
-        return model;
-    }
-
-    private static List<Post> loadRecentPosts() {
-        return postsDb.findAll().sortDesc().first(5).asJavaList();
-    }
-
     public static  Map<String, Object> post(String postId) {
         Map<String, Object> model = loadCommonPostData();
         model.put("post", postsDb.findById(postId));
@@ -62,6 +53,14 @@ public class Blog {
         return model;
     }
     
+    public static File fileForPost(String postId, String fileName) throws FileNotFoundException {
+        String fullAttachmentName = postId + "." + fileName;
+        if (postsDb.findAttachments(postId + "." + fileName).asJavaList().contains(fullAttachmentName)) {
+            return postsDb.findAttachmentAsFile(fullAttachmentName);
+        }
+        throw new FileNotFoundException("There is no '" + fileName + "' attachment for blog ");
+    }
+    
     public static Map<String, Object> rssFeedAll() {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("posts", postsDb.findAll().asJavaList());
@@ -74,7 +73,15 @@ public class Blog {
         return model;
     }
 
-    
+    private static Map<String, Object> loadCommonPostData() {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("recentPosts", loadRecentPosts());
+        return model;
+    }
+
+    private static List<Post> loadRecentPosts() {
+        return postsDb.findAll().sortDesc().first(5).asJavaList();
+    }
 
     private static FileDb<Post> createPostsDb() {
         return createDb(Post.class, "posts");

@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -47,7 +48,7 @@ public class BlogControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void homePageShouldProvideFirstPagePosts() throws Exception {
-        Map<String, Object> homePageModel = invokeController("homeFirstPage");
+        Map<String, Object> homePageModel = invokeMapController("homeFirstPage");
         
         assertCommonModelDataForPosts(homePageModel);
         
@@ -64,7 +65,7 @@ public class BlogControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void homePageByNumberGivesPostsForThatNumber() throws Exception {
-        Map<String, Object> homePageModel = invokeController("homePage", 2);
+        Map<String, Object> homePageModel = invokeMapController("homePage", 2);
         
         assertCommonModelDataForPosts(homePageModel);
         
@@ -83,7 +84,7 @@ public class BlogControllerTest {
     @Test
     public void readsSingleBlogPostById() throws Exception {
         String postId = "2012-01-01-title-01";
-        Map<String, Object> postModel = invokeController("post", postId);
+        Map<String, Object> postModel = invokeMapController("post", postId);
         assertThat(postModel, hasKey("post"));
         assertCommonModelDataForPosts(postModel);
         
@@ -107,7 +108,7 @@ public class BlogControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void searchesForPostsBySection() throws Exception {
-        Map<String, Object> postsModel = invokeController("postsBySection", "section1");
+        Map<String, Object> postsModel = invokeMapController("postsBySection", "section1");
         assertThat(postsModel, hasKey("posts"));
         assertThat(postsModel, hasKey("section"));
         assertThat(postsModel, hasKey(CURRENT_PAGE));
@@ -137,7 +138,7 @@ public class BlogControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void searchesForPostsBySectionAndPage() throws Exception {
-        Map<String, Object> postsModel = invokeController("postsBySectionAndPage", "section1", 2);
+        Map<String, Object> postsModel = invokeMapController("postsBySectionAndPage", "section1", 2);
         
         assertThat(postsModel, hasKey("posts"));
         assertThat(postsModel, hasKey("section"));
@@ -161,8 +162,8 @@ public class BlogControllerTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void rssFeedForAllPosts() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Map<String, Object> rssModel = invokeController("rssFeedAll");
+    public void rssFeedForAllPosts() throws Exception {
+        Map<String, Object> rssModel = invokeMapController("rssFeedAll");
         assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_IN_TEST));
@@ -174,8 +175,8 @@ public class BlogControllerTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void rssFeedForPostsBySection1() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Map<String, Object> rssModel = invokeController("rssFeedForSection", "section1");
+    public void rssFeedForPostsBySection1() throws Exception {
+        Map<String, Object> rssModel = invokeMapController("rssFeedForSection", "section1");
         assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_1));
@@ -186,8 +187,8 @@ public class BlogControllerTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void rssFeedForPostsBySection3() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Map<String, Object> rssModel = invokeController("rssFeedForSection", "section3");
+    public void rssFeedForPostsBySection3() throws Exception {
+        Map<String, Object> rssModel = invokeMapController("rssFeedForSection", "section3");
         assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_2));
@@ -196,6 +197,14 @@ public class BlogControllerTest {
         assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-14"));
     }
     
+    
+    @Test
+    public void readAttachmentForPost() throws Exception {
+        File file = (File) invokeController("fileForPost", "2012-01-01-title-02", "file01.txt");
+        assertThat("Attachment should not be null", file, is(notNullValue()));
+        assertThat("Attachment should be named", file.getName(), is("2012-01-01-title-02.file01.txt"));
+        assertThat("Attachment should exist", file.exists(), is(true));
+    }
     
     private void assertRecentPosts(List<Post> recentPosts) {
         assertThat("List of recentPosts should be", recentPosts, is(notNullValue()));
@@ -249,14 +258,17 @@ public class BlogControllerTest {
      * @throws IllegalArgumentException 
      */
     @SuppressWarnings("unchecked")
-    private Map<String, Object> invokeController(String methodName, Object ... args) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        
+    private Map<String, Object> invokeMapController(String methodName, Object ... args) throws Exception{
+        return (Map<String, Object>) invokeController(methodName, args);
+    }
+
+    private Object invokeController(String methodName, Object... args) throws Exception {
         Class<?>[] parameterTypes = new Class<?>[args.length];
         for (int i=0; i<args.length; i++) {
             parameterTypes[i] = args[i].getClass();
         }
         Method method  = controllersClass.getMethod(methodName, parameterTypes);
-        return (Map<String, Object>) method.invoke(null, args);
+        return method.invoke(null, args);
     }
     
 }
