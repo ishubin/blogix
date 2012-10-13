@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.testng.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,7 +15,6 @@ import java.util.Map;
 import net.mindengine.blogix.model.Post;
 import net.mindengine.blogix.model.Section;
 
-import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
