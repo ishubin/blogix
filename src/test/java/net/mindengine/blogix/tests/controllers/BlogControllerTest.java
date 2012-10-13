@@ -1,7 +1,6 @@
 package net.mindengine.blogix.tests.controllers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -17,6 +16,7 @@ import java.util.Map;
 import net.mindengine.blogix.model.Post;
 import net.mindengine.blogix.model.Section;
 
+import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -53,9 +53,9 @@ public class BlogControllerTest {
         
         assertCommonModelDataForPosts(homePageModel);
         
-        assertThat(homePageModel, allOf(hasKey(HOME_POSTS),
-                                        hasKey(CURRENT_PAGE),
-                                        hasKey(ALL_POSTS_COUNT)));
+        assertThat(homePageModel,hasKey(HOME_POSTS));
+        assertThat(homePageModel,hasKey(CURRENT_PAGE));
+        assertThat(homePageModel,hasKey(ALL_POSTS_COUNT));
         
         assertHomeFirstPagePosts((List<Post>) homePageModel.get(HOME_POSTS));
         
@@ -70,9 +70,9 @@ public class BlogControllerTest {
         
         assertCommonModelDataForPosts(homePageModel);
         
-        assertThat(homePageModel, allOf(hasKey(HOME_POSTS),
-                                        hasKey(CURRENT_PAGE),
-                                        hasKey(ALL_POSTS_COUNT)));
+        assertThat(homePageModel,hasKey(HOME_POSTS));
+        assertThat(homePageModel,hasKey(CURRENT_PAGE));
+        assertThat(homePageModel,hasKey(ALL_POSTS_COUNT));
         
         List<Post> homePosts = (List<Post>) homePageModel.get(HOME_POSTS);
         assertHomeSecondPagePosts(homePosts);
@@ -110,10 +110,10 @@ public class BlogControllerTest {
     @Test
     public void searchesForPostsBySection() throws Exception {
         Map<String, Object> postsModel = invokeController("postsBySection", "section1");
-        assertThat(postsModel, allOf(hasKey("posts"),
-                hasKey("section"),
-                hasKey(CURRENT_PAGE),
-                hasKey(ALL_POSTS_COUNT)));
+        assertThat(postsModel, hasKey("posts"));
+        assertThat(postsModel, hasKey("section"));
+        assertThat(postsModel, hasKey(CURRENT_PAGE));
+        assertThat(postsModel, hasKey(ALL_POSTS_COUNT));
         
         assertCommonModelDataForPosts(postsModel);
         
@@ -141,10 +141,10 @@ public class BlogControllerTest {
     public void searchesForPostsBySectionAndPage() throws Exception {
         Map<String, Object> postsModel = invokeController("postsBySectionAndPage", "section1", 2);
         
-        assertThat(postsModel, allOf(hasKey("posts"),
-                hasKey("section"),
-                hasKey(CURRENT_PAGE),
-                hasKey(ALL_POSTS_COUNT)));
+        assertThat(postsModel, hasKey("posts"));
+        assertThat(postsModel, hasKey("section"));
+        assertThat(postsModel, hasKey(CURRENT_PAGE));
+        assertThat(postsModel, hasKey(ALL_POSTS_COUNT));
         
         assertCommonModelDataForPosts(postsModel);
         
@@ -165,7 +165,7 @@ public class BlogControllerTest {
     @Test
     public void rssFeedForAllPosts() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Map<String, Object> rssModel = invokeController("rssFeedAll");
-        assertThat(rssModel, allOf(hasKey("posts")));
+        assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_IN_TEST));
         
@@ -178,7 +178,7 @@ public class BlogControllerTest {
     @Test
     public void rssFeedForPostsBySection1() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Map<String, Object> rssModel = invokeController("rssFeedForSection", "section1");
-        assertThat(rssModel, allOf(hasKey("posts")));
+        assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_1));
         
@@ -190,7 +190,7 @@ public class BlogControllerTest {
     @Test
     public void rssFeedForPostsBySection3() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Map<String, Object> rssModel = invokeController("rssFeedForSection", "section3");
-        assertThat(rssModel, allOf(hasKey("posts")));
+        assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_2));
         
