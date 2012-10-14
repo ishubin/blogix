@@ -29,6 +29,16 @@ public class EntryList<T extends Comparable<T>> implements Iterable<T> {
     public Integer size() {
         return this.list.size();
     }
+    
+    public EntryList<T> filter(EntryFilter<T> filter) {
+        List<T> filteredList = createEmptyList();
+        for (T entry : this.list) {
+            if (filter.applies(entry)) {
+                filteredList.add(entry);
+            }
+        }
+        return new EntryList<T>(filteredList);
+    }
 
     /**
      * Sorts list 
@@ -51,7 +61,7 @@ public class EntryList<T extends Comparable<T>> implements Iterable<T> {
      * @return
      */
     public EntryList<T> first(int amount) {
-        List<T> newList = createList();
+        List<T> newList = createEmptyList();
         
         Iterator<T> it = iterator();
         while(it.hasNext() && (amount--)>0) {
@@ -60,21 +70,8 @@ public class EntryList<T extends Comparable<T>> implements Iterable<T> {
         return new EntryList<T>(newList);
     }
     
-    private List<T> copyList() {
-        List<T> newList = new ArrayList<T>(this.list);
-        return newList;
-    }
-
-    private List<T> createList() {
-        return createList(0);
-    }
-
-    private List<T> createList(int numberOfItems) {
-        return new ArrayList<T>(numberOfItems);
-    }
-
     public EntryList<T> page(int page, int itemsOnPage) {
-        List<T> newList = createList();
+        List<T> newList = createEmptyList();
         
         int indexStart = (page - 1) * itemsOnPage;
         int limit = Math.min(indexStart + itemsOnPage, size());
@@ -82,5 +79,33 @@ public class EntryList<T extends Comparable<T>> implements Iterable<T> {
             newList.add(this.list.get(i));
         }
         return new EntryList<T>(newList);
+    }
+
+    /**
+     * Returns count of pages for all found items
+     * @param itemsPerPage Amount of items to display in one page
+     * @return
+     */
+    public int pages(int itemsPerPage) {
+        int size = size();
+        if (size > 0) {
+            return (int)Math.floor(((double)size - 1.0)/10.0) + 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    
+    private List<T> copyList() {
+        List<T> newList = new ArrayList<T>(this.list);
+        return newList;
+    }
+
+    private List<T> createEmptyList() {
+        return createList(0);
+    }
+
+    private List<T> createList(int numberOfItems) {
+        return new ArrayList<T>(numberOfItems);
     }
 }
