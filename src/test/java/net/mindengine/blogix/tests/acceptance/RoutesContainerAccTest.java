@@ -49,7 +49,7 @@ public class RoutesContainerAccTest {
     public void shouldLoadFromSpecifiedFile() throws URISyntaxException, IOException {
         container.load(new File(getClass().getResource("/routes-test.cfg").toURI()), DEFAULT_CONTROLLER_PACKAGES, DEFAULT_PROVIDER_PACKAGES);
         assertThat("Routes list should be not null", container.getRoutes(), is(notNullValue()));
-        assertThat("Routes list should contain 4 routes", container.getRoutes().size(), is(5));
+        assertThat("Routes list should contain 4 routes", container.getRoutes().size(), is(6));
     }
     
     @Test(dependsOnMethods = BASE_TEST)
@@ -78,6 +78,12 @@ public class RoutesContainerAccTest {
     public void shouldParseSimpleRouteWithoutController() {
         assertThat( controllerInRoute(4), is (nullValue()));
         assertThat( viewNameInRoute(4), is ("some-simple-view"));
+    }
+    
+    @Test(dependsOnMethods = BASE_TEST)
+    public void shouldParseRouteWithoutView() {
+        assertThat( urlInRoute(5).getUrlPattern(), is ("/viewless"));
+        assertThat( viewNameInRoute(5), is (nullValue()));
     }
     
     @Test(dependsOnMethods = BASE_TEST)
@@ -204,14 +210,14 @@ public class RoutesContainerAccTest {
     }
     
     @Test(  expectedExceptions=RouteParserException.class,
-            expectedExceptionsMessageRegExp="View is not defined for route: /url")
+            expectedExceptionsMessageRegExp="View is not defined for route: /url\nNo view is only allowed for controllers with return type File")
     public void shouldGiveErrorIfControllerAndViewAreNotDefined() throws IOException, URISyntaxException {
         new RoutesContainer(Blogix.defaultClassLoaders()).load(new File(getClass().getResource("/routes-no-controller-error.cfg").toURI()), DEFAULT_CONTROLLER_PACKAGES, DEFAULT_PROVIDER_PACKAGES);
     }
     
     @Test(expectedExceptions=RouteParserException.class,
-            expectedExceptionsMessageRegExp="View is not defined for route: /url")
-    public void shouldGiveErrorIfViewIsNotDefined() throws IOException, URISyntaxException {
+            expectedExceptionsMessageRegExp="View is not defined for route: /url\nNo view is only allowed for controllers with return type File")
+    public void shouldGiveErrorIfViewIsNotDefinedAndControllerDoesNotReturnFileType() throws IOException, URISyntaxException {
         new RoutesContainer(Blogix.defaultClassLoaders()).load(new File(getClass().getResource("/routes-no-view-error.cfg").toURI()), DEFAULT_CONTROLLER_PACKAGES, DEFAULT_PROVIDER_PACKAGES);
     }
     

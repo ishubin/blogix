@@ -1,5 +1,7 @@
 package controllers;
 
+import java.io.File;
+
 import models.Article;
 
 public class Main {
@@ -16,4 +18,7 @@ public class Main {
         return new Article(id, date, "Title for " + id, "Article description for " + id);
     }
     
+    public static File file() {
+        return new File(".");
+    }
 }

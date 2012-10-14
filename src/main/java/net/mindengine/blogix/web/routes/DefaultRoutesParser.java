@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import net.mindengine.blogix.utils.BlogixUtils;
 
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class DefaultRoutesParser implements RoutesParser {
     
+    private static final Pattern PATTERN_SKIP = Pattern.compile("[\\-]+");
 
     private static final char COMMENT = '#';
     private static final char SPACE = ' ';
@@ -67,8 +69,9 @@ public class DefaultRoutesParser implements RoutesParser {
                 }
             }
             
-            if ( route.getView() == null || route.getView().isEmpty() ) {
-                throw new RouteParserException("View is not defined for route: " + prettyPrintUrl(route));
+            
+            if ( route.getView() == null  && !viewLessRouteHasControllerReturningFileType(route)) {
+                throw new RouteParserException("View is not defined for route: " + prettyPrintUrl(route) +"\nNo view is only allowed for controllers with return type File");
             }
             
             if ( route.getUrl().getParameters().size() > 0 ) {
@@ -92,6 +95,12 @@ public class DefaultRoutesParser implements RoutesParser {
         return route;
     }
 
+
+    private boolean viewLessRouteHasControllerReturningFileType(Route route) {
+        return route.getController() != null 
+                && route.getController().getControllerMethod() != null
+                && route.getController().getControllerMethod().getReturnType().equals(File.class);
+    }
 
     private static String prettyPrintUrl(Route route) {
         return route.getUrl().getOriginalUrl();
@@ -404,10 +413,13 @@ public class DefaultRoutesParser implements RoutesParser {
 
         private void done() {
             String view = getParsedString();
-            if ( view.isEmpty() ) {
-                throw new RouteParserException("View is not defined for route: " + prettyPrintUrl(route));
+            
+            if (!view.isEmpty() && !shouldBeSkipped(view)) {
+                route.setView(view);
             }
-            route.setView(view);
+            else {
+                route.setView(null);
+            }
         }
         
         @Override
@@ -416,6 +428,9 @@ public class DefaultRoutesParser implements RoutesParser {
         }
     }
 
+    private static boolean shouldBeSkipped(String text) {
+        return PATTERN_SKIP.matcher(text).matches();
+    }
     
     private class ParsingProvider extends ParsingSimpleString<ParsingProvider> {
         public ParsingProvider(Route route) {

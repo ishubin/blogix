@@ -16,4 +16,5 @@
 
 /file/customFile.txt    -                           MyView.customFileView    
 
-/file/customImage.jpg   -                           MyView.customImage    
+/file/customImage.jpg   -                           MyView.customImage
+    
