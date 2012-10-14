@@ -12,7 +12,7 @@ import net.mindengine.blogix.db.FileDb;
 import net.mindengine.blogix.model.Post;
 import net.mindengine.blogix.model.Section;
 
-public class Blog {
+public class Blogix {
     private static final int DEFAULT_POSTS_PER_PAGE = 10;
     private static final String CURRENT_PAGE = "currentPage";
     private static final String HOME_POSTS = "homePosts";

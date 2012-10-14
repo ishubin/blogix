@@ -19,7 +19,7 @@ import net.mindengine.blogix.model.Section;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class BlogControllerTest {
+public class BlogixControllerTest {
     
     private static final int NUMBER_OF_ALL_POSTS_FOR_SECTION_1 = 12;
     private static final int NUMBER_OF_ALL_POSTS_FOR_SECTION_2 = 2;
@@ -42,7 +42,7 @@ public class BlogControllerTest {
          * This is important since the Blog controller relies on a system property. And if this property is not set - blog will have an error in initialization.
          */
         System.setProperty("blogix.filedb.path", getClass().getResource("/controller-test-data").getFile());
-        controllersClass = Class.forName("net.mindengine.blogix.controllers.Blog");
+        controllersClass = Class.forName("net.mindengine.blogix.controllers.Blogix");
     }
 
     @SuppressWarnings("unchecked")
