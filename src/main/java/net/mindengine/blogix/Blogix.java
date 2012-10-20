@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,8 @@ import java.util.Properties;
 import javax.servlet.ServletOutputStream;
 
 import net.mindengine.blogix.compiler.BlogixClassLoader;
+import net.mindengine.blogix.markup.DummyMarkup;
+import net.mindengine.blogix.markup.Markup;
 import net.mindengine.blogix.utils.BlogixFileUtils;
 import net.mindengine.blogix.web.DefaultViewResolver;
 import net.mindengine.blogix.web.RouteInvoker;
@@ -22,6 +25,7 @@ import net.mindengine.blogix.web.routes.RoutesContainer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ClassUtils;
 
 public class Blogix {
     private static final String DEFAULT_PUBLIC_PATH = "public";
@@ -39,6 +43,7 @@ public class Blogix {
     private ViewResolver viewResolver = new DefaultViewResolver(defaultClassLoaders());
     private RoutesContainer routesContainer = new RoutesContainer(defaultClassLoaders());
     private RouteInvoker routeInvoker = new RouteInvoker();
+    private Markup markup;
     
     public Blogix() throws IOException, URISyntaxException {
         getProperties().load(FileUtils.openInputStream(BlogixFileUtils.findFile("conf/properties")));
@@ -176,5 +181,40 @@ public class Blogix {
         return modelMap;
     }
 
+
+    public Markup getMarkup() throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        if (markup == null) {
+            markup = createMarkupFromProperties();
+        }
+        return markup;
+    }
+
+    private Markup createMarkupFromProperties() throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        String markupClassPath = (String) getProperties().get("markup.class");
+        
+        if (noMarkupDefined(markupClassPath)) {
+            return new DummyMarkup();
+        }
+        else {
+            return createMarkupFromClassPath(markupClassPath);
+        }
+    }
+
+    private Markup createMarkupFromClassPath(String markupClassPath) throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        Class<?> configuredMarkupClass = Class.forName(markupClassPath);
+        
+        if (!implementsInterface(configuredMarkupClass, Markup.class)) {
+            throw new RuntimeException("Class " + configuredMarkupClass.getName() + " does not implement " + Markup.class.getName());
+        }
+        return (Markup) configuredMarkupClass.getConstructor().newInstance();
+    }
+
+    private boolean noMarkupDefined(String markupClassPath) {
+        return markupClassPath == null || markupClassPath.trim().isEmpty();
+    }
+
+    private boolean implementsInterface(Class<?> clazz, Class<Markup> interfaceClass) {
+        return ClassUtils.getAllInterfaces(clazz).contains(interfaceClass);
+    }
 
 }

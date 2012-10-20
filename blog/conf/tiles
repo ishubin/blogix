@@ -1,0 +1,12 @@
+
+main: main.ftl.html
+    header:         header.ftl.html        
+    body:   
+    footer:         footer.ftl.html
+    navigation:     navigation.ftl.html
+
+
+browse: @main
+    content:        browse.ftl.html
+
+

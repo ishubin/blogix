@@ -7,4 +7,4 @@ mvn clean
 mvn assembly:assembly
 cp target/blogix-jar-with-dependencies.jar bin/blogix.jar
 cp scripts/* bin/.
-
+cp -r blog  bin/blog

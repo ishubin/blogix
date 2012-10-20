@@ -1,0 +1,15 @@
+# Url                       Controller                                  View                        Provider
+#######################################################################################################################
+
+/                           Blogix.homeFirstPage                          browse                      -   
+/page-{page}                Blogix.homePage(page)                         browse                      BlogixProvider.allHomePages
+
+/post/{postId}              Blogix.post(postId)                           post                        BlogixProvider.allPosts   
+/post/{postId}/{fileName}   Blogix.fileForPost(postId, fileName)          -                           BlogixProvider.allFilesForPosts  
+
+/s/{section}                Blogix.postsBySection(section)                browse                      BlogixProvider.allSections
+/s/{section}/page-{page}    Blogix.postsBySectionAndPage(section, page)   browse                      BlogixProvider.allSectionsAndPages
+
+
+/atom.xml                   Blogix.rssFeedAll                             rss                         -
+/s/{section}/atom.xml       Blogix.rssFeedForSection(section)             rss                         BlogixProvider.allSections    
