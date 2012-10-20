@@ -60,6 +60,7 @@ public class MarkupAccTest {
                 {"Should escape html", "<script>alert(1);</script> &", "<p>&lt;script&gt;alert(1);&lt;/script&gt; &amp;</p>"},
                 {"Should allow html blocks", "<nohtml>\n@@\n<script>alert(1);</script>\n@@", "<p>&lt;nohtml&gt;</p><script>alert(1);</script>\n"},
                 {"Code blocks", "<nohtml>\n$$ c++\n<script>\n\nalert(1);</script>\n$$", "<p>&lt;nohtml&gt;</p><code class=\"block\" data-language=\"c++\">&lt;script&gt;\n\nalert(1);&lt;/script&gt;\n</code>"},
+                {"Code block without language", "<nohtml>\n$$\n<script>\n\nalert(1);</script>\n$$", "<p>&lt;nohtml&gt;</p><code class=\"block\">&lt;script&gt;\n\nalert(1);&lt;/script&gt;\n</code>"},
         };
         //TODO finish samples
     }
