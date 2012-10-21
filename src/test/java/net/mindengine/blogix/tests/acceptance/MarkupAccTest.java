@@ -33,7 +33,7 @@ public class MarkupAccTest {
     }
     
     @Test(dataProvider = "provideTextileMarkupData")
-    public void shouldProcess_TextileMarkup(String description, String textileText, String expectedHtml) {
+    public void textileMarkup_shouldProcess_Textile_and_customBlocks(String description, String textileText, String expectedHtml) {
         TextileMarkup markup = new TextileMarkup();
         String processedText = markup.apply(textileText);
         assertThat(String.format("\"%s\" processed text should be", description), processedText, is(expectedHtml));
