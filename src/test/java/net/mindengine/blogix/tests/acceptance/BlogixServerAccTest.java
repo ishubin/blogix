@@ -97,6 +97,7 @@ public class BlogixServerAccTest {
         }
     }
     
+    
     private void assertResponseStream(HttpEntity httpEntity, File sampleFile) throws Exception {
         StringBuffer responseBuffer = new StringBuffer();
         if (!isEqual(responseBuffer, httpEntity.getContent(), new FileInputStream(sampleFile))) {
