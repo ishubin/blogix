@@ -14,6 +14,7 @@ import net.mindengine.blogix.model.Section;
 import net.mindengine.blogix.utils.BlogixFileUtils;
 
 public class Blogix {
+    private static final String TITLE = "title";
     private static final int DEFAULT_POSTS_PER_PAGE = 10;
     private static final String CURRENT_PAGE = "currentPage";
     private static final String HOME_POSTS = "homePosts";
@@ -21,10 +22,40 @@ public class Blogix {
     private static FileDb<Post> postsDb = createPostsDb(); 
     private static FileDb<Section> sectionsDb = createSectionDb();
     
+    private static String titleBase = loadBaseTitle();
+    
     public static Map<String, Object> homeFirstPage() {
         Map<String, Object> model = loadCommonPostData();
         loadHomePage(model, 1);
         return model;
+    }
+    
+    private static String title(String secondaryTitle) {
+        StringBuffer buffer = new StringBuffer(secondaryTitle);
+        if (titleBase != null) {
+            buffer.append(" | ");
+            buffer.append(titleBase);
+        }
+        return buffer.toString();
+    }
+
+    private static String homeTitle() {
+        return titleFromConfig("blogix.title.home");
+    }
+
+    private static String loadBaseTitle() {
+        return titleFromConfig("blogix.title.base");
+    }
+
+    private static String titleFromConfig(String propertyName) {
+        String title = BlogixConfig.getConfig().getProperty(propertyName, null);
+        if (title != null) {
+            title = title.trim();
+            if (title != null) {
+                return title;
+            }
+        }
+        return null;
     }
 
     public static  Map<String, Object> homePage(Integer page) {
@@ -35,8 +66,13 @@ public class Blogix {
 
     public static  Map<String, Object> post(String postId) {
         Map<String, Object> model = loadCommonPostData();
-        model.put("post", postsDb.findById(postId));
-        return model;
+        Post post = postsDb.findById(postId);
+        if (post != null) {
+            model.put("post", post);
+            model.put(TITLE, title(post.getTitle()));
+            return model;
+        }
+        else throw new RuntimeException("Cannot find post: " + postId);
     }
 
     public static  Map<String, Object> postsBySection(String sectionId) {
@@ -49,7 +85,10 @@ public class Blogix {
         model.put("allPostsCount", allPosts.size());
         model.put("posts", allPosts.page(page, DEFAULT_POSTS_PER_PAGE).asJavaList());
         model.put("currentPage", page);
-        model.put("section", sectionsDb.findById(sectionId));
+        Section section = sectionsDb.findById(sectionId);
+        model.put("section", section);
+        
+        model.put(TITLE, title(section.getName()));
         return model;
     }
     
@@ -106,6 +145,7 @@ public class Blogix {
         List<Post> homePosts = allPosts.sortDesc().page(page, DEFAULT_POSTS_PER_PAGE).asJavaList();
         model.put(HOME_POSTS, homePosts);
         model.put(CURRENT_PAGE, 1);
+        model.put(TITLE, title(homeTitle()));
     }
 
 }

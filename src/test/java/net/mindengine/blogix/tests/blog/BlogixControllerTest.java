@@ -19,6 +19,8 @@ import org.testng.annotations.Test;
 
 public class BlogixControllerTest {
     
+    private static final String TITLE_BASE = " | Blogix Blog";
+    private static final String TITLE = "title";
     private static final int NUMBER_OF_ALL_POSTS_FOR_SECTION_1 = 12;
     private static final int NUMBER_OF_ALL_POSTS_FOR_SECTION_2 = 2;
     private static final int NUMBER_OF_SECOND_PAGE_POSTS_IN_TEST = 4;
@@ -46,6 +48,8 @@ public class BlogixControllerTest {
         
         assertThat((Integer) homePageModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_IN_TEST));
         assertThat((Integer) homePageModel.get(CURRENT_PAGE), is(1));
+        
+        assertThat((String) homePageModel.get(TITLE), is("Home" + TITLE_BASE));
     }
 
     @SuppressWarnings("unchecked")
@@ -64,6 +68,8 @@ public class BlogixControllerTest {
         
         assertThat("'" + ALL_POSTS_COUNT + "' field in homePageModel should be", (Integer) homePageModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_IN_TEST));
         assertThat("'" + CURRENT_PAGE + "' field in homePageModel should be", (Integer) homePageModel.get(CURRENT_PAGE), is(1));
+        
+        assertThat((String) homePageModel.get(TITLE), is("Home" + TITLE_BASE));
     }
     
     
@@ -89,6 +95,8 @@ public class BlogixControllerTest {
         
         //Verifying that post can access additional custom fields
         assertThat("customField is incorrect for post '" + postId + "'", post.field("customField"), is("customValue"));
+        
+        assertThat((String) postModel.get(TITLE), is("Title 1" + TITLE_BASE));
     }
     
     @SuppressWarnings("unchecked")
@@ -119,6 +127,8 @@ public class BlogixControllerTest {
         
         assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(12));
         assertThat((Integer)postsModel.get(CURRENT_PAGE), is(1));
+        
+        assertThat((String) postsModel.get(TITLE), is("Section 1" + TITLE_BASE));
     }
     
     @SuppressWarnings("unchecked")
@@ -143,6 +153,8 @@ public class BlogixControllerTest {
         assertThat(posts.get(1).getId(), is("2012-01-01-title-12"));
         assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_1));
         assertThat((Integer)postsModel.get(CURRENT_PAGE), is(2));
+        
+        assertThat((String) postsModel.get(TITLE), is("Section 1" + TITLE_BASE));
     }
     
     
@@ -228,6 +240,7 @@ public class BlogixControllerTest {
     @SuppressWarnings("unchecked")
     private void assertCommonModelDataForPosts(Map<String, Object> model) {
         assertThat(model, hasKey(RECENT_POSTS));
+        assertThat(model, hasKey(TITLE));
         List<Post> recentPosts = (List<Post>) model.get(RECENT_POSTS);
         assertRecentPosts(recentPosts);
     }

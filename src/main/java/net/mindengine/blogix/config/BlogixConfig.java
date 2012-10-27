@@ -66,4 +66,8 @@ public class BlogixConfig {
     public void setProperty(String name, String value) {
         properties.setProperty(MARKUP_CLASS, value);
     }
+
+    public String getProperty(String name, String defaultValue) {
+        return properties.getProperty(name, defaultValue);
+    }
 }
