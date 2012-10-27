@@ -5,4 +5,4 @@ default.provider.packages = providers,net.mindengine.blogix.blog.providers
 public.path = public
 
 
-blogix.filedb.path = db
+blogix.db.path = db
