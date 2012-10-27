@@ -5,3 +5,6 @@ default.provider.packages = providers,net.mindengine.blogix.blog.providers
 public.path = sample-files/public
 
 markup.class = net.mindengine.blogix.markup.TextileMarkup
+
+
+blogix.db.path = controller-test-data

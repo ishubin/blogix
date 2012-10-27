@@ -9,11 +9,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.ServletOutputStream;
 
 import net.mindengine.blogix.compiler.BlogixClassLoader;
+import net.mindengine.blogix.config.BlogixConfig;
 import net.mindengine.blogix.markup.DummyMarkup;
 import net.mindengine.blogix.markup.Markup;
 import net.mindengine.blogix.utils.BlogixFileUtils;
@@ -23,22 +23,17 @@ import net.mindengine.blogix.web.ViewResolver;
 import net.mindengine.blogix.web.routes.Route;
 import net.mindengine.blogix.web.routes.RoutesContainer;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ClassUtils;
 
 public class Blogix {
-    private static final String DEFAULT_PUBLIC_PATH = "public";
-    private static final String PUBLIC_PATH = "public.path";
     private static final String PUBLIC = "/public/";
     private static final ClassLoader[] CLASS_LOADERS = new ClassLoader[]{Blogix.class.getClassLoader(), new BlogixClassLoader("src")};
     private static final HashMap<String, String> EMPTY_CONTROLLER_ARGS = new HashMap<String, String>();
-    private static final String DEFAULT_CONTROLLER_PACKAGES = "default.controller.packages";
-    private static final String DEFAULT_PROVIDER_PACKAGES = "default.provider.packages";
     public static final String VIEW_MAIN_PATH = "view/";
 
     
-    private Properties properties = new Properties();
+    private BlogixConfig config = BlogixConfig.getConfig();
     
     private ViewResolver viewResolver = new DefaultViewResolver(defaultClassLoaders());
     private RoutesContainer routesContainer = new RoutesContainer(defaultClassLoaders());
@@ -46,10 +41,8 @@ public class Blogix {
     private Markup markup;
     
     public Blogix() throws IOException, URISyntaxException {
-        getProperties().load(FileUtils.openInputStream(BlogixFileUtils.findFile("conf/properties")));
-        
         try {
-            routesContainer.load( BlogixFileUtils.findFile( "conf/routes" ), getDefaultControllerPackages(), getDefaultProviderPackages()  );
+            routesContainer.load( BlogixFileUtils.findFile( "conf/routes" ), config.getDefaultControllerPackages(), config.getDefaultProviderPackages()  );
         }
         catch (Exception e) {
             throw new RuntimeException("Could not load properties", e);
@@ -58,32 +51,6 @@ public class Blogix {
     
     public static ClassLoader[] defaultClassLoaders() {
         return CLASS_LOADERS;
-    }
-
-    private String[] getDefaultProviderPackages() {
-        String value = (String) properties.get(DEFAULT_PROVIDER_PACKAGES);
-        if ( value != null && !value.isEmpty() ) {
-            return value.trim().split(",");
-        }
-        return new String[]{};
-    }
-
-
-    private String[] getDefaultControllerPackages() {
-        String value = (String) properties.get(DEFAULT_CONTROLLER_PACKAGES);
-        if ( value != null && !value.isEmpty() ) {
-            return value.trim().split(",");
-        }
-        return new String[]{};
-    }
-
-
-    public Properties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
     }
 
     public RoutesContainer getRoutesContainer() {
@@ -119,7 +86,7 @@ public class Blogix {
     }
 
     private File findPublicResource(String uri) throws FileNotFoundException {
-        String publicDirPath = properties.getProperty(PUBLIC_PATH, DEFAULT_PUBLIC_PATH);
+        String publicDirPath = config.getPublicPath();
         String fullPath = publicDirPath + File.separator + uri;
         return BlogixFileUtils.findFile(fullPath);
     }
@@ -190,7 +157,7 @@ public class Blogix {
     }
 
     private Markup createMarkupFromProperties() throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        String markupClassPath = (String) getProperties().get("markup.class");
+        String markupClassPath = config.getMarkupClass();
         
         if (noMarkupDefined(markupClassPath)) {
             return new DummyMarkup();

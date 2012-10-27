@@ -38,7 +38,7 @@ public class BlogixServlet extends HttpServlet {
     private void loadSupportedMimeTypes() {
         supportedMimeTypes = new HashMap<String, String>();
         try {
-            File file = BlogixFileUtils.findFile("supported-mime-types.cfg");
+            File file = BlogixFileUtils.findFile("conf/supported-mime-types.cfg");
             Properties props = new Properties();
             props.load(new FileReader(file));
             

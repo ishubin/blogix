@@ -6,17 +6,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.mindengine.blogix.blog.controllers.Blogix;
 import net.mindengine.blogix.model.Post;
 import net.mindengine.blogix.model.Section;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class BlogixControllerTest {
@@ -33,22 +31,10 @@ public class BlogixControllerTest {
     private static final String CURRENT_PAGE = "currentPage";
     
     
-    private static Class<?> controllersClass;
-    
-    @BeforeClass
-    public void setup() throws ClassNotFoundException {
-        /*
-         * Loading the class after the property for filedb is set.
-         * This is important since the Blog controller relies on a system property. And if this property is not set - blog will have an error in initialization.
-         */
-        System.setProperty("blogix.filedb.path", getClass().getResource("/controller-test-data").getFile());
-        controllersClass = Class.forName("net.mindengine.blogix.blog.controllers.Blogix");
-    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void homePageShouldProvideFirstPagePosts() throws Exception {
-        Map<String, Object> homePageModel = invokeMapController("homeFirstPage");
+        Map<String, Object> homePageModel = Blogix.homeFirstPage();
         
         assertCommonModelDataForPosts(homePageModel);
         
@@ -65,7 +51,7 @@ public class BlogixControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void homePageByNumberGivesPostsForThatNumber() throws Exception {
-        Map<String, Object> homePageModel = invokeMapController("homePage", 2);
+        Map<String, Object> homePageModel = Blogix.homePage(2);
         
         assertCommonModelDataForPosts(homePageModel);
         
@@ -84,7 +70,7 @@ public class BlogixControllerTest {
     @Test
     public void readsSingleBlogPostById() throws Exception {
         String postId = "2012-01-01-title-01";
-        Map<String, Object> postModel = invokeMapController("post", postId);
+        Map<String, Object> postModel = Blogix.post(postId);
         assertThat(postModel, hasKey("post"));
         assertCommonModelDataForPosts(postModel);
         
@@ -108,7 +94,7 @@ public class BlogixControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void searchesForPostsBySection() throws Exception {
-        Map<String, Object> postsModel = invokeMapController("postsBySection", "section1");
+        Map<String, Object> postsModel = Blogix.postsBySection("section1");
         assertThat(postsModel, hasKey("posts"));
         assertThat(postsModel, hasKey("section"));
         assertThat(postsModel, hasKey(CURRENT_PAGE));
@@ -138,7 +124,7 @@ public class BlogixControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void searchesForPostsBySectionAndPage() throws Exception {
-        Map<String, Object> postsModel = invokeMapController("postsBySectionAndPage", "section1", 2);
+        Map<String, Object> postsModel = Blogix.postsBySectionAndPage("section1", 2);
         
         assertThat(postsModel, hasKey("posts"));
         assertThat(postsModel, hasKey("section"));
@@ -163,7 +149,7 @@ public class BlogixControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void rssFeedForAllPosts() throws Exception {
-        Map<String, Object> rssModel = invokeMapController("rssFeedAll");
+        Map<String, Object> rssModel = Blogix.rssFeedAll();
         assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_IN_TEST));
@@ -176,7 +162,7 @@ public class BlogixControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void rssFeedForPostsBySection1() throws Exception {
-        Map<String, Object> rssModel = invokeMapController("rssFeedForSection", "section1");
+        Map<String, Object> rssModel = Blogix.rssFeedForSection("section1");
         assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_1));
@@ -188,7 +174,7 @@ public class BlogixControllerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void rssFeedForPostsBySection3() throws Exception {
-        Map<String, Object> rssModel = invokeMapController("rssFeedForSection", "section3");
+        Map<String, Object> rssModel = Blogix.rssFeedForSection("section3");
         assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_2));
@@ -200,7 +186,7 @@ public class BlogixControllerTest {
     
     @Test
     public void readAttachmentForPost() throws Exception {
-        File file = (File) invokeController("fileForPost", "2012-01-01-title-02", "file01.txt");
+        File file = Blogix.fileForPost("2012-01-01-title-02", "file01.txt");
         assertThat("Attachment should not be null", file, is(notNullValue()));
         assertThat("Attachment should be named", file.getName(), is("2012-01-01-title-02.file01.txt"));
         assertThat("Attachment should exist", file.exists(), is(true));
@@ -245,30 +231,5 @@ public class BlogixControllerTest {
         List<Post> recentPosts = (List<Post>) model.get(RECENT_POSTS);
         assertRecentPosts(recentPosts);
     }
-    
-    /**
-     * This method is needed to do the invocation of controller methods without preloading the Blog controller class in a classLoader.
-     * In this case the Blog controller class is loaded in a @BeforeClass method in this test. 
-     * @param methodName
-     * @return
-     * @throws NoSuchMethodException 
-     * @throws SecurityException 
-     * @throws InvocationTargetException 
-     * @throws IllegalAccessException 
-     * @throws IllegalArgumentException 
-     */
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> invokeMapController(String methodName, Object ... args) throws Exception{
-        return (Map<String, Object>) invokeController(methodName, args);
-    }
-
-    private Object invokeController(String methodName, Object... args) throws Exception {
-        Class<?>[] parameterTypes = new Class<?>[args.length];
-        for (int i=0; i<args.length; i++) {
-            parameterTypes[i] = args[i].getClass();
-        }
-        Method method  = controllersClass.getMethod(methodName, parameterTypes);
-        return method.invoke(null, args);
-    }
-    
+        
 }

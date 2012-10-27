@@ -1,12 +1,14 @@
 #!/bin/bash
 
 blogixCommand="java -jar blogix.jar"
-args=""
 function run {
+    `$blogixCommand run`
 }
 function compile {
+    `$blogixCommand compile`
 }
 function export {
+    `$blogixCommand export`
 }
 function help {
     echo "Usage: blogix [ run | compile | export | help]"
@@ -36,7 +38,4 @@ case $1 in
         exit 0
         ;;
 esac
-
 help
-cmd="$blogixCommand $args"
-echo $cmd

@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import net.mindengine.blogix.Blogix;
+import net.mindengine.blogix.config.BlogixConfig;
 import net.mindengine.blogix.markup.DummyMarkup;
 import net.mindengine.blogix.markup.Markup;
 import net.mindengine.blogix.markup.TextileMarkup;
@@ -25,11 +26,13 @@ public class MarkupAccTest {
     @Test
     public void markupImpl_shouldBe_DummyMarkup_if_itIsNotConfigured_inProperties() throws Exception {
         Blogix blogix = new Blogix();
-        blogix.getProperties().remove("markup.class");
+        BlogixConfig.getConfig().removeProperty("markup.class");
         
         Markup markup = blogix.getMarkup();
         assertThat("Markup should be", markup, is(notNullValue()));
         assertThat("Markup should be TextileMarkup", markup, is(instanceOf(DummyMarkup.class)));
+        
+        BlogixConfig.getConfig().setProperty("markup.class", TextileMarkup.class.getName());
     }
     
     @Test(dataProvider = "provideTextileMarkupData")

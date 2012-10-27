@@ -6,18 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+import net.mindengine.blogix.config.BlogixConfig;
 import net.mindengine.blogix.db.EntryList;
 import net.mindengine.blogix.db.FileDb;
 import net.mindengine.blogix.model.Post;
 import net.mindengine.blogix.model.Section;
+import net.mindengine.blogix.utils.BlogixFileUtils;
 
 public class Blogix {
     private static final int DEFAULT_POSTS_PER_PAGE = 10;
     private static final String CURRENT_PAGE = "currentPage";
     private static final String HOME_POSTS = "homePosts";
     private static final String ALL_POSTS_COUNT = "allPostsCount";
-    private static final String BLOGIX_FILEDB_PATH = "blogix.filedb.path";
     private static FileDb<Post> postsDb = createPostsDb(); 
     private static FileDb<Section> sectionsDb = createSectionDb();
     
@@ -92,11 +92,11 @@ public class Blogix {
     }
 
     private static <T extends Comparable<T>> FileDb<T> createDb(Class<T> objectClass, String directoryName) {
-        String filePath = getProperty(BLOGIX_FILEDB_PATH);
+        String filePath = BlogixConfig.getConfig().getBlogixFileDbPath();
         if (filePath == null) {
-            throw new IllegalArgumentException(BLOGIX_FILEDB_PATH + " property is not specified correctly");
+            throw new IllegalArgumentException("Blogix database is not specified correctly");
         }
-        return new FileDb<T>(objectClass, new File(filePath + File.separator + directoryName));
+        return new FileDb<T>(objectClass, BlogixFileUtils.findFile(filePath + File.separator + directoryName));    
     }
 
     private static void loadHomePage(Map<String, Object> model, int page) {
@@ -108,7 +108,4 @@ public class Blogix {
         model.put(CURRENT_PAGE, 1);
     }
 
-    private static String getProperty(String propertyName) {
-        return System.getProperty(propertyName);
-    }
 }

@@ -11,7 +11,7 @@ public class BlogixFileUtils {
      * @return
      * @throws FileNotFoundException 
      */
-    public static File findFile(String path) throws FileNotFoundException {
+    public static File findFile(String path) {
         try {
             File file = new File(path);
             if ( !file.exists() ) {
@@ -20,7 +20,7 @@ public class BlogixFileUtils {
             return file;
         }
         catch (Exception e) {
-            throw new FileNotFoundException(path);
+            throw new RuntimeException("Cannot find file: " + path);
         }
     }
 
