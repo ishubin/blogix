@@ -1,9 +1,53 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<!DOCTYPE html>
 <html>
     <head>
-        <title>Blogix asd </title>
+        <#if !title??>
+            <#assign title="Blogix">
+        </#if>
+        <title>${title}</title>
+        <link rel="stylesheet" href="/public/main.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/public/style.css" media="screen" type="text/css">
     </head>
     <body>
-        <h1>Blogix</h1>
+        <div id="wrapper">
+
+            <div id="header">
+                <h1>Blogix</h1>
+                <h2>Web framework for hackers</h2>
+            </div><!-- #header-->
+            <div id="navigation">
+                <ul id="nav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/categories">Categories</a>
+                    <li><a href="/archive">Archive</a>
+                    <li><a href="/about">About</a>
+                    <li><a href="/rss">RSS</a>
+                </ul>
+                <div id="search-panel">
+                    <input name="q" value=""/>
+                    <a href="/">Search</a>
+                </div>
+            </div>
+
+            <div id="middle">
+                <div id="container">
+                    <div id="content">
+                        ${tiles.process('content')}
+                    </div><!-- #content-->
+                </div><!-- #container-->
+
+                <div class="sidebar" id="sideRight">
+                    <strong>Right Sidebar:</strong> Integer velit. Vestibulum nisi nunc, accumsan ut, vehicula sit amet, porta a, mi. Nam nisl tellus, placerat eget, posuere eget, egestas eget, dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In elementum urna a eros. Integer iaculis. Maecenas vel elit.
+                </div><!-- .sidebar#sideRight -->
+
+            </div><!-- #middle-->
+
+            <div id="footer">
+                <div id="footer-sign">
+                    2012, Powdered by <a href="http://blogix.info">Blogix</a>
+                </div> 
+            </div><!-- #footer -->
+
+        </div><!-- #wrapper -->
     </body>
 </html>

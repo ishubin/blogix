@@ -1,0 +1,205 @@
+body {
+    background: url(/public/back-dark.png);
+    font-size:1.1em;
+}
+
+#header {
+    height: 120px;
+    background: #4D6978;
+    background:url(/public/header-back.png);
+    padding-left: 1.5em;
+}
+#header h1, #header h2 {
+    color:white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+#header h1 {
+    font-size: 3.0em;
+    text-transform: uppercase;
+    padding-top:0.3em;
+    margin-bottom: 0;
+}
+#header h2 {
+}
+#navigation {
+    background: #235E7D;
+    background: url(/public/menu-back.png);
+    border-top:1px solid #49819E;
+    box-shadow:0px -1px 3px rgba(0, 0, 0, 0.5);
+}
+#middle {
+    background: #EBEEF0;
+    background: url(/public/body-back.png);
+}
+#content {
+    padding-left:1.5em;
+    padding-top:1.0em;
+}
+#sideRight {
+    border-left:1px solid #ddd;
+}
+#footer {
+    position:relative;
+    padding:1.0em;
+    height:30px;
+    color:#ADB7BA;
+    text-shadow:1px 1px 0px #404242; 
+    background: #62696B;
+    border-top: 1px solid #5C6263;
+    background: -webkit-linear-gradient(#788082,#495052);
+    background: -moz-linear-gradient(#788082,#495052);
+    background: -o-linear-gradient(#788082,#495052);
+    background: linear-gradient(#788082,#495052);
+    border-radius: 0px 0px 10px 10px;
+}
+#footer a {
+    color: white;
+    text-shadow:1px 1px 0px #000;
+    text-decoration: none;
+}
+#footer a:hover {
+    text-decoration: underline;
+}
+#footer-sign {
+    position:absolute;
+    right:1.0em;
+    bottom:1.0em;
+}
+
+
+#nav li {
+    margin:0;
+    border-right: 1px solid #1B475E;
+}
+#nav li a {
+    height:30px;
+    text-decoration: none;
+    padding-top:0.4em;
+    padding-left:1.0em;
+    padding-right:1.0em;
+    margin-left:0;
+    margin-right:0;
+    font-weight: bold;
+    font-size:1.1em;
+    color: #fff;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.9);
+}
+#nav li a:hover {
+    background:#183F54;
+    background:rgba(0, 0, 0, 0.1);
+    box-shadow:inset 0px 0px 20px rgba(0, 0, 0, 0.5);
+    text-shadow: 0px 0px 5px #000; 
+}
+
+#search-panel input {
+    border:1px solid #19455C;
+    background: #fff;
+    background: url(/public/textfield-back.png);
+    color: #666;
+    font-weight:normal;
+    border-radius:10px;
+    box-shadow:inset 1px 1px 5px rgba(0, 0, 0, 0.6);
+    outline: none;
+    padding-left:10px;
+}
+
+#search-panel a {
+    background:#1E688F;
+    font-weight: bold;
+    border:1px solid #19455C;
+    border-radius:10px;
+    box-shadow:inset 1px 1px 0px #3392C4;
+}
+
+#search-panel a:hover {
+    background:#2585B8;
+    box-shadow:inset 1px 1px 0px #6BC0ED;
+}
+
+/* Headings
+-------------------------*/
+h1 {
+    color:#111;
+    font-weight:bold;
+    font-size:2.0em;
+    margin-bottom:0.4em;
+    text-shadow:1px 1px 0px #fff;
+}
+/* Links
+----------------------------------------*/
+a, a:active, a:visited {
+    color:#1F719C;
+    font-weight:normal;
+    text-decoration:none;
+    text-shadow:1px 1px 0px  white;
+}
+a:hover, .article a.title:hover  {
+    color:#2890C7;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* Buttons
+----------------------------------------*/
+a.button {
+    display:inline-block;
+    padding-top:0.3em;
+    padding-bottom:0.4em;
+    padding-left:1.0em;
+    padding-right:1.0em;
+    font-size:1.1em;
+    font-weight:bold;
+    height:20px;
+    text-decoration:none;
+    color:white;
+    border:1px solid #293840;
+    background:#435863;
+    box-shadow:inset 1px 1px 0px rgba(255,255,255,0.3);
+    text-shadow:1px 1px 1px rgba(0, 0, 0, 0.4);
+    border-radius:10px;
+}
+a.button:hover {
+    border:1px solid #235E7D;
+    background:#2585B8;
+}
+
+/* Article
+----------------------------------------*/
+
+.article {
+    display:block;
+}
+
+.articles .article {
+    padding-bottom:2.0em;
+    border-bottom: 1px solid #ccc;
+    margin-bottom:1.0em;
+}
+.article a.title {
+    display:block;
+    color:#1F4559;
+    font-weight:bold;
+    text-decoration: none;
+    padding-right:100px;
+    font-size:1.5em;
+    text-shadow:1px 1px 0px #fff;
+}
+.article .header {
+    position:relative;
+}
+.article span.date { 
+    right: 10px;
+    margin-right:1.0em;
+    color:#555;
+    text-transform:uppercase;
+}
+a.button-readmore {
+    margin-top:10px;
+}
+
+
+
+#comments {
+    margin-top:1.5em;
+}

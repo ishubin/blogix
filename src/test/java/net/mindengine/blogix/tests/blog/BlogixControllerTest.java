@@ -29,7 +29,7 @@ public class BlogixControllerTest {
     private static final int NUMBER_OF_ALL_POSTS_IN_TEST = 14;
     private static final String RECENT_POSTS = "recentPosts";
     private static final String ALL_POSTS_COUNT = "allPostsCount";
-    private static final String HOME_POSTS = "homePosts";
+    private static final String POSTS = "posts";
     private static final String CURRENT_PAGE = "currentPage";
     
     
@@ -40,11 +40,11 @@ public class BlogixControllerTest {
         
         assertCommonModelDataForPosts(homePageModel);
         
-        assertThat(homePageModel,hasKey(HOME_POSTS));
+        assertThat(homePageModel,hasKey(POSTS));
         assertThat(homePageModel,hasKey(CURRENT_PAGE));
         assertThat(homePageModel,hasKey(ALL_POSTS_COUNT));
         
-        assertHomeFirstPagePosts((List<Post>) homePageModel.get(HOME_POSTS));
+        assertHomeFirstPagePosts((List<Post>) homePageModel.get(POSTS));
         
         assertThat((Integer) homePageModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_IN_TEST));
         assertThat((Integer) homePageModel.get(CURRENT_PAGE), is(1));
@@ -59,11 +59,11 @@ public class BlogixControllerTest {
         
         assertCommonModelDataForPosts(homePageModel);
         
-        assertThat(homePageModel,hasKey(HOME_POSTS));
+        assertThat(homePageModel,hasKey(POSTS));
         assertThat(homePageModel,hasKey(CURRENT_PAGE));
         assertThat(homePageModel,hasKey(ALL_POSTS_COUNT));
         
-        List<Post> homePosts = (List<Post>) homePageModel.get(HOME_POSTS);
+        List<Post> homePosts = (List<Post>) homePageModel.get(POSTS);
         assertHomeSecondPagePosts(homePosts);
         
         assertThat("'" + ALL_POSTS_COUNT + "' field in homePageModel should be", (Integer) homePageModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_IN_TEST));

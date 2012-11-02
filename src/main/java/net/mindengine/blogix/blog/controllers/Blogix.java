@@ -17,7 +17,6 @@ public class Blogix {
     private static final String TITLE = "title";
     private static final int DEFAULT_POSTS_PER_PAGE = 10;
     private static final String CURRENT_PAGE = "currentPage";
-    private static final String HOME_POSTS = "homePosts";
     private static final String ALL_POSTS_COUNT = "allPostsCount";
     private static FileDb<Post> postsDb = createPostsDb(); 
     private static FileDb<Section> sectionsDb = createSectionDb();
@@ -31,6 +30,9 @@ public class Blogix {
     }
     
     private static String title(String secondaryTitle) {
+        if (secondaryTitle ==  null) {
+            secondaryTitle = "";
+        }
         StringBuffer buffer = new StringBuffer(secondaryTitle);
         if (titleBase != null) {
             buffer.append(" | ");
@@ -143,7 +145,7 @@ public class Blogix {
         model.put(ALL_POSTS_COUNT, allPosts.size());
 
         List<Post> homePosts = allPosts.sortDesc().page(page, DEFAULT_POSTS_PER_PAGE).asJavaList();
-        model.put(HOME_POSTS, homePosts);
+        model.put("posts", homePosts);
         model.put(CURRENT_PAGE, 1);
         model.put(TITLE, title(homeTitle()));
     }

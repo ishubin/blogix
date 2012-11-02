@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+	font-family:Helvetica, Arial, Tahoma, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+p {
+	margin: 0 0 18px
+}
+img {
+	border: none;
+}
+input {
+	vertical-align: middle;
+}
+#wrapper {
+	min-width: 320px;
+	max-width: 1000px;
+	margin: 0 auto;
+}
+
+
+/* Header
+-----------------------------------------------------------------------------*/
+#header {
+	height: 150px;
+}
+
+/* Navigation
+-------------------------------------------------------------------------------*/
+#navigation {
+    position:relative;
+    margin:0;
+    padding-top: 0.1em ;
+    padding-bottom: 0.1em; 
+    height:40px;
+    background: #afa;
+}
+#nav {
+    list-style: none;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding:0;
+    margin-left:0.5em;
+}
+#nav li {
+    float: left;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+#nav li a {
+    display: block;
+    margin:0;
+}
+
+#search-panel {
+    position:absolute;
+    display:inline-block;
+    padding-top:0.1em;
+    right:10px;
+}
+#search-panel input {
+    width:150px;
+    height:20px;
+    padding-top:0.4em;
+    padding-bottom:0.4em;
+    font-size:1em;
+}
+#search-panel a {
+    display:inline-block;
+    width: 50px;
+    height:20px;
+    text-decoration: none;
+    padding-top:0.3em;
+    padding-bottom:0.4em;
+    padding-left:1.0em;
+    padding-right:1.5em;
+    font-size:1.1em;
+    color: #fff;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Middle
+-----------------------------------------------------------------------------*/
+#middle {
+	width: 100%;
+	height: 1%;
+	position: relative;
+}
+#middle:after {
+	content: '.';
+	display: block;
+	clear: both;
+	visibility: hidden;
+	height: 0;
+}
+#container {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+}
+#content {
+	padding: 0 300px 0 0;
+}
+
+
+/* Sidebar Right
+-----------------------------------------------------------------------------*/
+#sideRight {
+	float: left;
+	margin-right: -3px;
+	width: 250px;
+	margin-left: -300px;
+    padding:1.0em;
+	position: relative;
+}
+
+/* Footer
+--------------------------------------------------*/
+#footer {
+    margin-bottom:1.0em;
+}

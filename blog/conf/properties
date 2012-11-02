@@ -6,3 +6,7 @@ public.path = public
 
 
 blogix.db.path = db
+
+
+blogix.title.base = Blogix
+blogix.title.home = Home

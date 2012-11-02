@@ -1,0 +1,16 @@
+
+<div class="articles">
+    <#list posts as post>
+    <div class="article">
+        <div class="header">
+            <span class="date">1 Oct 2012</span>
+            <a href="/post/${post.id}#comments">COMMENTS</a>
+        </div>
+        <a class="title" href="/post/${post.id}">${post.title?html}</a>
+        <div class="article-content">
+            ${post.contentPreview?html}
+        </div>
+        <a class="button button-readmore" href="/post/${post.id}">Read more</a>
+    </div>
+    </#list>
+</div>
