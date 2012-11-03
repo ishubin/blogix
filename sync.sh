@@ -1,4 +1,7 @@
 
-cp bin/blog/view/* blog/view/.
-cp bin/blog/public/* blog/public/.
-cp -r bin/blog/db  blog/db
+
+
+cp -r bin/blog/* blog/.
+
+rm blog/blogix
+rm blog/blogix.jar
