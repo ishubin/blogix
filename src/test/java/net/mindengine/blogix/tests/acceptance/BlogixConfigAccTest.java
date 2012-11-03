@@ -16,7 +16,6 @@
 package net.mindengine.blogix.tests.acceptance;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -27,12 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.mindengine.blogix.Blogix;
-import net.mindengine.blogix.tests.acceptance.BlogixConfigAccTest.CustomObject;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class BlogixConfigAccTest {
@@ -59,11 +53,6 @@ public class BlogixConfigAccTest {
         }
     }
 
-    
-    @BeforeClass
-    public void convertModelTopMap() {
-        
-    }
     
     @Test
     public void shouldPut_objects_toModelMap_as_modelKey() {
