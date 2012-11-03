@@ -15,6 +15,8 @@
 ******************************************************************************/
 package net.mindengine.blogix.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import net.mindengine.blogix.utils.BlogixFileUtils;
@@ -22,6 +24,8 @@ import net.mindengine.blogix.utils.BlogixFileUtils;
 import org.apache.commons.io.FileUtils;
 
 public class BlogixConfig {
+    private static final String CUSTOM_USER_PROPERTY_PREFIX = "custom.";
+    private static final int CUSTOM_USER_PROPERTY_LENGTH = CUSTOM_USER_PROPERTY_PREFIX.length();
     private static final String MARKUP_CLASS = "markup.class";
     private static final String DEFAULT_CONTROLLER_PACKAGES = "default.controller.packages";
     private static final String DEFAULT_PROVIDER_PACKAGES = "default.provider.packages";
@@ -30,17 +34,38 @@ public class BlogixConfig {
     private static final String BLOGIX_FILEDB_PATH = "blogix.db.path";
     
     private Properties properties = new Properties();
+    private Map<String, String> userCustomProperties;
     
     private static final BlogixConfig _instance = new BlogixConfig();
     private BlogixConfig() {
         try {
             properties.load(FileUtils.openInputStream(BlogixFileUtils.findFile("conf/properties")));
+            userCustomProperties = loadUserCustomProperties();
         }
         catch (Exception e) {
             throw new RuntimeException("Cannot load blogix properties", e);
         }
     }
     
+    private Map<String, String> loadUserCustomProperties() {
+        Map<String, String> map = new HashMap<String, String>();
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            String name = entry.getKey().toString();
+            if (isPropertyUserCustom(name)) {
+                map.put(stripUserProperty(name), entry.getValue().toString());
+            }
+        }
+        return map;
+    }
+
+    private String stripUserProperty(String name) {
+        return name.substring(CUSTOM_USER_PROPERTY_LENGTH);
+    }
+
+    private boolean isPropertyUserCustom(String name) {
+        return name.startsWith(CUSTOM_USER_PROPERTY_PREFIX);
+    }
+
     public static BlogixConfig getConfig() {
         return _instance;
     }
@@ -85,4 +110,10 @@ public class BlogixConfig {
     public String getProperty(String name, String defaultValue) {
         return properties.getProperty(name, defaultValue);
     }
+
+    public Map<String, String> getUserCustomProperties() {
+        return userCustomProperties;
+    }
+    
+    
 }

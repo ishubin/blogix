@@ -11,3 +11,5 @@ blogix.db.path = controller-test-data
 
 blogix.title.base = Blogix Blog
 blogix.title.home = Home
+
+custom.userProperty = custom value

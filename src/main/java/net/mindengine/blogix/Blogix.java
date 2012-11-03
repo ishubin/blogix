@@ -160,9 +160,15 @@ public class Blogix {
                 modelMap.put("model", model);
             }
         }
-        return modelMap;
+        return addUserCustomVariables(modelMap);
     }
 
+
+    private static Map<String, Object> addUserCustomVariables(Map<String, Object> modelMap) {
+        Map<String, String> properties = BlogixConfig.getConfig().getUserCustomProperties();
+        modelMap.putAll(properties);
+        return modelMap;
+    }
 
     public Markup getMarkup() throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         if (markup == null) {
