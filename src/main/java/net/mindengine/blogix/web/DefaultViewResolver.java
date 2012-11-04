@@ -25,7 +25,8 @@ public class DefaultViewResolver extends ChainedViewResolver {
     private TilesContainer tilesContainer = new TilesContainer();
     private ClassLoader[] classLoader;
     
-    public DefaultViewResolver(ClassLoader[] classLoaders) {
+    public DefaultViewResolver(Blogix blogix, ClassLoader[] classLoaders) {
+        super(blogix);
         this.classLoader = classLoaders;
         try {
             tilesContainer.load( BlogixFileUtils.findFile( "conf/tiles" ));
@@ -33,7 +34,7 @@ public class DefaultViewResolver extends ChainedViewResolver {
             throw new RuntimeException("Could not load tiles container");
         }
         
-        initResolvers(new TilesResolver(tilesContainer, Blogix.VIEW_MAIN_PATH), new FreemarkerResolver(Blogix.VIEW_MAIN_PATH), new ClassMethodViewResolver(this.classLoader));
+        initResolvers(new TilesResolver(blogix, tilesContainer, Blogix.VIEW_MAIN_PATH), new FreemarkerResolver(blogix, Blogix.VIEW_MAIN_PATH), new ClassMethodViewResolver(blogix, this.classLoader));
     }
 
     

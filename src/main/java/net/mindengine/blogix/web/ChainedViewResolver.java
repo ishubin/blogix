@@ -19,8 +19,14 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChainedViewResolver implements ViewResolver {
-    
+import net.mindengine.blogix.Blogix;
+
+public class ChainedViewResolver extends ViewResolver {
+
+    public ChainedViewResolver(Blogix blogix) {
+        super(blogix);
+    }
+
     private List<ViewResolver> resolvers;
     
     

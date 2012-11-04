@@ -50,7 +50,7 @@ public class Blogix {
     
     private BlogixConfig config = BlogixConfig.getConfig();
     
-    private ViewResolver viewResolver = new DefaultViewResolver(defaultClassLoaders());
+    private ViewResolver viewResolver = new DefaultViewResolver(this, defaultClassLoaders());
     private RoutesContainer routesContainer = new RoutesContainer(defaultClassLoaders());
     private RouteInvoker routeInvoker = new RouteInvoker();
     private Markup markup;
@@ -147,7 +147,7 @@ public class Blogix {
     }
 
     @SuppressWarnings("unchecked")
-    public static Map<String, Object> convertModelToMap(Object model) {
+    public Map<String, Object> convertModelToMap(Object model) {
         Map<String, Object> modelMap = new HashMap<String, Object>();
         if ( model != null ) {
             if ( model instanceof Map ) {
@@ -160,19 +160,31 @@ public class Blogix {
                 modelMap.put("model", model);
             }
         }
-        return addUserCustomVariables(modelMap);
-    }
-
-
-    private static Map<String, Object> addUserCustomVariables(Map<String, Object> modelMap) {
-        Map<String, String> properties = BlogixConfig.getConfig().getUserCustomProperties();
-        modelMap.putAll(properties);
+        
+        addMarkupToModel(modelMap);
+        addUserCustomVariables(modelMap);
         return modelMap;
     }
 
-    public Markup getMarkup() throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+    private void addMarkupToModel(Map<String, Object> modelMap) {
+        if (!modelMap.containsKey("markup")) {
+            modelMap.put("markup", getMarkup());
+        }
+    }
+
+    private static void addUserCustomVariables(Map<String, Object> modelMap) {
+        Map<String, String> properties = BlogixConfig.getConfig().getUserCustomProperties();
+        modelMap.putAll(properties);
+    }
+
+    public Markup getMarkup()  {
         if (markup == null) {
-            markup = createMarkupFromProperties();
+            try {
+                markup = createMarkupFromProperties();
+            } catch (Exception e) {
+                throw new RuntimeException("Cannot create markup", e);
+            }
         }
         return markup;
     }

@@ -27,12 +27,13 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
-public class FreemarkerResolver implements ViewResolver {
+public class FreemarkerResolver extends ViewResolver {
     
     private String templatesPath;
     private Configuration templateConfiguration;
     
-    public FreemarkerResolver(String templatesPath) {
+    public FreemarkerResolver(Blogix blogix, String templatesPath) {
+        super(blogix);
         this.templatesPath = templatesPath;
         this.templateConfiguration = defaultTemplateConfiguration();
     }
@@ -51,7 +52,7 @@ public class FreemarkerResolver implements ViewResolver {
 
     @Override
     public void resolveViewAndRender(Object model, String view, OutputStream outputStream) throws Exception {
-        Map<String, Object> modelMap = Blogix.convertModelToMap(model);
+        Map<String, Object> modelMap = getBlogix().convertModelToMap(model);
         Template template = new Template(view, new FileReader(BlogixFileUtils.findFile(templatesPath + view)), templateConfiguration);
         template.process(modelMap, new PrintWriter(outputStream));
     }

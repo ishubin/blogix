@@ -32,14 +32,15 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class TilesResolver implements ViewResolver {
+public class TilesResolver extends ViewResolver {
     private Configuration templateConfiguration;
     private TilesContainer tilesContainer;
     private String templatesPath = "";
     
     private Map<String, TemplateFile> templates = new HashMap<String, TemplateFile>();
     
-    public TilesResolver(TilesContainer tilesContainer, String templatesPath) {
+    public TilesResolver(Blogix blogix, TilesContainer tilesContainer, String templatesPath) {
+        super(blogix);
         this.tilesContainer = tilesContainer;
         this.templatesPath = templatesPath;
         templateConfiguration = FreemarkerResolver.defaultTemplateConfiguration();
@@ -67,7 +68,7 @@ public class TilesResolver implements ViewResolver {
     }
     
     private void renderTile(Object model, Tile tile, OutputStream outputStream) throws IOException, TemplateException, URISyntaxException {
-        Map<String, Object> modelMap = Blogix.convertModelToMap(model);
+        Map<String, Object> modelMap = getBlogix().convertModelToMap(model);
         
         TilesProcessor tilesProcessor = new TilesProcessor(modelMap, tile, this);
         modelMap.put("tiles", tilesProcessor);

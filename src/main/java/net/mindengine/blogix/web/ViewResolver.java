@@ -17,10 +17,26 @@ package net.mindengine.blogix.web;
 
 import java.io.OutputStream;
 
+import net.mindengine.blogix.Blogix;
 
-public interface ViewResolver {
 
-    boolean canResolve(String view);
-    void resolveViewAndRender(Object model, String view, OutputStream outputStream) throws Exception;
+public abstract class ViewResolver {
+    
+    private Blogix blogix;
+    
+    public ViewResolver(Blogix blogix) {
+        this.setBlogix(blogix);
+    }
+
+    public abstract boolean canResolve(String view);
+    public abstract void resolveViewAndRender(Object model, String view, OutputStream outputStream) throws Exception;
+
+    public Blogix getBlogix() {
+        return blogix;
+    }
+
+    public void setBlogix(Blogix blogix) {
+        this.blogix = blogix;
+    }
 
 }

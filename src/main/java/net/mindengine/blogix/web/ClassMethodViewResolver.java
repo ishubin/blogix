@@ -20,16 +20,18 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
+import net.mindengine.blogix.Blogix;
 import net.mindengine.blogix.utils.BlogixUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class ClassMethodViewResolver implements ViewResolver {
+public class ClassMethodViewResolver extends ViewResolver {
 
     private ClassLoader[] classLoaders;
     
-    public ClassMethodViewResolver(ClassLoader[] classLoaders) {
+    public ClassMethodViewResolver(Blogix blogix, ClassLoader[] classLoaders) {
+        super(blogix);
         this.classLoaders = classLoaders;
     }
 
