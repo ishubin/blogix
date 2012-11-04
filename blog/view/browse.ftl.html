@@ -8,7 +8,7 @@
         </div>
         <a class="title" href="/post/${post.id}">${post.title?html}</a>
         <div class="article-content">
-            ${post.contentPreview?html}
+            ${markup.apply(post.contentPreview)}
         </div>
         <a class="button button-readmore" href="/post/${post.id}">Read more</a>
     </div>

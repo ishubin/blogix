@@ -2,6 +2,8 @@ default.controller.packages = controllers,net.mindengine.blogix.blog.controllers
 
 default.provider.packages = providers,net.mindengine.blogix.blog.providers 
 
+markup.class = net.mindengine.blogix.markup.TextileMarkup
+
 public.path = public
 
 
@@ -10,3 +12,5 @@ blogix.db.path = db
 
 blogix.title.base = Blogix
 blogix.title.home = Home
+
+

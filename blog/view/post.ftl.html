@@ -4,7 +4,8 @@
         <h1>${post.title?html}</h1>
     </div>
     <div class="article-content">
-        ${post.contentPreview?html}
+        ${markup.apply(post.content)}
+
     </div>
     <div id="comments">
         <h3>Comments</h3>
