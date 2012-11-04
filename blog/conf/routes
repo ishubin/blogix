@@ -13,3 +13,6 @@
 
 /atom.xml                   Blogix.rssFeedAll                             rss                         
 /s/{section}/atom.xml       Blogix.rssFeedForSection(section)             rss                         BlogixProvider.allSections    
+
+
+/about                      -                                             about

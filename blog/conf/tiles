@@ -10,3 +10,8 @@ browse: @main
     content:        browse.ftl.html
 
 
+about: @main
+    content:        about.ftl.html
+
+post:   @main
+    content:        post.ftl.html
