@@ -25,15 +25,15 @@ import net.mindengine.blogix.db.Entry;
 import net.mindengine.blogix.db.EntryFilter;
 import net.mindengine.blogix.db.EntryList;
 import net.mindengine.blogix.db.FileDb;
+import net.mindengine.blogix.model.Category;
 import net.mindengine.blogix.model.Post;
-import net.mindengine.blogix.model.Section;
 
 public class BlogixProvider {
     
     private static final int DEFAULT_PAGES_PER_POST = 10;
     private static final String BLOGIX_FILEDB_PATH = "blogix.filedb.path";
     private static FileDb<Post> postsDb = createPostsDb(); 
-    private static FileDb<Section> sectionsDb = createSectionDb();
+    private static FileDb<Category> categoriesDb = createCategoriesDb();
     
     @SuppressWarnings({ "unchecked" })
     public static Map<String, Object>[] allHomePages() {
@@ -81,14 +81,14 @@ public class BlogixProvider {
     
     
     @SuppressWarnings("unchecked")
-    public static Map<String, Object>[] allSections() {
-        List<String> sections = sectionsDb.findAllIds().asJavaList();
-        Map<String, Object> map[] = new Map[sections.size()];
+    public static Map<String, Object>[] allCategories() {
+        List<String> categories = categoriesDb.findAllIds().asJavaList();
+        Map<String, Object> map[] = new Map[categories.size()];
         
         int i = 0;
-        for (String section : sections) {
+        for (String category : categories) {
             map[i] = new HashMap<String, Object>();
-            map[i].put("section", section);
+            map[i].put("category", category);
             
             i++;
         }
@@ -96,17 +96,17 @@ public class BlogixProvider {
     }
     
     @SuppressWarnings("unchecked")
-    public static Map<String, Object>[] allSectionsAndPages() {
-        List<String> sections = sectionsDb.findAllIds().asJavaList();
+    public static Map<String, Object>[] allCategoriesAndPages() {
+        List<String> categories = categoriesDb.findAllIds().asJavaList();
         EntryList<Entry> allPosts = postsDb.findAllEntries();
         
         ArrayList<Map<String, Object>> maps = new ArrayList<Map<String,Object>>();
-        for (String section : sections) {
-            int pages = allPosts.filter(bySectionsContaining(section)).pages(DEFAULT_PAGES_PER_POST);
+        for (String category : categories) {
+            int pages = allPosts.filter(byCategoriesContaining(category)).pages(DEFAULT_PAGES_PER_POST);
 
             for (int page = 1; page <= pages; page++) {
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put("section", section);
+                map.put("category", category);
                 map.put("page", page);
                 maps.add(map);
             }
@@ -114,12 +114,12 @@ public class BlogixProvider {
         return maps.toArray(new Map[0]);
     }
     
-    private static EntryFilter<Entry> bySectionsContaining(final String section) {
+    private static EntryFilter<Entry> byCategoriesContaining(final String category) {
         return new EntryFilter<Entry>() {
             @Override
             public boolean applies(Entry entry) {
-                String sections = entry.field("sections");
-                return (sections != null && sections.contains(section));
+                String categories = entry.field("categories");
+                return (categories != null && categories.contains(category));
             }
         };
     }
@@ -128,8 +128,8 @@ public class BlogixProvider {
         return createDb(Post.class, "posts");
     }
 
-    private static FileDb<Section> createSectionDb() {
-        return createDb(Section.class, "sections");
+    private static FileDb<Category> createCategoriesDb() {
+        return createDb(Category.class, "categories");
     }
 
     private static <T extends Comparable<T>> FileDb<T> createDb(Class<T> objectClass, String directoryName) {

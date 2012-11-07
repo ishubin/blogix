@@ -79,27 +79,27 @@ public class BlogixProviderTest {
     }
     
     @Test
-    public void allSections() throws Exception {
-        Map<String, Object> map[] = invokeProvider("allSections");
+    public void allCategories() throws Exception {
+        Map<String, Object> map[] = invokeProvider("allCategories");
         assertThat(map, is(notNullValue()));
         assertThat(map.length, is(3));
         
         for (int i = 0; i < 3; i++) {
             assertThat(map[i].size(), is(1));
-            assertThat("#" + i + " section should be", (String)map[i].get("section"), is("section" + (i + 1)));
+            assertThat("#" + i + " category should be", (String)map[i].get("category"), is("category" + (i + 1)));
         }
     }
     
     @Test
-    public void allSectionsAndPages() throws Exception {
-        Map<String, Object> map[] = invokeProvider("allSectionsAndPages");
+    public void allCategoriesAndPages() throws Exception {
+        Map<String, Object> map[] = invokeProvider("allCategoriesAndPages");
         assertThat(map, is(notNullValue()));
-        Object expected [][] = {{"section1", 1}, {"section1", 2}, {"section2", 1}, {"section2", 2}, {"section3", 1}};
+        Object expected [][] = {{"category1", 1}, {"category1", 2}, {"category2", 1}, {"category2", 2}, {"category3", 1}};
         assertThat(map.length, is(expected.length));
         
         for (int i = 0; i < expected.length; i++) {
             assertThat("#" + i + " keys should be",map[i].size(), is(2));
-            assertThat("#" + i + " section should be", map[i].get("section"), is(expected[i][0]));
+            assertThat("#" + i + " category should be", map[i].get("category"), is(expected[i][0]));
             assertThat("#" + i + " page should be", map[i].get("page"), is(expected[i][1]));
         }
     }

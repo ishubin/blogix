@@ -28,7 +28,7 @@ import java.util.Map;
 
 import net.mindengine.blogix.blog.controllers.Blogix;
 import net.mindengine.blogix.model.Post;
-import net.mindengine.blogix.model.Section;
+import net.mindengine.blogix.model.Category;
 
 import org.testng.annotations.Test;
 
@@ -36,8 +36,8 @@ public class BlogixControllerTest {
     
     private static final String TITLE_BASE = " | Blogix Blog";
     private static final String TITLE = "title";
-    private static final int NUMBER_OF_ALL_POSTS_FOR_SECTION_1 = 12;
-    private static final int NUMBER_OF_ALL_POSTS_FOR_SECTION_2 = 2;
+    private static final int NUMBER_OF_ALL_POSTS_FOR_CATEGORY_1 = 12;
+    private static final int NUMBER_OF_ALL_POSTS_FOR_CATEGORY_2 = 2;
     private static final int NUMBER_OF_SECOND_PAGE_POSTS_IN_TEST = 4;
     private static final int DEFAULT_NUMBER_OF_RECENT_POSTS = 5;
     private static final int NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST = 10;
@@ -50,7 +50,7 @@ public class BlogixControllerTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void homePageShouldProvideFirstPagePosts() throws Exception {
+    public void homePage_shouldGive_onlyPosts_forFirstPage() throws Exception {
         Map<String, Object> homePageModel = Blogix.homeFirstPage();
         
         assertCommonModelDataForPosts(homePageModel);
@@ -69,14 +69,14 @@ public class BlogixControllerTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void homePageByNumberGivesPostsForThatNumber() throws Exception {
+    public void homePageByNumber_shouldGive_onlyPosts_forThatNumber() throws Exception {
         Map<String, Object> homePageModel = Blogix.homePage(2);
         
         assertCommonModelDataForPosts(homePageModel);
         
-        assertThat(homePageModel,hasKey(POSTS));
-        assertThat(homePageModel,hasKey(CURRENT_PAGE));
-        assertThat(homePageModel,hasKey(ALL_POSTS_COUNT));
+        assertThat(homePageModel, hasKey(POSTS));
+        assertThat(homePageModel, hasKey(CURRENT_PAGE));
+        assertThat(homePageModel, hasKey(ALL_POSTS_COUNT));
         
         List<Post> homePosts = (List<Post>) homePageModel.get(POSTS);
         assertHomeSecondPagePosts(homePosts);
@@ -85,6 +85,26 @@ public class BlogixControllerTest {
         assertThat("'" + CURRENT_PAGE + "' field in homePageModel should be", (Integer) homePageModel.get(CURRENT_PAGE), is(1));
         
         assertThat((String) homePageModel.get(TITLE), is("Home" + TITLE_BASE));
+    }
+    
+    @Test
+    public void categoriesPage_shouldGive_allCategories_with5RecentPosts_perEachCategory() {
+        Map<String, Object> categoriesModel = Blogix.categories();
+        assertCommonModelDataForPosts(categoriesModel);
+        
+        assertThat(categoriesModel, hasKey("categories"));
+        
+        //List<CategoryAggregation> categories = categoriesModel.get("categories");
+    }
+    
+    @Test
+    public void recentPosts_shouldGive_only5RecentPosts() {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    @Test
+    public void archive_shouldGive_allPosts_dividedBy_Year_andThenBy_Month() {
+        throw new RuntimeException("not yet implemented");
     }
     
     
@@ -104,7 +124,7 @@ public class BlogixControllerTest {
         assertThat("content preview part for '" + postId + "' should be", post.getContentPreview(), is("Content 1\nPart 1"));
         assertThat("commentsAllowed for post '" + postId + "' should be", post.getAllowComments(), is(true));
         assertThat("date for post '" + postId + "' should be", post.getDate(), is(new Date(1325374440000L)));
-        assertThat("sections for post '" + postId + "' should be", post.getSections(), is(new String[]{"section1", "section2"}));
+        assertThat("categories for post '" + postId + "' should be", post.getCategories(), is(new String[]{"category1", "category2"}));
         assertThat("externalUrl for post '" + postId + "' should be", post.getExternalUrl(), is("www.google.com"));
         assertThat("externalUrl for post '" + postId + "' should be", post.getDisplayExternalUrl(), is("Google It!"));
         
@@ -116,18 +136,18 @@ public class BlogixControllerTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void searchesForPostsBySection() throws Exception {
-        Map<String, Object> postsModel = Blogix.postsBySection("section1");
+    public void searchesForPostsByCategory() throws Exception {
+        Map<String, Object> postsModel = Blogix.postsByCategory("category1");
         assertThat(postsModel, hasKey("posts"));
-        assertThat(postsModel, hasKey("section"));
+        assertThat(postsModel, hasKey("category"));
         assertThat(postsModel, hasKey(CURRENT_PAGE));
         assertThat(postsModel, hasKey(ALL_POSTS_COUNT));
         
         assertCommonModelDataForPosts(postsModel);
         
-        Section section = (Section) postsModel.get("section");
-        assertThat(section.getId(), is("section1"));
-        assertThat(section.getName(), is("Section 1"));
+        Category category = (Category) postsModel.get("category");
+        assertThat(category.getId(), is("category1"));
+        assertThat(category.getName(), is("Category 1"));
         
         List<Post> posts = (List<Post>) postsModel.get("posts");
         assertThat(posts.size(), is(NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST));
@@ -143,33 +163,33 @@ public class BlogixControllerTest {
         assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(12));
         assertThat((Integer)postsModel.get(CURRENT_PAGE), is(1));
         
-        assertThat((String) postsModel.get(TITLE), is("Section 1" + TITLE_BASE));
+        assertThat((String) postsModel.get(TITLE), is("Category 1" + TITLE_BASE));
     }
     
     @SuppressWarnings("unchecked")
     @Test
-    public void searchesForPostsBySectionAndPage() throws Exception {
-        Map<String, Object> postsModel = Blogix.postsBySectionAndPage("section1", 2);
+    public void searchesForPostsByCategoryAndPage() throws Exception {
+        Map<String, Object> postsModel = Blogix.postsByCategoryAndPage("category1", 2);
         
         assertThat(postsModel, hasKey("posts"));
-        assertThat(postsModel, hasKey("section"));
+        assertThat(postsModel, hasKey("category"));
         assertThat(postsModel, hasKey(CURRENT_PAGE));
         assertThat(postsModel, hasKey(ALL_POSTS_COUNT));
         
         assertCommonModelDataForPosts(postsModel);
         
-        Section section = (Section) postsModel.get("section");
-        assertThat(section.getId(), is("section1"));
-        assertThat(section.getName(), is("Section 1"));
+        Category category = (Category) postsModel.get("category");
+        assertThat(category.getId(), is("category1"));
+        assertThat(category.getName(), is("Category 1"));
         
         List<Post> posts = (List<Post>) postsModel.get("posts");
         assertThat(posts.size(), is(2));
         assertThat(posts.get(0).getId(), is("2012-01-01-title-11"));
         assertThat(posts.get(1).getId(), is("2012-01-01-title-12"));
-        assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_1));
+        assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_FOR_CATEGORY_1));
         assertThat((Integer)postsModel.get(CURRENT_PAGE), is(2));
         
-        assertThat((String) postsModel.get(TITLE), is("Section 1" + TITLE_BASE));
+        assertThat((String) postsModel.get(TITLE), is("Category 1" + TITLE_BASE));
     }
     
     
@@ -188,11 +208,11 @@ public class BlogixControllerTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void rssFeedForPostsBySection1() throws Exception {
-        Map<String, Object> rssModel = Blogix.rssFeedForSection("section1");
+    public void rssFeedForPostsByCategory1() throws Exception {
+        Map<String, Object> rssModel = Blogix.rssFeedForCategory("category1");
         assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
-        assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_1));
+        assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_CATEGORY_1));
         
         assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-01"));
         assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-02"));
@@ -200,11 +220,11 @@ public class BlogixControllerTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void rssFeedForPostsBySection3() throws Exception {
-        Map<String, Object> rssModel = Blogix.rssFeedForSection("section3");
+    public void rssFeedForPostsByCategory3() throws Exception {
+        Map<String, Object> rssModel = Blogix.rssFeedForCategory("category3");
         assertThat(rssModel, hasKey("posts"));
         List<Post> posts = (List<Post>) rssModel.get("posts");
-        assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_SECTION_2));
+        assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_CATEGORY_2));
         
         assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-13"));
         assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-14"));

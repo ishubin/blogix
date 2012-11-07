@@ -27,7 +27,7 @@ public class Post implements Comparable<Post> {
     private String title;
     private Boolean allowComments;
     private Date date;
-    private String[] sections;
+    private String[] categories;
     private String externalUrl;
     private Entry entry;
     private String displayExternalUrl;
@@ -89,12 +89,12 @@ public class Post implements Comparable<Post> {
         this.date = date;
     }
 
-    public String[] getSections() {
-        return sections;
+    public String[] getCategories() {
+        return categories;
     }
 
-    public void setSections(String[] sections) {
-        this.sections = sections;
+    public void setCategories(String[] categories) {
+        this.categories = categories;
     }
 
     public String getExternalUrl() {

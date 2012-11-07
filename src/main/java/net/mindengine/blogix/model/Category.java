@@ -15,7 +15,7 @@
 ******************************************************************************/
 package net.mindengine.blogix.model;
 
-public class Section implements Comparable<Section> {
+public class Category implements Comparable<Category> {
     
     private String id;
     private String name;
@@ -32,7 +32,7 @@ public class Section implements Comparable<Section> {
         this.name = name;
     }
     @Override
-    public int compareTo(Section otherSecction) {
+    public int compareTo(Category otherSecction) {
         return id.compareTo(otherSecction.id);
     }
 

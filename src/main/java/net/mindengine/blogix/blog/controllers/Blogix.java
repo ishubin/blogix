@@ -25,7 +25,7 @@ import net.mindengine.blogix.config.BlogixConfig;
 import net.mindengine.blogix.db.EntryList;
 import net.mindengine.blogix.db.FileDb;
 import net.mindengine.blogix.model.Post;
-import net.mindengine.blogix.model.Section;
+import net.mindengine.blogix.model.Category;
 import net.mindengine.blogix.utils.BlogixFileUtils;
 
 public class Blogix {
@@ -34,7 +34,7 @@ public class Blogix {
     private static final String CURRENT_PAGE = "currentPage";
     private static final String ALL_POSTS_COUNT = "allPostsCount";
     private static FileDb<Post> postsDb = createPostsDb(); 
-    private static FileDb<Section> sectionsDb = createSectionDb();
+    private static FileDb<Category> categoriesDb = createCategoriesDb();
     
     private static String titleBase = loadBaseTitle();
     
@@ -92,20 +92,20 @@ public class Blogix {
         else throw new RuntimeException("Cannot find post: " + postId);
     }
 
-    public static  Map<String, Object> postsBySection(String sectionId) {
-        return postsBySectionAndPage(sectionId, 1);
+    public static  Map<String, Object> postsByCategory(String categoryId) {
+        return postsByCategoryAndPage(categoryId, 1);
     }
 
-    public static  Map<String, Object> postsBySectionAndPage(String sectionId, Integer page) {
+    public static  Map<String, Object> postsByCategoryAndPage(String categoryId, Integer page) {
         Map<String, Object> model = loadCommonPostData();
-        EntryList<Post> allPosts = postsDb.findByFieldContaining("sections", sectionId);
+        EntryList<Post> allPosts = postsDb.findByFieldContaining("categories", categoryId);
         model.put("allPostsCount", allPosts.size());
         model.put("posts", allPosts.page(page, DEFAULT_POSTS_PER_PAGE).asJavaList());
         model.put("currentPage", page);
-        Section section = sectionsDb.findById(sectionId);
-        model.put("section", section);
+        Category category = categoriesDb.findById(categoryId);
+        model.put("category", category);
         
-        model.put(TITLE, title(section.getName()));
+        model.put(TITLE, title(category.getName()));
         return model;
     }
     
@@ -123,9 +123,9 @@ public class Blogix {
         return model;
     }
     
-    public static Map<String, Object> rssFeedForSection(String sectionId) {
+    public static Map<String, Object> rssFeedForCategory(String categoryId) {
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("posts", postsDb.findByFieldContaining("sections", sectionId).asJavaList());
+        model.put("posts", postsDb.findByFieldContaining("categories", categoryId).asJavaList());
         return model;
     }
 
@@ -143,8 +143,8 @@ public class Blogix {
         return createDb(Post.class, "posts");
     }
 
-    private static FileDb<Section> createSectionDb() {
-        return createDb(Section.class, "sections");
+    private static FileDb<Category> createCategoriesDb() {
+        return createDb(Category.class, "categories");
     }
 
     private static <T extends Comparable<T>> FileDb<T> createDb(Class<T> objectClass, String directoryName) {
@@ -163,6 +163,10 @@ public class Blogix {
         model.put("posts", homePosts);
         model.put(CURRENT_PAGE, 1);
         model.put(TITLE, title(homeTitle()));
+    }
+
+    public static Map<String, Object> categories() {
+        return null;
     }
 
 }
