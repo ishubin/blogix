@@ -17,15 +17,23 @@ package net.mindengine.blogix.blog.controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import net.mindengine.blogix.config.BlogixConfig;
+import net.mindengine.blogix.db.EntryFilter;
 import net.mindengine.blogix.db.EntryList;
 import net.mindengine.blogix.db.FileDb;
+import net.mindengine.blogix.model.CategoryAggregation;
+import net.mindengine.blogix.model.MonthArchive;
 import net.mindengine.blogix.model.Post;
 import net.mindengine.blogix.model.Category;
+import net.mindengine.blogix.model.YearArchive;
 import net.mindengine.blogix.utils.BlogixFileUtils;
 
 public class Blogix {
@@ -43,37 +51,7 @@ public class Blogix {
         loadHomePage(model, 1);
         return model;
     }
-    
-    private static String title(String secondaryTitle) {
-        if (secondaryTitle ==  null) {
-            secondaryTitle = "";
-        }
-        StringBuffer buffer = new StringBuffer(secondaryTitle);
-        if (titleBase != null) {
-            buffer.append(" | ");
-            buffer.append(titleBase);
-        }
-        return buffer.toString();
-    }
 
-    private static String homeTitle() {
-        return titleFromConfig("blogix.title.home");
-    }
-
-    private static String loadBaseTitle() {
-        return titleFromConfig("blogix.title.base");
-    }
-
-    private static String titleFromConfig(String propertyName) {
-        String title = BlogixConfig.getConfig().getProperty(propertyName, null);
-        if (title != null) {
-            title = title.trim();
-            if (title != null) {
-                return title;
-            }
-        }
-        return null;
-    }
 
     public static  Map<String, Object> homePage(Integer page) {
         Map<String, Object> model = loadCommonPostData();
@@ -86,7 +64,7 @@ public class Blogix {
         Post post = postsDb.findById(postId);
         if (post != null) {
             model.put("post", post);
-            model.put(TITLE, title(post.getTitle()));
+            putTitle(model, post.getTitle());
             return model;
         }
         else throw new RuntimeException("Cannot find post: " + postId);
@@ -105,7 +83,7 @@ public class Blogix {
         Category category = categoriesDb.findById(categoryId);
         model.put("category", category);
         
-        model.put(TITLE, title(category.getName()));
+        model.put(TITLE, generateTitle(category.getName()));
         return model;
     }
     
@@ -128,6 +106,106 @@ public class Blogix {
         model.put("posts", postsDb.findByFieldContaining("categories", categoryId).asJavaList());
         return model;
     }
+    
+    public static Map<String, Object> categories() {
+        Map<String, Object> model = loadCommonPostData();
+        putTitle(model, "Categories");
+        
+        List<Category> plainCategories = categoriesDb.findAll().asJavaList();
+        EntryList<Post> allPosts = postsDb.findAll();
+        List<CategoryAggregation> categories = new LinkedList<CategoryAggregation>();
+        
+        for (Category category : plainCategories) {
+            CategoryAggregation ca = new CategoryAggregation();
+            ca.setCategory(category);
+            ca.setRecentPosts(allPosts.sortDesc().filter(onlyRecentPostsForCategory(category.getId())).first(5).asJavaList());
+            categories.add(ca);
+        }
+        model.put("categories", categories);
+        return model;
+    }
+
+    
+    private static EntryFilter<Post> onlyRecentPostsForCategory(final String categoryId) {
+        return new EntryFilter<Post>() {
+            @Override
+            public boolean applies(Post post) {
+                String[] categories = post.getCategories();
+                if (categories != null) {
+                    for (String category : categories) {
+                        if (category.equals(categoryId)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
+
+    public static Map<String, Object> recentPosts() {
+        return loadCommonPostData();
+    }
+    
+    public static Map<String, Object> archive() {
+        Map<String, Object> model = loadCommonPostData();
+        putTitle(model, "Archive");
+        
+        List<Post> allPosts = postsDb.findAll().sortDesc().asJavaList();
+        
+        List<YearArchive> archive = new LinkedList<YearArchive>();
+        
+        if (allPosts.size() > 0) {
+            Collections.sort(allPosts, byDateDescending());
+            YearArchive currentYear = new YearArchive(yearOfPost(allPosts.get(0)));
+            MonthArchive currentMonth = new MonthArchive(monthOfPost(allPosts.get(0)));
+            currentYear.addMonth(currentMonth);
+            archive.add(currentYear);
+            for (Post post : allPosts) {
+                int postYear = yearOfPost(post);
+                int postMonth = monthOfPost(post);
+                if (currentYear.getYear() != postYear) {
+                    currentYear = new YearArchive(postYear);
+                    currentMonth = new MonthArchive(postMonth);
+                    currentYear.addMonth(currentMonth);
+                    archive.add(currentYear);
+                }
+                else {
+                    if (currentMonth.getMonth() != postMonth) {
+                        currentMonth = new MonthArchive(postMonth);
+                        currentYear.addMonth(currentMonth);
+                    }
+                }
+                currentMonth.addPost(post);
+            }
+        }
+        
+        model.put("archive", archive);
+        return model;
+    }
+
+    private static int monthOfPost(Post post) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(post.getDate());
+        return calendar.get(Calendar.MONTH);
+    }
+
+    private static int yearOfPost(Post post) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(post.getDate());
+        return calendar.get(Calendar.YEAR);
+    }
+
+    private static Comparator<Post> byDateDescending() {
+        return new Comparator<Post>() {
+            @Override
+            public int compare(Post p1, Post p2) {
+                return (int)(p2.getDate().getTime() / 1000 - p1.getDate().getTime() / 1000);
+            }
+        };
+    }
+
 
     private static Map<String, Object> loadCommonPostData() {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -162,11 +240,42 @@ public class Blogix {
         List<Post> homePosts = allPosts.sortDesc().page(page, DEFAULT_POSTS_PER_PAGE).asJavaList();
         model.put("posts", homePosts);
         model.put(CURRENT_PAGE, 1);
-        model.put(TITLE, title(homeTitle()));
+        model.put(TITLE, generateTitle(homeTitle()));
     }
 
-    public static Map<String, Object> categories() {
+    private static void putTitle(Map<String, Object> model, String secondaryTitle) {
+        model.put(TITLE, generateTitle(secondaryTitle));
+    }
+    
+    private static String generateTitle(String secondaryTitle) {
+        if (secondaryTitle ==  null) {
+            secondaryTitle = "";
+        }
+        StringBuffer buffer = new StringBuffer(secondaryTitle);
+        if (titleBase != null) {
+            buffer.append(" | ");
+            buffer.append(titleBase);
+        }
+        return buffer.toString();
+    }
+
+    private static String homeTitle() {
+        return titleFromConfig("blogix.title.home");
+    }
+
+    private static String loadBaseTitle() {
+        return titleFromConfig("blogix.title.base");
+    }
+
+    private static String titleFromConfig(String propertyName) {
+        String title = BlogixConfig.getConfig().getProperty(propertyName, null);
+        if (title != null) {
+            title = title.trim();
+            if (title != null) {
+                return title;
+            }
+        }
         return null;
-    }
-
+    }    
+    
 }
