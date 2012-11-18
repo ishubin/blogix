@@ -31,6 +31,7 @@ import net.mindengine.blogix.db.EntryList;
 import net.mindengine.blogix.db.FileDb;
 import net.mindengine.blogix.model.CategoryAggregation;
 import net.mindengine.blogix.model.MonthArchive;
+import net.mindengine.blogix.model.Pagination;
 import net.mindengine.blogix.model.Post;
 import net.mindengine.blogix.model.Category;
 import net.mindengine.blogix.model.YearArchive;
@@ -242,7 +243,9 @@ public class Blogix {
         List<Post> homePosts = allPosts.sortDesc().page(page, DEFAULT_POSTS_PER_PAGE).asJavaList();
         model.put("posts", homePosts);
         model.put(CURRENT_PAGE, page);
-        model.put("pages", (int)(totalPosts / DEFAULT_POSTS_PER_PAGE) + 1);
+        int totalPages = (int)(totalPosts / DEFAULT_POSTS_PER_PAGE) + 1;
+        model.put("pages", totalPages);
+        model.put("pagination", Pagination.create(1, totalPages, 2, page));
         
         model.put(TITLE, generateTitle(homeTitle()));
     }

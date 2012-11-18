@@ -40,6 +40,7 @@ import org.testng.annotations.Test;
 
 public class BlogixControllerTest {
     
+    private static final String PAGINATION = "pagination";
     private static final String PAGES = "pages";
     private static final String TITLE_BASE = " | Blogix Blog";
     private static final String TITLE = "title";
@@ -62,9 +63,10 @@ public class BlogixControllerTest {
         
         assertCommonModelDataForPosts(homePageModel);
         
-        assertThat(homePageModel,hasKey(POSTS));
-        assertThat(homePageModel,hasKey(CURRENT_PAGE));
-        assertThat(homePageModel,hasKey(ALL_POSTS_COUNT));
+        assertThat(homePageModel, hasKey(POSTS));
+        assertThat(homePageModel, hasKey(CURRENT_PAGE));
+        assertThat(homePageModel, hasKey(ALL_POSTS_COUNT));
+        assertThat(homePageModel, hasKey(PAGINATION));
         
         assertHomeFirstPagePosts((List<Post>) homePageModel.get(POSTS));
         
@@ -86,6 +88,7 @@ public class BlogixControllerTest {
         assertThat(homePageModel, hasKey(CURRENT_PAGE));
         assertThat(homePageModel, hasKey(ALL_POSTS_COUNT));
         assertThat(homePageModel, hasKey(PAGES));
+        assertThat(homePageModel, hasKey(PAGINATION));
         
         List<Post> homePosts = (List<Post>) homePageModel.get(POSTS);
         assertHomeSecondPagePosts(homePosts);
