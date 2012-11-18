@@ -3,7 +3,7 @@
     <#list posts as post>
     <div class="article">
         <div class="header">
-            <span class="date">1 Oct 2012</span>
+            <span class="date">${post.date?date}</span>
             <a href="/post/${post.id}#comments">COMMENTS</a>
         </div>
         <a class="title" href="/post/${post.id}">${post.title?html}</a>
@@ -14,3 +14,7 @@
     </div>
     </#list>
 </div>
+
+<ul class="pagination">
+
+</ul>

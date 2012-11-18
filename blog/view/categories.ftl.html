@@ -1,0 +1,21 @@
+
+<h1>Categories</h1>
+
+
+<div class="categories">
+<#list categories as category>
+    <#if category.hasPosts() >
+    <div class="category">
+        <a class="title" href="/category/${category.category.id}">${category.category.name?html}</a>
+        <ul class="post-list">
+            <#list category.recentPosts as post>
+            <li>
+                <span class="date">${post.date?date}</span>
+                <a class="title" href="/post/${post.id}">${post.title?html}</a>
+            </li>
+            </#list>
+        </ul>
+    </div>
+    </#if>
+</#list>
+</div>

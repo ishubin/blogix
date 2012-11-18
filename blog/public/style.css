@@ -176,7 +176,7 @@ a.button:hover {
     border-bottom: 1px solid #ccc;
     margin-bottom:1.0em;
 }
-.article a.title {
+.article a.title, .categories a.title {
     display:block;
     color:#1F4559;
     font-weight:bold;
@@ -188,7 +188,7 @@ a.button:hover {
 .article .header {
     position:relative;
 }
-.article span.date { 
+.article span.date, .categories ul.post-list span.date { 
     right: 10px;
     margin-right:1.0em;
     color:#555;
@@ -202,4 +202,29 @@ a.button-readmore {
 
 #comments {
     margin-top:1.5em;
+}
+
+
+
+/*
+ * Categories
+--------------------------------------------------*/
+
+.categories ul.post-list {
+    list-style: none;
+}
+.categories ul.post-list li {
+    margin-left: 2.0em;
+    margin-top:0.4em;
+    padding-bottom: 0.4em;
+    border-bottom: 2px dotted #ccc;
+}
+.categories ul li a.title {
+    display: inline;
+    font-weight:bold;
+    color:#1F4559;
+    font-size:1.1em;
+}
+.categories ul li a.title:hover {
+    color:#2890C7;
 }

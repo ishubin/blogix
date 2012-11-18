@@ -40,6 +40,7 @@ import org.testng.annotations.Test;
 
 public class BlogixControllerTest {
     
+    private static final String PAGES = "pages";
     private static final String TITLE_BASE = " | Blogix Blog";
     private static final String TITLE = "title";
     private static final int NUMBER_OF_ALL_POSTS_FOR_CATEGORY_1 = 12;
@@ -69,6 +70,7 @@ public class BlogixControllerTest {
         
         assertThat((Integer) homePageModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_IN_TEST));
         assertThat((Integer) homePageModel.get(CURRENT_PAGE), is(1));
+        assertThat((Integer) homePageModel.get(PAGES), is(2));
         
         assertThat((String) homePageModel.get(TITLE), is("Home" + TITLE_BASE));
     }
@@ -83,12 +85,15 @@ public class BlogixControllerTest {
         assertThat(homePageModel, hasKey(POSTS));
         assertThat(homePageModel, hasKey(CURRENT_PAGE));
         assertThat(homePageModel, hasKey(ALL_POSTS_COUNT));
+        assertThat(homePageModel, hasKey(PAGES));
         
         List<Post> homePosts = (List<Post>) homePageModel.get(POSTS);
         assertHomeSecondPagePosts(homePosts);
         
         assertThat("'" + ALL_POSTS_COUNT + "' field in homePageModel should be", (Integer) homePageModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_IN_TEST));
-        assertThat("'" + CURRENT_PAGE + "' field in homePageModel should be", (Integer) homePageModel.get(CURRENT_PAGE), is(1));
+        assertThat("'" + CURRENT_PAGE + "' field in homePageModel should be", (Integer) homePageModel.get(CURRENT_PAGE), is(2));
+        
+        assertThat((Integer) homePageModel.get(PAGES), is(2));
         
         assertThat((String) homePageModel.get(TITLE), is("Home" + TITLE_BASE));
     }
@@ -110,6 +115,9 @@ public class BlogixControllerTest {
                 "2012-01-01-title-10",
                 "2012-01-01-title-09",
                 "2012-01-01-title-08"));
+        
+        assertThat("Second category name should be", categories.get(1).getCategory().getName(), is("Category 2"));
+        assertThat("Third category name should be", categories.get(2).getCategory().getName(), is("Category 3"));
         
         assertThat("Third category should contain only 2 recent posts", categories.get(2).getRecentPosts(), hasRecentPostsWithIds("2012-01-01-title-14", "2012-01-01-title-13"));
     }

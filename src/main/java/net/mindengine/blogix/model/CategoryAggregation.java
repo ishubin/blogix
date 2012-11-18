@@ -32,5 +32,9 @@ public class CategoryAggregation {
     public void setRecentPosts(List<Post> recentPosts) {
         this.recentPosts = recentPosts;
     }
+    
+    public boolean hasPosts() {
+        return recentPosts != null && recentPosts.size() > 0; 
+    }
 
 }

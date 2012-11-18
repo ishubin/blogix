@@ -235,11 +235,15 @@ public class Blogix {
 
     private static void loadHomePage(Map<String, Object> model, int page) {
         EntryList<Post> allPosts = postsDb.findAll();
-        model.put(ALL_POSTS_COUNT, allPosts.size());
+        
+        int totalPosts = allPosts.size();
+        model.put(ALL_POSTS_COUNT, totalPosts);
 
         List<Post> homePosts = allPosts.sortDesc().page(page, DEFAULT_POSTS_PER_PAGE).asJavaList();
         model.put("posts", homePosts);
-        model.put(CURRENT_PAGE, 1);
+        model.put(CURRENT_PAGE, page);
+        model.put("pages", (int)(totalPosts / DEFAULT_POSTS_PER_PAGE) + 1);
+        
         model.put(TITLE, generateTitle(homeTitle()));
     }
 

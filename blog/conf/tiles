@@ -15,3 +15,9 @@ about: @main
 
 post:   @main
     content:        post.ftl.html
+
+categories: @main
+    content:         categories.ftl.html
+
+archive:    @main
+    content:        archive.ftl.html
