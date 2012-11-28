@@ -40,6 +40,7 @@ import org.testng.annotations.Test;
 
 public class BlogixControllerTest {
     
+    private static final String ALL_CATEGORIES= "allCategories";
     private static final String PAGINATION = "pagination";
     private static final String PAGES = "pages";
     private static final String TITLE_BASE = " | Blogix Blog";
@@ -56,6 +57,12 @@ public class BlogixControllerTest {
     private static final String CURRENT_PAGE = "currentPage";
     
     
+    @Test
+    public void base_shouldGive_recentPosts() throws Exception {
+        Map<String, Object> baseModel = Blogix.base();
+        assertCommonModelDataForPosts(baseModel);
+    }
+    
     @SuppressWarnings("unchecked")
     @Test
     public void homePage_shouldGive_onlyPosts_forFirstPage() throws Exception {
@@ -67,6 +74,8 @@ public class BlogixControllerTest {
         assertThat(homePageModel, hasKey(CURRENT_PAGE));
         assertThat(homePageModel, hasKey(ALL_POSTS_COUNT));
         assertThat(homePageModel, hasKey(PAGINATION));
+        assertThat(homePageModel, hasKey(ALL_CATEGORIES));
+        assertAllCategories(homePageModel);
         
         assertHomeFirstPagePosts((List<Post>) homePageModel.get(POSTS));
         
@@ -89,6 +98,8 @@ public class BlogixControllerTest {
         assertThat(homePageModel, hasKey(ALL_POSTS_COUNT));
         assertThat(homePageModel, hasKey(PAGES));
         assertThat(homePageModel, hasKey(PAGINATION));
+        assertThat(homePageModel, hasKey(ALL_CATEGORIES));
+        assertAllCategories(homePageModel);
         
         List<Post> homePosts = (List<Post>) homePageModel.get(POSTS);
         assertHomeSecondPagePosts(homePosts);
@@ -108,6 +119,7 @@ public class BlogixControllerTest {
         assertCommonModelDataForPosts(categoriesModel);
         
         assertThat(categoriesModel, hasKey("categories"));
+        assertThat(categoriesModel, hasKey(ALL_CATEGORIES));
         
         List<CategoryAggregation> categories = (List<CategoryAggregation>) categoriesModel.get("categories");
         assertThat("Categories list should not be null", categories, is(notNullValue()));
@@ -131,6 +143,8 @@ public class BlogixControllerTest {
         Map<String, Object> recentPostsModel = Blogix.recentPosts();
         
         assertThat(recentPostsModel, hasKey(RECENT_POSTS));
+        assertThat(recentPostsModel, hasKey(ALL_CATEGORIES));
+        assertAllCategories(recentPostsModel);
         List<Post> recentPosts = (List<Post>) recentPostsModel.get(RECENT_POSTS);
         assertThat("Recent posts should not be null", recentPosts, is(notNullValue()));
         
@@ -147,6 +161,8 @@ public class BlogixControllerTest {
         Map<String, Object> archiveModel = Blogix.archive();
         assertCommonModelDataForPosts(archiveModel);
         assertThat(archiveModel, hasKey("archive"));
+        assertThat(archiveModel, hasKey(ALL_CATEGORIES));
+        assertAllCategories(archiveModel);
         
         List<YearArchive> archive = (List<YearArchive>) archiveModel.get("archive");
         assertThat("Archive should not be null", archive, is(notNullValue()));
@@ -194,6 +210,8 @@ public class BlogixControllerTest {
         Map<String, Object> postModel = Blogix.post(postId);
         assertThat(postModel, hasKey("post"));
         assertCommonModelDataForPosts(postModel);
+        assertThat(postModel, hasKey(ALL_CATEGORIES));
+        assertAllCategories(postModel);
         
         Post post = (Post) postModel.get("post");
         
@@ -222,6 +240,9 @@ public class BlogixControllerTest {
         assertThat(postsModel, hasKey("category"));
         assertThat(postsModel, hasKey(CURRENT_PAGE));
         assertThat(postsModel, hasKey(ALL_POSTS_COUNT));
+        assertThat(postsModel, hasKey(PAGINATION)); 
+        assertThat(postsModel, hasKey(ALL_CATEGORIES));
+        assertAllCategories(postsModel);
         
         assertCommonModelDataForPosts(postsModel);
         
@@ -255,6 +276,9 @@ public class BlogixControllerTest {
         assertThat(postsModel, hasKey("category"));
         assertThat(postsModel, hasKey(CURRENT_PAGE));
         assertThat(postsModel, hasKey(ALL_POSTS_COUNT));
+        assertThat(postsModel, hasKey(PAGINATION));
+        assertThat(postsModel, hasKey(ALL_CATEGORIES));
+        assertAllCategories(postsModel);
         
         assertCommonModelDataForPosts(postsModel);
         
@@ -281,8 +305,8 @@ public class BlogixControllerTest {
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_IN_TEST));
         
-        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-01"));
-        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-02"));
+        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-14"));
+        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-13"));
     }
     
     
@@ -294,8 +318,8 @@ public class BlogixControllerTest {
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_CATEGORY_1));
         
-        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-01"));
-        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-02"));
+        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-12"));
+        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-11"));
     }
     
     @SuppressWarnings("unchecked")
@@ -306,8 +330,8 @@ public class BlogixControllerTest {
         List<Post> posts = (List<Post>) rssModel.get("posts");
         assertThat("RSS feed for all should have all posts", posts.size(), is(NUMBER_OF_ALL_POSTS_FOR_CATEGORY_2));
         
-        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-13"));
-        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-14"));
+        assertThat("First post should be", posts.get(0).getId(), is("2012-01-01-title-14"));
+        assertThat("Second post should be", posts.get(1).getId(), is("2012-01-01-title-13"));
     }
     
     
@@ -382,6 +406,18 @@ public class BlogixControllerTest {
         assertThat(model, hasKey(TITLE));
         List<Post> recentPosts = (List<Post>) model.get(RECENT_POSTS);
         assertRecentPosts(recentPosts);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void assertAllCategories(Map<String, Object> model) {
+        Map<String, Category> allCategories = (Map<String, Category>) model.get(ALL_CATEGORIES);
+        
+        for (int i = 1; i <= 3; i++) {
+            assertThat(allCategories, hasKey("category" + i));
+            Category category  = allCategories.get("category" + i);
+            assertThat(category.getName(), is("Category " + i));
+        }
+        
     }
         
 }

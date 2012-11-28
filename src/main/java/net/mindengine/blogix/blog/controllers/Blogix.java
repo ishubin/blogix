@@ -38,6 +38,7 @@ import net.mindengine.blogix.model.YearArchive;
 import net.mindengine.blogix.utils.BlogixFileUtils;
 
 public class Blogix {
+    private static final String ALL_CATEGORIES = "allCategories";
     private static final String TITLE = "title";
     private static final int DEFAULT_POSTS_PER_PAGE = 10;
     private static final String CURRENT_PAGE = "currentPage";
@@ -47,12 +48,17 @@ public class Blogix {
     
     private static String titleBase = loadBaseTitle();
     
+    public static Map<String, Object> base() {
+        Map<String, Object> model = loadCommonPostData();
+        model.put(TITLE, generateTitle(""));
+        return model;
+    }
+    
     public static Map<String, Object> homeFirstPage() {
         Map<String, Object> model = loadCommonPostData();
         loadHomePage(model, 1);
         return model;
     }
-
 
     public static  Map<String, Object> homePage(Integer page) {
         Map<String, Object> model = loadCommonPostData();
@@ -66,6 +72,7 @@ public class Blogix {
         if (post != null) {
             model.put("post", post);
             putTitle(model, post.getTitle());
+            
             return model;
         }
         else throw new RuntimeException("Cannot find post: " + postId);
@@ -78,11 +85,16 @@ public class Blogix {
     public static  Map<String, Object> postsByCategoryAndPage(String categoryId, Integer page) {
         Map<String, Object> model = loadCommonPostData();
         EntryList<Post> allPosts = postsDb.findByFieldContaining("categories", categoryId);
-        model.put("allPostsCount", allPosts.size());
+        int totalPosts = allPosts.size();
+        model.put("allPostsCount", totalPosts);
         model.put("posts", allPosts.page(page, DEFAULT_POSTS_PER_PAGE).asJavaList());
         model.put("currentPage", page);
         Category category = categoriesDb.findById(categoryId);
         model.put("category", category);
+        
+        int totalPages = (int)(totalPosts / DEFAULT_POSTS_PER_PAGE) + 1;
+        model.put("pages", totalPages);
+        model.put("pagination", Pagination.create(1, totalPages, 2, page));
         
         model.put(TITLE, generateTitle(category.getName()));
         return model;
@@ -98,13 +110,13 @@ public class Blogix {
     
     public static Map<String, Object> rssFeedAll() {
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("posts", postsDb.findAll().asJavaList());
+        model.put("posts", postsDb.findAll().sortDesc().first(20).asJavaList());
         return model;
     }
     
     public static Map<String, Object> rssFeedForCategory(String categoryId) {
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("posts", postsDb.findByFieldContaining("categories", categoryId).asJavaList());
+        model.put("posts", postsDb.findByFieldContaining("categories", categoryId).sortDesc().first(20).asJavaList());
         return model;
     }
     
@@ -211,6 +223,7 @@ public class Blogix {
     private static Map<String, Object> loadCommonPostData() {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("recentPosts", loadRecentPosts());
+        model.put(ALL_CATEGORIES, getAllCategories());
         return model;
     }
 
@@ -248,6 +261,16 @@ public class Blogix {
         model.put("pagination", Pagination.create(1, totalPages, 2, page));
         
         model.put(TITLE, generateTitle(homeTitle()));
+    }
+
+    private static Map<String, Category> getAllCategories() {
+        Map<String, Category> map = new HashMap<String, Category>();
+        List<Category> categoryList = categoriesDb.findAll().asJavaList();
+        
+        for (Category category : categoryList) {
+            map.put(category.getId(), category);
+        }
+        return map;
     }
 
     private static void putTitle(Map<String, Object> model, String secondaryTitle) {

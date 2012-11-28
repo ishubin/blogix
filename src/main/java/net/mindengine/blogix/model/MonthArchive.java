@@ -22,6 +22,9 @@ public class MonthArchive {
     private int month;
     private List<Post> posts;
     
+    private final static String[] MONTH_SHORT_NAMES = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    private final static String[] MONTH_FULL_NAMES = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    
     public MonthArchive() {
     }
     public MonthArchive(int month) {
@@ -29,6 +32,18 @@ public class MonthArchive {
     }
     public int getMonth() {
         return month;
+    }
+    public String getMonthShortName() {
+        if (month >=0 && month < MONTH_SHORT_NAMES.length) {
+            return MONTH_SHORT_NAMES[month];
+        }
+        else return "";
+    }
+    public String getMonthFullName() {
+        if (month >=0 && month < MONTH_FULL_NAMES.length) {
+            return MONTH_FULL_NAMES[month];
+        }
+        else return "";
     }
     public void setMonth(int month) {
         this.month = month;
