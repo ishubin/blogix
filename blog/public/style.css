@@ -7,7 +7,7 @@ body {
     height: 120px;
     background: #4D6978;
     background:url(/public/header-back.png);
-    padding-left: 1.5em;
+    padding-left: 1.0em;
 }
 #header h1, #header h2 {
     color:white;
@@ -32,7 +32,7 @@ body {
     background: url(/public/body-back.png);
 }
 #content {
-    padding-left:1.5em;
+    padding-left:1.0em;
     padding-top:1.0em;
 }
 #sideRight {
@@ -142,7 +142,7 @@ a:hover {
 
 /* Buttons
 ----------------------------------------*/
-a.button {
+a.button, span.button {
     display:inline-block;
     padding-top:0.3em;
     padding-bottom:0.4em;
@@ -164,6 +164,11 @@ a.button:hover {
     background:#2585B8;
 }
 
+span.button.disabled:hover, a.button.disabled:hover, span.button.disabled, a.button.disabled {
+    background: #888;
+    border:1px solid #666;
+}
+
 /* Article
 ----------------------------------------*/
 
@@ -176,7 +181,7 @@ a.button:hover {
     border-bottom: 1px solid #ccc;
     margin-bottom:1.0em;
 }
-.article a.title, .categories a.title {
+.article a.title {
     display:block;
     color:#1F4559;
     font-weight:bold;
@@ -188,7 +193,7 @@ a.button:hover {
 .article .header {
     position:relative;
 }
-.article span.date, .categories ul.post-list span.date { 
+.article span.date { 
     right: 10px;
     margin-right:1.0em;
     color:#555;
@@ -204,6 +209,16 @@ a.button-readmore {
     margin-top:1.5em;
 }
 
+/*
+ * Article content
+ *
+--------------------------------------------------*/
+.article-content h1 {
+    font-size: 1.6em;
+}
+.article-content h2 {
+    font-size: 1.3em;
+}
 
 
 /*
@@ -227,4 +242,111 @@ a.button-readmore {
 }
 .categories ul li a.title:hover {
     color:#2890C7;
+}
+.categories ul li {
+    position: relative;
+}
+.categories ul li span.date {
+    position:absolute;
+    margin-right:1.0em;
+    color:#555;
+    text-transform:uppercase;
+}
+.categories ul li .article-details {
+    margin-left: 7.5em;
+}
+.categories a.title {
+    display:block;
+    color:#1F4559;
+    font-weight:bold;
+    text-decoration: none;
+    font-size:1.5em;
+    text-shadow:1px 1px 0px #fff;
+}
+.categories a.title:hover {
+    color:#2890C7;
+}
+/*
+ * Pagination
+--------------------------------------------------*/
+.page-navigation {
+    margin-bottom: 1.0em;
+}
+.pagination-block ul.pagination {
+    list-style: none;
+    margin-bottom: 4.0em;
+}
+.pagination-block ul.pagination li {
+    float: left;
+    margin-right: 2.0em;
+}
+
+/*
+ * Archive 
+--------------------------------------------------*/
+.archive {
+    position: relative;
+}
+.archive span.archive-year {
+    color: #888; 
+    font-size:2.0em;
+    position:absolute;
+}
+.archive span.archive-month {
+    color:#888;
+    position:absolute;
+    font-size:1.3em;
+    margin-left: 4em;
+}
+.archive .archive-post {
+    margin-left: 8em;
+    margin-bottom:0.8em;
+    padding-bottom: 0.4em;
+    border-bottom: 1px dotted #ccc;
+}
+
+.archive .archive-post a.title {
+    display: inline;
+    font-weight: bold;
+    color: #1F4559;
+    font-size: 1.1em;
+}
+.archive .archive-post a.title:hover {
+    color:#2890C7;
+    text-decoration:none;
+}
+.archive-separator {
+    margin-bottom:2.0em;
+}
+
+
+
+/*
+ * Tag list
+--------------------------------------------------*/
+.tag-list {
+    font-size: 0.8em;
+}
+.tag-list, .tag-list  span {
+    color: #888;
+}
+.tag-list a {
+    color: #666;
+}
+
+/*
+ * Side Bar
+--------------------------------------------------*/
+h3 {
+    color:#111;
+    text-shadow: 1px 1px 0px #fff;
+}
+
+.recent-posts {
+    list-style:none;
+    padding:0;
+}
+.recent-posts li {
+    margin-bottom:0.6em;
+    border-bottom: 1px dotted #ccc;
 }

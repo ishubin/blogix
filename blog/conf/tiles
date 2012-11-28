@@ -1,9 +1,10 @@
 
 main: main.ftl.html
     header:         header.ftl.html        
-    body:   
+    content:   
     footer:         footer.ftl.html
     navigation:     navigation.ftl.html
+    sideBar:        sideBar.ftl.html 
 
 
 browse: @main
@@ -21,3 +22,6 @@ categories: @main
 
 archive:    @main
     content:        archive.ftl.html
+
+
+rss:    rss.ftl.xml

@@ -1,19 +1,23 @@
 default.controller.packages = controllers,net.mindengine.blogix.blog.controllers
-
 default.provider.packages = providers,net.mindengine.blogix.blog.providers 
-
 markup.class = net.mindengine.blogix.markup.TextileMarkup
 
 public.path = public
 
-
 blogix.db.path = db
-
 
 blogix.title.base = Blogix
 blogix.title.home = Home
 
-
+# Used in header in main.ftl.html
 custom.headerH1 = Blogix
 custom.headerH2 = My new blog
 
+# Will be used in google search
+custom.googleSite = blogix.info
+
+custom.productionSite = blogix.info
+
+custom.authorName = Sample AuthorName 
+custom.rssTitle = My Blog
+custom.rssSubtitle = Very nice stuff!

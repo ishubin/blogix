@@ -11,7 +11,17 @@
             <#list category.recentPosts as post>
             <li>
                 <span class="date">${post.date?date}</span>
-                <a class="title" href="/post/${post.id}">${post.title?html}</a>
+                <div class="article-details">
+                    <a class="title" href="/post/${post.id}">${post.title?html}</a>
+                        <div class="tag-list">
+                            <span>Posted in</span>
+                            <#list post.categories as category>
+                                <#if allCategories[category]??>
+                                    <a href="/category/${allCategories[category].id}">${allCategories[category].name?html}</a><#if category_has_next>,</#if>
+                                </#if>
+                            </#list>
+                        </div>
+                </div>
             </li>
             </#list>
         </ul>

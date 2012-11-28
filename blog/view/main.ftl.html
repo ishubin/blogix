@@ -7,6 +7,73 @@
         <title>${title}</title>
         <link rel="stylesheet" href="/public/main.css" media="screen" type="text/css">
         <link rel="stylesheet" href="/public/style.css" media="screen" type="text/css">
+        <meta name="viewport" content="width=device-width; initial-scale=1.0">
+        <script src="/public/jquery-1.8.3.min.js"></script>
+        <script>
+            var _FULL = 1;
+            var _MOBILE = 2;
+            var layout = {
+                layout:_FULL,
+                switchToMobile: function() {
+                    if (this.layout != _MOBILE) {
+                        this.layout = _MOBILE;
+                        this.createSelectForMenu();
+                        $("#nav").hide();
+                        $("#navigationSelect").show();
+                        $("#middle").removeClass("full-layout").addClass("mobile-layout");
+                        $("#navigation").removeClass("full-layout").addClass("mobile-layout");
+                    }
+                },
+                createSelectForMenu: function() {
+                    if ($("#navigationSelect select option").length == 0) {
+                        var select = $("#navigationSelect select");
+                        select.append($("<option></option>").text("Navigate..."));
+                        $("#nav li a").each(function () {
+                            var href=$(this).attr("href");
+                            var text=$(this).html();
+                            select.append($("<option></option>").attr("value", href).text(text));
+                        });
+                    }
+                    $("#navigationSelect select").change(function (){
+                        var href = $(this).val();
+                        if (href != null && href != "") {
+                            window.location = href;
+                        }
+                    });
+                },
+                switchToFull: function() {
+                    if (this.layout != _FULL) {
+                        this.layout = _FULL;
+                        $("#nav").show();
+                        $("#navigationSelect").hide();
+                        $("#navigation").removeClass("mobile-layout").addClass("full-layout");
+                    }
+                }
+            };
+
+            function globalResize(){
+                var width = $(window).width(); 
+                if (width < 800) {
+                    layout.switchToMobile();
+                }
+                else {
+                    layout.switchToFull();
+                }
+            }
+
+            $(function(){
+                $(window).resize(globalResize);
+                globalResize();
+
+                $("#search-panel a").click(function (){
+                    var q = encodeURI($("#search-panel input").val() + " site:${googleSite}");
+                    window.location = "http://www.google.com/search?q=" + q;
+                    return false;
+                });
+            });
+
+        
+        </script>
     </head>
     <body>
         <div id="wrapper">
@@ -21,15 +88,33 @@
                     <li><a href="/categories">Categories</a>
                     <li><a href="/archive">Archive</a>
                     <li><a href="/about">About</a>
-                    <li><a href="/rss">RSS</a>
+                    <#if category??>
+                        <li><a href="/category/${category.id}/rss.xml">RSS</a>
+                    <#else>
+                        <li><a href="/rss.xml">RSS</a>
+                    </#if>
                 </ul>
+                <div id="navigationSelect" style="display:none;">
+                    Menu 
+                    <select name="menu">
+                        <!--
+                        <option value="/" selected="selected">Choose</option>
+                        <option value="/">Home</option>
+                        <option value="/categories">Categories</option>
+                        <option value="/archive">Archive</option>
+                        <option value="/about">About</option>
+                        -->
+                    </select>
+                </div>
                 <div id="search-panel">
-                    <input name="q" value=""/>
-                    <a href="/">Search</a>
+                    <form action="http://www.google.com/search">
+                        <input name="q" value=""/>
+                        <a href="http://www.google.com?q=site:${googleSite}">Search</a>
+                    </form>
                 </div>
             </div>
 
-            <div id="middle">
+            <div id="middle" class="full-layout">
                 <div id="container">
                     <div id="content">
                         ${tiles.process('content')}
@@ -37,7 +122,7 @@
                 </div><!-- #container-->
 
                 <div class="sidebar" id="sideRight">
-                    <strong>Right Sidebar:</strong> Integer velit. Vestibulum nisi nunc, accumsan ut, vehicula sit amet, porta a, mi. Nam nisl tellus, placerat eget, posuere eget, egestas eget, dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In elementum urna a eros. Integer iaculis. Maecenas vel elit.
+                    ${tiles.process('sideBar')} 
                 </div><!-- .sidebar#sideRight -->
 
             </div><!-- #middle-->
