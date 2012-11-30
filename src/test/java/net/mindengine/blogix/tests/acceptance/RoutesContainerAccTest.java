@@ -113,12 +113,6 @@ public class RoutesContainerAccTest {
         assertThat(modelInRoute(6), allOf(hasEntry("doubleMinus", (Object)(-1.3))));
     }
     
-    @Test(dependsOnMethods = BASE_TEST)
-    public void shouldParse_basicControllerArguments_forEachRoute() {
-        throw new RuntimeException("not yet implemented");
-    }
-    
-    
     
     @Test(dependsOnMethods = BASE_TEST)
     public void shouldGenerateRegexPatternOnlyOnce () {
