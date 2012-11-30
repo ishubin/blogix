@@ -17,7 +17,9 @@ package net.mindengine.blogix.tests.acceptance;
 
 import static net.mindengine.blogix.tests.TestGroups.ACCEPTANCE;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -28,6 +30,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +67,7 @@ public class RoutesContainerAccTest {
     public void shouldLoadFromSpecifiedFile() throws URISyntaxException, IOException {
         container.load(new File(getClass().getResource("/routes-test.cfg").toURI()), DEFAULT_CONTROLLER_PACKAGES, DEFAULT_PROVIDER_PACKAGES);
         assertThat("Routes list should be not null", container.getRoutes(), is(notNullValue()));
-        assertThat("Routes list should contain 4 routes", container.getRoutes().size(), is(6));
+        assertThat("Routes list should contain 7 routes", container.getRoutes().size(), is(7));
     }
     
     @Test(dependsOnMethods = BASE_TEST)
@@ -101,6 +104,22 @@ public class RoutesContainerAccTest {
         assertThat( viewNameInRoute(5), is (nullValue()));
     }
     
+    @SuppressWarnings("unchecked")
+    @Test(dependsOnMethods = BASE_TEST)
+    public void shouldParse_basicModelParameters_forEachRoute() {
+        assertThat(modelInRoute(6), allOf(hasEntry("title", (Object)"Title value")));
+        assertThat(modelInRoute(6), allOf(hasEntry("longNumber", (Object)new Long(123))));
+        assertThat(modelInRoute(6), allOf(hasEntry("double", (Object)(1231.3412))));
+        assertThat(modelInRoute(6), allOf(hasEntry("doubleMinus", (Object)(-1.3))));
+    }
+    
+    @Test(dependsOnMethods = BASE_TEST)
+    public void shouldParse_basicControllerArguments_forEachRoute() {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    
+    
     @Test(dependsOnMethods = BASE_TEST)
     public void shouldGenerateRegexPatternOnlyOnce () {
         for ( int i = 0; i < 4; i++) {
@@ -121,6 +140,7 @@ public class RoutesContainerAccTest {
         else assertThat( urlSample + " text matches the parameterized route regex pattern but it should not: " + urlInRoute(3).getUrlPattern(), matcher.matches(), is (false));
     }
     
+     
     @DataProvider
     public Object[][] provideRegexCheckSamples() {
         return new Object[][]{
@@ -246,6 +266,10 @@ public class RoutesContainerAccTest {
     
     private RouteURL urlInRoute(int number) {
         return container.getRoutes().get(number).getUrl();
+    }
+    
+    private Map<String, Object> modelInRoute(int index) {
+        return container.getRoutes().get(index).getModel();
     }
     
     private List<String> list(String ... items) {

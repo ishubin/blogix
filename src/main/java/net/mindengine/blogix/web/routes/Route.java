@@ -15,12 +15,15 @@
 ******************************************************************************/
 package net.mindengine.blogix.web.routes;
 
+import java.util.Map;
+
 public class Route {
 
     private RouteURL url;
     private ControllerDefinition controller;
     private String view;
     private RouteProviderDefinition provider;
+    private Map<String, Object> model;
     
     
     public RouteURL getUrl() {
@@ -46,6 +49,12 @@ public class Route {
     }
     public void setProvider(RouteProviderDefinition provider) {
         this.provider = provider;
+    }
+    public Map<String, Object> getModel() {
+        return this.model;
+    }
+    public void setModel(Map<String, Object> model) {
+        this.model = model;
     }
     
     

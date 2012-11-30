@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -58,14 +59,64 @@ public class DefaultRoutesParser implements RoutesParser {
         LineIterator it = FileUtils.lineIterator(file, "UTF-8");
         List<Route> routes = new LinkedList<Route>();
         
+        Route currentRoute = null;
         while( it.hasNext() ) {
             String line = it.nextLine();
-            Route route = parseLine(line.trim());
-            if ( route != null ) {
-                routes.add(route);
+            if (line.trim().isEmpty()) {
+                currentRoute = null;
+            }
+            else if (line.startsWith("  ")) {
+                loadModelEntryForRoute(currentRoute, line);
+            }
+            else {
+                currentRoute = parseLine(line.trim());
+                if ( currentRoute != null ) {
+                    routes.add(currentRoute);
+                }
             }
         }
         return routes;
+    }
+
+    private void loadModelEntryForRoute(Route currentRoute, String line) {
+        line = line.trim();
+        
+        int id = line.indexOf(":");
+        if (id > 0 ) {
+           String name = line.substring(0, id);
+           String value = line.substring(id+1).trim();
+           
+           obtainRouteModel(currentRoute).put(name, convertModelValue(value));
+        }
+    }
+
+    private Object convertModelValue(String value) {
+        Pattern DOUBLE_PATTERN = Pattern.compile("(\\+|-)?([0-9]+(\\.[0-9]+))");
+        Pattern NUMERIC_PATTERN = Pattern.compile("(\\+|-)?([0-9]+)");
+        if (NUMERIC_PATTERN.matcher(value).matches()) {
+            try {
+                return Long.parseLong(value);
+            }
+            catch (Exception e) {
+                return value;
+            }
+        }
+        else if (DOUBLE_PATTERN.matcher(value).matches()) {
+            try {
+                return Double.parseDouble(value);
+            }
+            catch (Exception e) {
+                return value;
+            }
+        }
+        return value;
+    }
+
+    private Map<String, Object> obtainRouteModel(Route currentRoute) {
+        if (currentRoute.getModel() == null) {
+            currentRoute.setModel(new HashMap<String, Object>());
+        }
+        return currentRoute.getModel();
     }
 
     private Route parseLine(String line) throws IOException {
