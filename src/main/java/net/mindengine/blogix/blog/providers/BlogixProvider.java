@@ -82,6 +82,23 @@ public class BlogixProvider {
         return map.toArray(new Map[0]);
     }
     
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object>[] allFilesForDocuments() {
+        List<String> docsIds = documentsDb.findAllIds().asJavaList();
+        
+        ArrayList<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
+        for (String docId : docsIds) {
+            List<String> files = documentsDb.findAttachments(docId).asJavaList();
+            for (String file : files) {
+                Map<String, Object> m = new HashMap<String, Object>();
+                m.put("documentPath", docId);
+                m.put("fileName", file);
+                map.add(m);
+            }
+        }
+        return map.toArray(new Map[0]);
+    }
+    
     
     
     @SuppressWarnings("unchecked")

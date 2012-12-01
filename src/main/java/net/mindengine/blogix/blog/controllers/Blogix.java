@@ -101,11 +101,18 @@ public class Blogix {
     }
     
     public static File fileForPost(String postId, String fileName) throws FileNotFoundException {
-        String fullAttachmentName = postId + "." + fileName;
-        if (postsDb.findAttachments(postId + "." + fileName).asJavaList().contains(fullAttachmentName)) {
-            return postsDb.findAttachmentAsFile(fullAttachmentName);
+        if (postsDb.findAttachments(postId).asJavaList().contains(fileName)) {
+            return postsDb.findAttachmentAsFile(postId, fileName);
         }
-        throw new FileNotFoundException("There is no '" + fileName + "' attachment for blog ");
+        throw new FileNotFoundException("There is no '" + fileName + "' attachment for post " + postId);
+    }
+    
+    public static File fileForDocument(String documentId, String fileName) throws FileNotFoundException {
+        
+        if (docsDb.findAttachments(documentId).asJavaList().contains(fileName)) {
+            return docsDb.findAttachmentAsFile(documentId, fileName);
+        }
+        throw new FileNotFoundException("There is no '" + fileName + "' attachment for document " + documentId);
     }
     
     public static Map<String, Object> rssFeedAll() {
@@ -321,6 +328,8 @@ public class Blogix {
         }
         return null;
     }
+
+    
 
         
     

@@ -1,23 +1,22 @@
-# Url                       Controller                                  View                        Provider
+# Url                               Controller                                      View                        Provider
 #######################################################################################################################
 
-/                           Blogix.homeFirstPage                          browse                         
+/                                   Blogix.homeFirstPage                            browse                         
 
-/page-{page}                Blogix.homePage(page)                         browse                      BlogixProvider.allHomePages
+/page-{page}                        Blogix.homePage(page)                           browse                      BlogixProvider.allHomePages
 
-/post/{postId}              Blogix.post(postId)                           post                        BlogixProvider.allPosts   
-/post/{postId}/{fileName}   Blogix.fileForPost(postId, fileName)          -                           BlogixProvider.allFilesForPosts  
+/pa/{postId}/files/{fileName}       Blogix.fileForPost(postId, fileName)            -                           BlogixProvider.allFilesForPosts  
+/post/{postId}                      Blogix.post(postId)                             post                        BlogixProvider.allPosts   
 
 /categories                         Blogix.categories                               categories
 /category/{category}                Blogix.postsByCategory(category)                browse                      BlogixProvider.allCategories
 /category/{category}/page-{page}    Blogix.postsByCategoryAndPage(category, page)   browse                      BlogixProvider.allCategoriesAndPages
 
 
-/rss.xml                   Blogix.rssFeedAll                             rss                         
-/category/{category}/rss.xml       Blogix.rssFeedForCategory(category)             rss                         BlogixProvider.allCategories
+/rss.xml                            Blogix.rssFeedAll                               rss                         
+/category/{category}/rss.xml        Blogix.rssFeedForCategory(category)             rss                         BlogixProvider.allCategories
 
 
-/about                      Blogix.base                                   about
-    title:  Blogix | About
+/docs/{documentPath}                Blogix.document(documentPath)                   doc                         BlogixProvider.allDocuments
 
-/archive                    Blogix.archive                                archive
+/archive                            Blogix.archive                                  archive

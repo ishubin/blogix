@@ -16,6 +16,8 @@
 package net.mindengine.blogix.tests.blog;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -84,7 +86,26 @@ public class BlogixProviderTest {
         
         assertThat(map[0].size(), is(2));
         assertThat((String)map[0].get("postId"), is("2012-01-01-title-02"));
-        assertThat((String)map[0].get("fileName"), is("2012-01-01-title-02.file01.txt"));
+        assertThat((String)map[0].get("fileName"), is("file01.txt"));
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void allFilesForDocuments() throws Exception {
+        Map<String, Object> map[] = invokeProvider("allFilesForDocuments");
+        assertThat(map, is(notNullValue()));
+        assertThat(map.length, is(3));
+        
+        assertThat(map[0], allOf(hasEntry("documentPath", (Object)"info/doc1"),
+                                hasEntry("fileName", (Object)"attachment1.txt")));
+        
+        assertThat(map[1], allOf(hasEntry("documentPath", (Object)"info/doc1"),
+                                hasEntry("fileName", (Object)"attachment2.txt")));
+        
+        assertThat(map[2], allOf(hasEntry("documentPath", (Object)"maindoc"),
+                                hasEntry("fileName", (Object)"file1.txt")));
+        
+        
     }
     
     @Test

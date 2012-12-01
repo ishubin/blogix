@@ -69,6 +69,10 @@ public class FileDb<T1 extends Comparable<T1>> {
     }
 
     private <T> T findByIdAndConvert(String id, Reader<T> converter) {
+        
+        if (id.endsWith("/")) {
+            id = trimSlashAtTheEnd(id);
+        }
         String finalId = id + ENTRY_SUFFIX;
         List<String> fileNames = allFilesInDirectoryIncludingSubfolders(directory, "");
         for (String fileName : fileNames) {
@@ -79,6 +83,10 @@ public class FileDb<T1 extends Comparable<T1>> {
         return null;
     }
         
+    private String trimSlashAtTheEnd(String id) {
+        return id.substring(0, id.length() - 1);
+    }
+
     /**
      * Scans recursively the specified directory and returns paths to all files.
      * @param directory
@@ -130,15 +138,19 @@ public class FileDb<T1 extends Comparable<T1>> {
 
     public EntryList<String> findAttachments(final String id) {
         List<String> entries = new LinkedList<String>();
-        String[] fileNames = directory.list();
+        List<String> fileNames = allFilesInDirectoryIncludingSubfolders(directory, "");
         for (String fileName : fileNames) {
             if (!fileName.endsWith(ENTRY_SUFFIX)) {
                 if (fileName.startsWith(id)) {
-                    entries.add(fileName);
+                    entries.add(trimEntryIdFromAttachment(id, fileName));
                 }
             }
         }
         return new EntryList<String>(entries);
+    }
+
+    private String trimEntryIdFromAttachment(String id, String fileName) {
+        return fileName.substring(id.length() + 1);
     }
 
     public EntryList<T1> findAll() {
@@ -171,7 +183,8 @@ public class FileDb<T1 extends Comparable<T1>> {
         return new EntryList<T>(entries);
     }
 
-    public File findAttachmentAsFile(String fullAttachmentName) throws FileNotFoundException {
+    public File findAttachmentAsFile(String id, String fileName) throws FileNotFoundException {
+        String fullAttachmentName = id + "." + fileName;
         File file = new File(directory.getAbsolutePath() + File.separator + fullAttachmentName);
         if (file.exists()) {
             return file;

@@ -358,6 +358,14 @@ public class BlogixControllerTest {
         assertThat("Attachment should exist", file.exists(), is(true));
     }
     
+    @Test
+    public void readAttachmentForDocument() throws Exception {
+        File file = Blogix.fileForDocument("info/doc1", "attachment2.txt");
+        assertThat("Attachment should not be null", file, is(notNullValue()));
+        assertThat("Attachment should be named", file.getName(), is("doc1.attachment2.txt"));
+        assertThat("Attachment should exist", file.exists(), is(true));
+    }
+    
     private void assertRecentPosts(List<Post> recentPosts) {
         assertThat("List of recentPosts should be", recentPosts, is(notNullValue()));
         assertThat("Size of recentPosts should be", recentPosts.size(), is(DEFAULT_NUMBER_OF_RECENT_POSTS));

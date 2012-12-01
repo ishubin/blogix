@@ -92,8 +92,8 @@ public class FileDbAccTest {
     public void shouldFindEntryAttachments() throws Exception {
         EntryList<String> attachments =  postDb.findAttachments("2012-01-30-some-title");
         assertThat(attachments.size(), is(2));
-        assertThat(attachments.get(0), is("2012-01-30-some-title.1.jpg"));
-        assertThat(attachments.get(1), is("2012-01-30-some-title.2.png"));
+        assertThat(attachments.get(0), is("1.jpg"));
+        assertThat(attachments.get(1), is("2.png"));
     }
     
     @Test
