@@ -254,8 +254,9 @@ public class BlogixControllerTest {
         assertThat(posts.size(), is(NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST));
         
         for (int i = 1; i <= NUMBER_OF_FIRST_PAGE_POSTS_IN_TEST; i++) {
-            String strNumber = Integer.toString(i);
-            if (i<10) {
+            int postId = NUMBER_OF_ALL_POSTS_FOR_CATEGORY_1 - i + 1;
+            String strNumber = Integer.toString(postId);
+            if (postId<10) {
                 strNumber = "0" + strNumber;
             }
             assertThat(posts.get(i - 1).getId(), is("2012-01-01-title-" + strNumber));
@@ -288,8 +289,8 @@ public class BlogixControllerTest {
         
         List<Post> posts = (List<Post>) postsModel.get("posts");
         assertThat(posts.size(), is(2));
-        assertThat(posts.get(0).getId(), is("2012-01-01-title-11"));
-        assertThat(posts.get(1).getId(), is("2012-01-01-title-12"));
+        assertThat(posts.get(0).getId(), is("2012-01-01-title-02"));
+        assertThat(posts.get(1).getId(), is("2012-01-01-title-01"));
         assertThat((Integer)postsModel.get(ALL_POSTS_COUNT), is(NUMBER_OF_ALL_POSTS_FOR_CATEGORY_1));
         assertThat((Integer)postsModel.get(CURRENT_PAGE), is(2));
         

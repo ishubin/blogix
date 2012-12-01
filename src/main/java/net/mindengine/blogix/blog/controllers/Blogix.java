@@ -87,7 +87,7 @@ public class Blogix {
         EntryList<Post> allPosts = postsDb.findByFieldContaining("categories", categoryId);
         int totalPosts = allPosts.size();
         model.put("allPostsCount", totalPosts);
-        model.put("posts", allPosts.page(page, DEFAULT_POSTS_PER_PAGE).asJavaList());
+        model.put("posts", allPosts.sortDesc().page(page, DEFAULT_POSTS_PER_PAGE).asJavaList());
         model.put("currentPage", page);
         Category category = categoriesDb.findById(categoryId);
         model.put("category", category);
