@@ -286,12 +286,14 @@ a.button-readmore {
     position: relative;
 }
 .categories ul li span.date {
-    position:absolute;
     margin-right:1.0em;
     color:#555;
     text-transform:uppercase;
 }
-.categories ul li .article-details {
+.full-layout .categories ul li span.date {
+    position:absolute;
+}
+.full-layout .categories ul li .article-details {
     margin-left: 7.5em;
 }
 .categories a.title {
