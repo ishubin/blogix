@@ -43,14 +43,14 @@ public class Blogix {
     private static final int DEFAULT_POSTS_PER_PAGE = 10;
     private static final String CURRENT_PAGE = "currentPage";
     private static final String ALL_POSTS_COUNT = "allPostsCount";
-    private static FileDb<Post> postsDb = createPostsDb(); 
+    private static FileDb<Post> postsDb = createPostsDb();
+    private static FileDb<Post> docsDb = createDocsDb();
     private static FileDb<Category> categoriesDb = createCategoriesDb();
     
     private static String titleBase = loadBaseTitle();
     
     public static Map<String, Object> base() {
         Map<String, Object> model = loadCommonPostData();
-        model.put(TITLE, generateTitle(""));
         return model;
     }
     
@@ -156,9 +156,19 @@ public class Blogix {
         };
     }
 
-
     public static Map<String, Object> recentPosts() {
         return loadCommonPostData();
+    }
+    
+    public static Map<String, Object> document(String documentId) {
+        Map<String, Object> model = loadCommonPostData();
+        Post post = docsDb.findById(documentId);
+        if (post != null) {
+            model.put("doc", post);
+            putTitle(model, post.getTitle());
+            return model;
+        }
+        else throw new RuntimeException("Cannot find document: " + documentId);
     }
     
     public static Map<String, Object> archive() {
@@ -238,6 +248,10 @@ public class Blogix {
     private static FileDb<Category> createCategoriesDb() {
         return createDb(Category.class, "categories");
     }
+    
+    private static FileDb<Post> createDocsDb() {
+        return createDb(Post.class, "docs");
+    }
 
     private static <T extends Comparable<T>> FileDb<T> createDb(Class<T> objectClass, String directoryName) {
         String filePath = BlogixConfig.getConfig().getBlogixFileDbPath();
@@ -306,6 +320,8 @@ public class Blogix {
             }
         }
         return null;
-    }    
+    }
+
+        
     
 }

@@ -40,6 +40,7 @@ import org.testng.annotations.Test;
 
 public class BlogixControllerTest {
     
+    private static final String DOC = "doc";
     private static final String ALL_CATEGORIES= "allCategories";
     private static final String PAGINATION = "pagination";
     private static final String PAGES = "pages";
@@ -60,7 +61,7 @@ public class BlogixControllerTest {
     @Test
     public void base_shouldGive_recentPosts() throws Exception {
         Map<String, Object> baseModel = Blogix.base();
-        assertCommonModelDataForPosts(baseModel);
+        assertCommonModelDataForPostsWithoutTitle(baseModel);
     }
     
     @SuppressWarnings("unchecked")
@@ -86,6 +87,19 @@ public class BlogixControllerTest {
         assertThat((String) homePageModel.get(TITLE), is("Home" + TITLE_BASE));
     }
 
+    @Test
+    public void docsPage_shouldBeParameterized_withPostFile_withSubfolders() throws Exception {
+        Map<String, Object> documentModel = Blogix.document("info/doc1");
+        assertCommonModelDataForPosts(documentModel);
+        
+        assertThat(documentModel, hasKey(DOC));
+        Post docPost = (Post) documentModel.get(DOC);
+        
+        assertThat(docPost.getId(), is("info/doc1"));
+        assertThat(docPost.getTitle(), is("Doc1 Title"));
+        assertThat((String) documentModel.get(TITLE), is("Doc1 Title" + TITLE_BASE));
+    }
+    
     @SuppressWarnings("unchecked")
     @Test
     public void homePageByNumber_shouldGive_onlyPosts_forThatNumber() throws Exception {
@@ -401,10 +415,14 @@ public class BlogixControllerTest {
         };
     }
     
-    @SuppressWarnings("unchecked")
     private void assertCommonModelDataForPosts(Map<String, Object> model) {
-        assertThat(model, hasKey(RECENT_POSTS));
         assertThat(model, hasKey(TITLE));
+        assertCommonModelDataForPostsWithoutTitle(model);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void assertCommonModelDataForPostsWithoutTitle(Map<String, Object> model) {
+        assertThat(model, hasKey(RECENT_POSTS));
         List<Post> recentPosts = (List<Post>) model.get(RECENT_POSTS);
         assertRecentPosts(recentPosts);
     }

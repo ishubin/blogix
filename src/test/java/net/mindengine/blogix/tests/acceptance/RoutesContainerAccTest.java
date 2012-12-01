@@ -139,17 +139,18 @@ public class RoutesContainerAccTest {
     public Object[][] provideRegexCheckSamples() {
         return new Object[][]{
                 {"/parameterized/rout/abc/gap/qwe/", true},
-                {"/parameterized/rout/ab/c/gap/qwe/", false},
+                {"/parameterized/rout/ab/c/gap/qwe/", true},
                 {"/parameterized/rout/a/gap/q/", true},
                 {"/parameterized/rout/9/gap/qwe/", true},
                 {"/parameterized/rout/_c/gap/123/", true},
+                {"/parameterized/rout/_c/g/ap/123/", false},
                 {"/parameterized/rout/_-_/gap/11-/", true},
                 {"/rout/abc/gap/qwe/", false}};
     }
     
     @Test(dependsOnMethods = BASE_TEST)
     public void shouldParseParameterizedRoute() {
-        assertThat(urlInRoute(3).getUrlPattern(), is("/parameterized/rout/([a-zA-Z0-9_\\-]*)/gap/([a-zA-Z0-9_\\-]*)/"));
+        assertThat(urlInRoute(3).getUrlPattern(), is("/parameterized/rout/([a-zA-Z0-9_\\-\\/]*)/gap/([a-zA-Z0-9_\\-\\/]*)/"));
         assertThat(urlInRoute(3).getParameters(), is(list("param1","param2")));
     }
     

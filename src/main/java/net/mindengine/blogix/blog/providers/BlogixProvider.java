@@ -32,8 +32,9 @@ public class BlogixProvider {
     
     private static final int DEFAULT_PAGES_PER_POST = 10;
     private static final String BLOGIX_FILEDB_PATH = "blogix.filedb.path";
-    private static FileDb<Post> postsDb = createPostsDb(); 
-    private static FileDb<Category> categoriesDb = createCategoriesDb();
+    private static final FileDb<Post> postsDb = createPostsDb(); 
+    private static final FileDb<Category> categoriesDb = createCategoriesDb();
+    private static final FileDb<Post> documentsDb = createDocumentsDb();
     
     @SuppressWarnings({ "unchecked" })
     public static Map<String, Object>[] allHomePages() {
@@ -46,6 +47,7 @@ public class BlogixProvider {
         }
         return m;
     }
+    
     
     @SuppressWarnings("unchecked")
     public static Map<String, Object>[] allPosts() {
@@ -60,6 +62,8 @@ public class BlogixProvider {
         }
         return m;
     }
+    
+
     
     @SuppressWarnings("unchecked")
     public static Map<String, Object>[] allFilesForPosts() {
@@ -114,6 +118,20 @@ public class BlogixProvider {
         return maps.toArray(new Map[0]);
     }
     
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object>[] allDocuments() {
+        List<String> docIds = documentsDb.findAllIds().asJavaList();
+        Map<String, Object>[] m = new Map[docIds.size()];
+        
+        int i = 0;
+        for (String docId : docIds) {
+            m[i] = new HashMap<String, Object>();
+            m[i].put("documentPath", docId);
+            i++;
+        }
+        return m;
+    }
+    
     private static EntryFilter<Entry> byCategoriesContaining(final String category) {
         return new EntryFilter<Entry>() {
             @Override
@@ -126,6 +144,10 @@ public class BlogixProvider {
 
     private static FileDb<Post> createPostsDb() {
         return createDb(Post.class, "posts");
+    }
+    
+    private static FileDb<Post> createDocumentsDb() {
+        return createDb(Post.class, "docs");
     }
 
     private static FileDb<Category> createCategoriesDb() {

@@ -17,5 +17,7 @@
 /category/{category}/rss.xml       Blogix.rssFeedForCategory(category)             rss                         BlogixProvider.allCategories
 
 
-/about                      Blogix.base                                   about
+/about                      -                                             about
+    title:  Blogix | About
+
 /archive                    Blogix.archive                                archive

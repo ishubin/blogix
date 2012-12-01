@@ -38,7 +38,7 @@ public class DefaultRoutesParser implements RoutesParser {
 
     private static final char COMMENT = '#';
     private static final char SPACE = ' ';
-    private static final String URL_PARAM_REGEX = "([a-zA-Z0-9_\\-]*)";
+    private static final String URL_PARAM_REGEX = "([a-zA-Z0-9_\\-\\/]*)";
     private static final char URL_PARAM_START = '{';
     private static final char URL_PARAM_END = '}';
     private static final char METHOD_ARGUMENTS_START = '(';

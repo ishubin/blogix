@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -40,6 +41,15 @@ public class BlogixProviderTest {
         providerClass = Class.forName("net.mindengine.blogix.blog.providers.BlogixProvider");
     }
     
+    @Test
+    public void allDocuments() throws Exception {
+        Map<String, Object> map[] = invokeProvider("allDocuments");
+        assertThat(map, is(notNullValue()));
+        assertThat(map.length, is(2));
+        
+        assertThat(map[0], Matchers.hasEntry("documentPath", (Object)"info/doc1"));
+        assertThat(map[1], Matchers.hasEntry("documentPath", (Object)"maindoc"));
+    }
     
     @Test
     public void allHomePages() throws Exception {
@@ -53,7 +63,6 @@ public class BlogixProviderTest {
         }
     }
     
-
     @Test
     public void allPosts() throws Exception {
         Map<String, Object> map[] = invokeProvider("allPosts");

@@ -70,7 +70,7 @@ public class FileDb<T1 extends Comparable<T1>> {
 
     private <T> T findByIdAndConvert(String id, Reader<T> converter) {
         String finalId = id + ENTRY_SUFFIX;
-        String[] fileNames = directory.list();
+        List<String> fileNames = allFilesInDirectoryIncludingSubfolders(directory, "");
         for (String fileName : fileNames) {
             if (fileName.equals(finalId)) {
                 return converter.convert(fileName);
@@ -79,6 +79,27 @@ public class FileDb<T1 extends Comparable<T1>> {
         return null;
     }
         
+    /**
+     * Scans recursively the specified directory and returns paths to all files.
+     * @param directory
+     * @param parentPath
+     * @return
+     */
+    private List<String> allFilesInDirectoryIncludingSubfolders(File directory, String parentPath) {
+        List<String> paths = new LinkedList<String>();
+        
+        File[] files = directory.listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                paths.add(parentPath + file.getName());
+            }
+            else if (file.isDirectory()) {
+                paths.addAll(allFilesInDirectoryIncludingSubfolders(file, parentPath + file.getName() + File.separator));
+            }
+        }
+        return paths;
+    }
+
     public EntryList<String> findAllIds() {
         return findAllByPattern(null, idConverter);
     }
@@ -128,7 +149,7 @@ public class FileDb<T1 extends Comparable<T1>> {
 
     private <T extends Comparable<T>> EntryList<T> findAllByPattern(Pattern pattern, Reader<T> converter) {
         List<T> entries = new LinkedList<T>();
-        String[] fileNames = directory.list();
+        List<String> fileNames = allFilesInDirectoryIncludingSubfolders(directory, "");
         boolean checkPass;
         for (String fileName : fileNames) {
             checkPass = true;
