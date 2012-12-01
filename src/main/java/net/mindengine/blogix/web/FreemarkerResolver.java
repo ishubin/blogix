@@ -51,8 +51,8 @@ public class FreemarkerResolver extends ViewResolver {
     }
 
     @Override
-    public void resolveViewAndRender(Object model, String view, OutputStream outputStream) throws Exception {
-        Map<String, Object> modelMap = getBlogix().convertModelToMap(model);
+    public void resolveViewAndRender(Map<String, Object> routeModel, Object model, String view, OutputStream outputStream) throws Exception {
+        Map<String, Object> modelMap = getBlogix().convertObjectToMapModel(routeModel, model);
         Template template = new Template(view, new FileReader(BlogixFileUtils.findFile(templatesPath + view)), templateConfiguration);
         template.process(modelMap, new PrintWriter(outputStream));
     }

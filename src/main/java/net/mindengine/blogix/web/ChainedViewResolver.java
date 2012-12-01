@@ -18,6 +18,7 @@ package net.mindengine.blogix.web;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import net.mindengine.blogix.Blogix;
 
@@ -39,10 +40,10 @@ public class ChainedViewResolver extends ViewResolver {
     
 
     @Override
-    public void resolveViewAndRender(Object model, String view, OutputStream outputStream) throws Exception {
+    public void resolveViewAndRender(Map<String, Object> routeModel, Object objectModel, String view, OutputStream outputStream) throws Exception {
         for (ViewResolver resolver : resolvers) {
             if (resolver.canResolve(view)) {
-                resolver.resolveViewAndRender(model, view, outputStream);
+                resolver.resolveViewAndRender(routeModel, objectModel, view, outputStream);
                 return;
             }
         }

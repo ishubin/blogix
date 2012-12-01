@@ -52,12 +52,12 @@ public class TilesResolver extends ViewResolver {
     }
 
     @Override
-    public void resolveViewAndRender(Object model, String view, OutputStream outputStream) throws Exception {
+    public void resolveViewAndRender(Map<String, Object> routeModel, Object objectModel, String view, OutputStream outputStream) throws Exception {
         Tile tile = tilesContainer.findTile(view);
         if ( tile == null ) {
             throw new IllegalArgumentException("Cannot find tile for view: " + view);
         }
-        renderTile(model, tile, outputStream);
+        renderTile(routeModel, objectModel, tile, outputStream);
     }
     
     public String renderTemplate(Map<String, Object> modelMap, String viewPath) throws TemplateException, IOException, URISyntaxException {
@@ -67,8 +67,8 @@ public class TilesResolver extends ViewResolver {
         return sw.toString();
     }
     
-    private void renderTile(Object model, Tile tile, OutputStream outputStream) throws IOException, TemplateException, URISyntaxException {
-        Map<String, Object> modelMap = getBlogix().convertModelToMap(model);
+    private void renderTile(Map<String, Object> routeModel, Object objectModel, Tile tile, OutputStream outputStream) throws IOException, TemplateException, URISyntaxException {
+        Map<String, Object> modelMap = getBlogix().convertObjectToMapModel(routeModel, objectModel);
         
         TilesProcessor tilesProcessor = new TilesProcessor(modelMap, tile, this);
         modelMap.put("tiles", tilesProcessor);

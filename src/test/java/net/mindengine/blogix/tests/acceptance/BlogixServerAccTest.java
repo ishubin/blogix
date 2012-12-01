@@ -89,7 +89,7 @@ public class BlogixServerAccTest {
     public void serverShouldProcessRequestsAndGiveProperResponse(String requestUri, String expectedResponse) throws Exception {
         assertThat( "Incorrect configuration of sample requests", requestUri, Matchers.startsWith("/") );
         String response = readResponseTextFromUri( HTTP_LOCALHOST_8080 + requestUri );
-        assertThat( response , is( expectedResponse ) );
+        assertThat(response , is(expectedResponse));
     }
     
     @Test( dependsOnMethods="serverShouldStartupAndLockThread",

@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ import org.testng.annotations.Test;
 
 public class BlogixConfigAccTest {
     
+    private static final Map<String, Object> EMPTY_ROUTE_MODEL = Collections.<String, Object> emptyMap();
     private Blogix blogix;
     
     public static class CustomObject {
@@ -68,7 +70,7 @@ public class BlogixConfigAccTest {
     
     @Test
     public void shouldPut_objects_toModelMap_as_modelKey() {
-        Map<String, Object> model = blogix.convertModelToMap(new CustomObject("name1", "value1"));
+        Map<String, Object> model = blogix.convertObjectToMapModel(EMPTY_ROUTE_MODEL, new CustomObject("name1", "value1"));
         assertThat("Model should not be null", model, is(notNullValue()));
         assertThat("Model should contain key", model, hasKey("model"));
         assertThat("Model 'model' property should be typeof", model.get("model"), instanceOf(CustomObject.class));
@@ -83,7 +85,7 @@ public class BlogixConfigAccTest {
         tempMap.put("key1", "keyvalue1");
         tempMap.put("key2", "keyvalue2");
         
-        Map<String, Object> model = blogix.convertModelToMap(tempMap);
+        Map<String, Object> model = blogix.convertObjectToMapModel(EMPTY_ROUTE_MODEL, tempMap);
         assertThat("Model should not be null", model, is(notNullValue()));
         assertThat("Model should not contain key", model, not(hasKey("model")));
         assertThat("Model should contain key", model, hasKey("key1"));
@@ -95,7 +97,7 @@ public class BlogixConfigAccTest {
     
     @Test
     public void shouldAdd_userCustomProperties_toModelMap() {
-        Map<String, Object> model = blogix.convertModelToMap(new CustomObject("name1", "value1"));
+        Map<String, Object> model = blogix.convertObjectToMapModel(EMPTY_ROUTE_MODEL, new CustomObject("name1", "value1"));
         assertThat("Model should not be null", model, is(notNullValue()));
         assertThat("Model should contain key", model, hasKey("userProperty"));
         assertThat("Model userProperty should be", (String) model.get("userProperty"), is("custom value"));
@@ -103,7 +105,7 @@ public class BlogixConfigAccTest {
     
     @Test
     public void shouldAdd_markupObject_toModelMap() {
-        Map<String, Object> model = blogix.convertModelToMap(new CustomObject("name1", "value1"));
+        Map<String, Object> model = blogix.convertObjectToMapModel(EMPTY_ROUTE_MODEL, new CustomObject("name1", "value1"));
         assertThat("Model should not be null", model, is(notNullValue()));
         assertThat("Model should contain key", model, hasKey("markup"));
         assertThat("Model markup should be", model.get("markup"), Matchers.instanceOf(Markup.class));

@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import net.mindengine.blogix.Blogix;
 import net.mindengine.blogix.utils.BlogixUtils;
@@ -57,7 +58,7 @@ public class ClassMethodViewResolver extends ViewResolver {
     }
 
     @Override
-    public void resolveViewAndRender(Object model, String view, OutputStream outputStream) throws Exception {
+    public void resolveViewAndRender(Map<String, Object> routeModel, Object objectModel, String view, OutputStream outputStream) throws Exception {
         Method method = extractClassAndMethod(view).getRight();
         
         if (!method.getReturnType().equals(String.class) && !method.getReturnType().equals(File.class)) {
@@ -66,10 +67,10 @@ public class ClassMethodViewResolver extends ViewResolver {
         
         Object result = null;
         if (method.getParameterTypes().length == 0 ) {
-            result = method.invoke(null, null);
+            result = method.invoke(null, (Object[])null);
         }
         else if(method.getParameterTypes().length == 1) {
-            result = method.invoke(null, model);
+            result = method.invoke(null, objectModel);
         }
         else throw new IllegalArgumentException("Cannot resolve view: '" + view + "'. Reason is to many method arguments for view resolver");
         

@@ -16,6 +16,7 @@
 package net.mindengine.blogix.web;
 
 import java.io.OutputStream;
+import java.util.Map;
 
 import net.mindengine.blogix.Blogix;
 
@@ -29,7 +30,7 @@ public abstract class ViewResolver {
     }
 
     public abstract boolean canResolve(String view);
-    public abstract void resolveViewAndRender(Object model, String view, OutputStream outputStream) throws Exception;
+    public abstract void resolveViewAndRender(Map<String, Object> routeModel, Object objectModel, String view, OutputStream outputStream) throws Exception;
 
     public Blogix getBlogix() {
         return blogix;

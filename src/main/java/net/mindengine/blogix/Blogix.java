@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import javax.servlet.ServletOutputStream;
 
@@ -36,6 +38,7 @@ import net.mindengine.blogix.web.DefaultViewResolver;
 import net.mindengine.blogix.web.RouteInvoker;
 import net.mindengine.blogix.web.ViewResolver;
 import net.mindengine.blogix.web.routes.Route;
+import net.mindengine.blogix.web.routes.RouteURL;
 import net.mindengine.blogix.web.routes.RoutesContainer;
 
 import org.apache.commons.io.IOUtils;
@@ -117,29 +120,21 @@ public class Blogix {
         Route route = findRouteMatchingUri(uri);
         
         if ( route != null ) {
-            Object model = null;
-            if ( route.getController() != null ) {
-                model = routeInvoker.invokeRoute(route, uri);
-            }
-            
-            String view = route.getView();
-            viewResolver.resolveViewAndRender(model, view, outputStream);
+            Map<String, String> controllerArgs = createParametersMap(route.getUrl(), uri);
+            processRoute(route, controllerArgs, outputStream);
         }
         else throw new IllegalArgumentException("Cannot find route for uri: " + uri);
     }
-    
-    private Route findRouteMatchingUri(String uri) {
-        return routesContainer.findRouteMatchingUri(uri);        
-    }
+
 
     public void processRoute(Route route, Map<String,String> controllerArgs, OutputStream outputStream) throws Exception {
-        Object model = null;
+        Object objectModel = null;
         if ( route.getController() != null ) {
-            model = routeInvoker.invokeRoute(route, controllerArgs);
+            objectModel = routeInvoker.invokeRoute(route, controllerArgs);
         }
         
         String view = route.getView();
-        viewResolver.resolveViewAndRender(model, view, outputStream);
+        viewResolver.resolveViewAndRender(route.getModel(), objectModel, view, outputStream);
     }
 
     public void processRoute(Route route, OutputStream outputStream) throws Exception  {
@@ -147,8 +142,13 @@ public class Blogix {
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, Object> convertModelToMap(Object model) {
+    public Map<String, Object> convertObjectToMapModel(Map<String, Object> routeModel, Object model) {
         Map<String, Object> modelMap = new HashMap<String, Object>();
+        
+        if (routeModel != null) {
+            modelMap.putAll(routeModel);
+        }
+        
         if ( model != null ) {
             if ( model instanceof Map ) {
                 Map<Object, Object> map = (Map<Object, Object>)model;
@@ -217,4 +217,34 @@ public class Blogix {
         return ClassUtils.getAllInterfaces(clazz).contains(interfaceClass);
     }
 
+    
+    private Map<String, String> createParametersMap(RouteURL url, String uri) {
+        if ( !uri.endsWith("/") ) {
+            uri = uri + "/";
+        }
+        
+        if ( url.getParameters() != null && !url.getParameters().isEmpty() ) {
+            Matcher matcher = url.asRegexPattern().matcher(uri);
+            
+            if ( matcher.find() ) {
+                if ( matcher.groupCount() >= url.getParameters().size()) {
+                    Map<String, String> parametersMap = new HashMap<String, String>();
+                    int i = 0;
+                    for (String parameter : url.getParameters() ) {
+                        i++;
+                        parametersMap.put(parameter, matcher.group(i));
+                    }
+                    return parametersMap;
+                }
+            }
+            
+            throw new IllegalArgumentException("Can't extract controller arguments from uri: " + uri);
+        }
+        return Collections.emptyMap();
+    }
+
+    
+    private Route findRouteMatchingUri(String uri) {
+        return routesContainer.findRouteMatchingUri(uri);        
+    }
 }

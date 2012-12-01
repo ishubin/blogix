@@ -28,9 +28,23 @@ import net.mindengine.blogix.web.routes.RouteURL;
 
 public class RouteInvoker {
 
-    public Object invokeRoute(Route route, String uri) {
+    /*public Object invokeRoute(Route route, String uri) {
         Map<String, String> parametersMap = createParametersMap(route.getUrl(), uri);
         return invokeRoute(route, parametersMap);
+    }*/
+    
+    public Object invokeRoute(Route route, Map<String, String> parametersMap) {
+        Method controllerMethod = route.getController().getControllerMethod();
+        Object[] arguments = createArguments(parametersMap, route.getController().getParameters(), controllerMethod.getParameterTypes());
+        
+        try {
+            Object model = controllerMethod.invoke(null, arguments);
+            return model;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Not allowed to access controller for route " + route.getUrl().getOriginalUrl(), e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException("An error occured from controller for route " + route.getUrl().getOriginalUrl(), e.getTargetException());
+        }
     }
 
     private Object[] createArguments(Map<String, String> parametersMap, List<String> parameters, Class<?>[] parameterTypes) {
@@ -67,46 +81,4 @@ public class RouteInvoker {
         
         throw new IllegalArgumentException("Cannot convert value '" + value + "' to " + clazz.getName());
     }
-
-    private Map<String, String> createParametersMap(RouteURL url, String uri) {
-        if ( !uri.endsWith("/") ) {
-            uri = uri + "/";
-        }
-        
-        if ( url.getParameters() != null && !url.getParameters().isEmpty() ) {
-            Matcher matcher = url.asRegexPattern().matcher(uri);
-            
-            if ( matcher.find() ) {
-                if ( matcher.groupCount() >= url.getParameters().size()) {
-                    Map<String, String> parametersMap = new HashMap<String, String>();
-                    int i = 0;
-                    for (String parameter : url.getParameters() ) {
-                        i++;
-                        parametersMap.put(parameter, matcher.group(i));
-                    }
-                    return parametersMap;
-                }
-            }
-            
-            throw new IllegalArgumentException("Can't extract controller arguments from uri: " + uri);
-        }
-        return Collections.emptyMap();
-    }
-
-    public Object invokeRoute(Route route, Map<String, String> parametersMap) {
-        Method controllerMethod = route.getController().getControllerMethod();
-        Object[] arguments = createArguments(parametersMap, route.getController().getParameters(), controllerMethod.getParameterTypes());
-        
-        try {
-            Object model = controllerMethod.invoke(null, arguments);
-            return model;
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Not allowed to access controller for route " + route.getUrl().getOriginalUrl(), e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("An error occured from controller for route " + route.getUrl().getOriginalUrl(), e.getTargetException());
-        }
-    }
-    
-    
-
 }
