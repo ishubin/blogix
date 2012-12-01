@@ -2,6 +2,7 @@
 #######################################################################################################################
 
 /                           Blogix.homeFirstPage                          browse                         
+
 /page-{page}                Blogix.homePage(page)                         browse                      BlogixProvider.allHomePages
 
 /post/{postId}              Blogix.post(postId)                           post                        BlogixProvider.allPosts   

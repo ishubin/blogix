@@ -1,0 +1,44 @@
+----
+title
+  title 70
+----
+date
+  2013-01-01 12:34
+----
+categories
+  main, other
+=====
+dsadasd
+
+h1. Header 1.
+
+h2. Header 2
+
+h3. Header 3
+
+h4. Header 4
+
+h5. Header 5
+
+This is a **bold** text
+>>>>
+
+
+This is the rest part of the content which will be shown only in post.
+
+This is another paragraph
+
+bq. This is a blockquote
+This is another part of the blockquote
+
+This is a "link":www.google.com
+
+
+$$ javascript
+function func1 () {
+    var i = 0;
+    for (var j=0; j<10; j++) {
+        alert("");
+    }
+}
+$$
