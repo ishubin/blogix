@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>${rssTitle}</title>
-    <subtitle>${rssSubtitle}</subtitle>
-    <link href="http://example.org/feed/" rel="self"/>
-    <link href="http://example.org/"/>
+    <link href="http://${productionSite}/rss.xml" rel="self"/>
+    <link href="http://${productionSite}"/>
     <id>urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6</id>
     <updated>2003-12-13T18:30:02Z</updated>
     <#list posts as post>
@@ -14,8 +13,9 @@
             <id>urn:uuid:${post.id}</id>
             <updated>${post.date?datetime?iso_utc}</updated>
             <summary>${post.title?xml}</summary>
-            <content>
-                ${post.contentPreview}
+            <content type="html"><![CDATA[
+                ${markup.apply(post.contentPreview)}
+                ]]>
             </content>
             <author>
                 <name>${authorName}</name>
