@@ -47,10 +47,9 @@ public class BlogixProviderTest {
     public void allDocuments() throws Exception {
         Map<String, Object> map[] = invokeProvider("allDocuments");
         assertThat(map, is(notNullValue()));
-        assertThat(map.length, is(2));
+        assertThat(map.length, is(1));
         
-        assertThat(map[0], Matchers.hasEntry("documentPath", (Object)"info/doc1"));
-        assertThat(map[1], Matchers.hasEntry("documentPath", (Object)"maindoc"));
+        assertThat(map[0], Matchers.hasEntry("documentPath", (Object)"maindoc"));
     }
     
     @Test
@@ -93,16 +92,10 @@ public class BlogixProviderTest {
     public void allFilesForDocuments() throws Exception {
         Map<String, Object> map[] = invokeProvider("allFilesForDocuments");
         assertThat(map, is(notNullValue()));
-        assertThat(map.length, is(3));
+        assertThat(map.length, is(1));
         
-        assertThat(map[0], hasEntry("documentPath", (Object)"info/doc1"));
-        assertThat(map[0], hasEntry("fileName", (Object)"attachment1.txt"));
-        
-        assertThat(map[1], hasEntry("documentPath", (Object)"info/doc1"));
-        assertThat(map[1], hasEntry("fileName", (Object)"attachment2.txt"));
-        
-        assertThat(map[2], hasEntry("documentPath", (Object)"maindoc"));
-        assertThat(map[2], hasEntry("fileName", (Object)"file1.txt"));
+        assertThat(map[0], hasEntry("documentPath", (Object)"maindoc"));
+        assertThat(map[0], hasEntry("fileName", (Object)"file1.txt"));
         
     }
     

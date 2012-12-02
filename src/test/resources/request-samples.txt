@@ -29,7 +29,7 @@ This is just a plain view without subtiles and controller
 /no-tile/
 This view is not in any tile
 ==================================================================================================
-/customModel
+/customModel/
 customString = string value
 customNumber = 1234567891
 customFloat = -76.8

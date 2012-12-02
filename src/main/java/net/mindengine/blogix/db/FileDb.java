@@ -74,7 +74,7 @@ public class FileDb<T1 extends Comparable<T1>> {
             id = trimSlashAtTheEnd(id);
         }
         String finalId = id + ENTRY_SUFFIX;
-        List<String> fileNames = allFilesInDirectoryIncludingSubfolders(directory, "");
+        List<String> fileNames = allFilesInDirectory(directory);
         for (String fileName : fileNames) {
             if (fileName.equals(finalId)) {
                 return converter.convert(fileName);
@@ -93,16 +93,13 @@ public class FileDb<T1 extends Comparable<T1>> {
      * @param parentPath
      * @return
      */
-    private List<String> allFilesInDirectoryIncludingSubfolders(File directory, String parentPath) {
+    private List<String> allFilesInDirectory(File directory) {
         List<String> paths = new LinkedList<String>();
         
         File[] files = directory.listFiles();
         for (File file : files) {
             if (file.isFile()) {
-                paths.add(parentPath + file.getName());
-            }
-            else if (file.isDirectory()) {
-                paths.addAll(allFilesInDirectoryIncludingSubfolders(file, parentPath + file.getName() + File.separator));
+                paths.add(file.getName());
             }
         }
         return paths;
@@ -138,7 +135,7 @@ public class FileDb<T1 extends Comparable<T1>> {
 
     public EntryList<String> findAttachments(final String id) {
         List<String> entries = new LinkedList<String>();
-        List<String> fileNames = allFilesInDirectoryIncludingSubfolders(directory, "");
+        List<String> fileNames = allFilesInDirectory(directory);
         for (String fileName : fileNames) {
             if (!fileName.endsWith(ENTRY_SUFFIX)) {
                 if (fileName.startsWith(id)) {
@@ -161,7 +158,7 @@ public class FileDb<T1 extends Comparable<T1>> {
 
     private <T extends Comparable<T>> EntryList<T> findAllByPattern(Pattern pattern, Reader<T> converter) {
         List<T> entries = new LinkedList<T>();
-        List<String> fileNames = allFilesInDirectoryIncludingSubfolders(directory, "");
+        List<String> fileNames = allFilesInDirectory(directory);
         boolean checkPass;
         for (String fileName : fileNames) {
             checkPass = true;

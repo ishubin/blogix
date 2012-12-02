@@ -88,16 +88,16 @@ public class BlogixControllerTest {
     }
 
     @Test
-    public void docsPage_shouldBeParameterized_withPostFile_withSubfolders() throws Exception {
-        Map<String, Object> documentModel = Blogix.document("info/doc1");
+    public void docsPage_shouldBeParameterized_withDocumentId() throws Exception {
+        Map<String, Object> documentModel = Blogix.document("maindoc");
         assertCommonModelDataForPosts(documentModel);
         
         assertThat(documentModel, hasKey(DOC));
         Post docPost = (Post) documentModel.get(DOC);
         
-        assertThat(docPost.getId(), is("info/doc1"));
-        assertThat(docPost.getTitle(), is("Doc1 Title"));
-        assertThat((String) documentModel.get(TITLE), is("Doc1 Title" + TITLE_BASE));
+        assertThat(docPost.getId(), is("maindoc"));
+        assertThat(docPost.getTitle(), is("Main doc"));
+        assertThat((String) documentModel.get(TITLE), is("Main doc" + TITLE_BASE));
     }
     
     @SuppressWarnings("unchecked")
@@ -360,9 +360,9 @@ public class BlogixControllerTest {
     
     @Test
     public void readAttachmentForDocument() throws Exception {
-        File file = Blogix.fileForDocument("info/doc1", "attachment2.txt");
+        File file = Blogix.fileForDocument("maindoc", "file1.txt");
         assertThat("Attachment should not be null", file, is(notNullValue()));
-        assertThat("Attachment should be named", file.getName(), is("doc1.attachment2.txt"));
+        assertThat("Attachment should be named", file.getName(), is("maindoc.file1.txt"));
         assertThat("Attachment should exist", file.exists(), is(true));
     }
     

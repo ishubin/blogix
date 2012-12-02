@@ -19,7 +19,7 @@
 /file/customImage.jpg   -                           MyView.customImage
 
 
-/customModel            -                           view-with-custom-model.ftl
+/customModel/           -                           view-with-custom-model.ftl
     customString: string value
     customNumber:   1234567890
     customFloat:    123.2    
