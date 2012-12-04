@@ -23,7 +23,7 @@ h5. Header 5
 This is a **bold** text
 >>>>
 
-!/2012-02-01-title-70/files/computer.png!
+!files/computer.png!
 This is the rest part of the content which will be shown only in post.
 
 This is another paragraph
