@@ -33,3 +33,6 @@ This view is not in any tile
 customString = string value
 customNumber = 1234567891
 customFloat = -76.8
+==================================================================================================
+/someFile.txt
+This is some file for viewless check

@@ -5,8 +5,8 @@
 
 /page-{page}/                       Blogix.homePage(page)                           browse                      BlogixProvider.allHomePages
 
-/post/{postId}/{fileName}           Blogix.fileForPost(postId, fileName)            -                           BlogixProvider.allFilesForPosts  
 /post/{postId}/                     Blogix.post(postId)                             post                        BlogixProvider.allPosts   
+/post/{postId}/files/{fileName}     Blogix.fileForPost(postId, fileName)            -                           BlogixProvider.allFilesForPosts  
 
 /categories/                        Blogix.categories                               categories
 /category/{category}/               Blogix.postsByCategory(category)                browse                      BlogixProvider.allCategories
@@ -17,7 +17,7 @@
 /category/{category}/rss.xml        Blogix.rssFeedForCategory(category)             rss                         BlogixProvider.allCategories
 
 
-/docs/{documentPath}/               Blogix.document(documentPath)                   doc                         BlogixProvider.allDocuments
-/docs/{documentPath}/{fileName}     Blogix.fileForDocument(documentPath, fileName)      -         BlogixProvider.allFilesForDocuments
+/docs/{documentPath}/                   Blogix.document(documentPath)                   doc                         BlogixProvider.allDocuments
+/docs/{documentPath}/files/{fileName}   Blogix.fileForDocument(documentPath, fileName)      -         BlogixProvider.allFilesForDocuments
 
 /archive/                           Blogix.archive                                  archive

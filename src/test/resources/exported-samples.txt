@@ -50,3 +50,6 @@ this is a string content
 ==================================================================================================
 /file/customFile.txt
 This is a custom file for response
+==================================================================================================
+/someFile.txt
+This is some file for viewless check

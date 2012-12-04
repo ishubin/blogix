@@ -134,7 +134,27 @@ public class Blogix {
         }
         
         String view = route.getView();
-        viewResolver.resolveViewAndRender(route.getModel(), objectModel, view, outputStream);
+        if (view != null) {
+            viewResolver.resolveViewAndRender(route.getModel(), objectModel, view, outputStream);
+        }
+        else resolveViewless(objectModel, outputStream);
+    }
+
+    /**
+     * Resolves routes which do not have views. Can only resolve controllers which return file type.
+     * @param objectModel
+     * @param outputStream
+     * @throws IOException 
+     * @throws FileNotFoundException 
+     */
+    private void resolveViewless(Object objectModel, OutputStream outputStream) throws FileNotFoundException, IOException {
+        if (objectModel != null && objectModel instanceof File) {
+            File file = (File) objectModel;
+            IOUtils.copy(new FileInputStream(file), outputStream);
+        }
+        else {
+            throw new IllegalArgumentException("Can't render viewless route. Controller did not return a file");
+        }
     }
 
     public void processRoute(Route route, OutputStream outputStream) throws Exception  {

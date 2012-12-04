@@ -77,7 +77,7 @@ public class ExporterAccTest {
     public void shouldLoadTestRequestSamples() throws IOException, URISyntaxException {
         List<Pair<String, String>> checks = RequestSampleParser.loadRequestChecksFromFile(new File(getClass().getResource("/exported-samples.txt").toURI()));
         
-        assertThat(checks.size(), is(8));
+        assertThat(checks.size(), is(9));
         assertThat(checks.get(0).getLeft(), is("/index.html"));
         assertThat(checks.get(1).getLeft(), is("/help/index.html"));
         assertThat(checks.get(2).getLeft(), is("/article/123/2012-01-12/index.html"));
@@ -86,6 +86,7 @@ public class ExporterAccTest {
         assertThat(checks.get(5).getLeft(), is("/no-tile/index.html"));
         assertThat(checks.get(6).getLeft(), is("/file/customView.txt"));
         assertThat(checks.get(7).getLeft(), is("/file/customFile.txt"));
+        assertThat(checks.get(8).getLeft(), is("/someFile.txt"));
     }
     
     @Test (dependsOnMethods = BASE_TESTS)

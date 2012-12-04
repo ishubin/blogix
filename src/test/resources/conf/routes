@@ -18,6 +18,8 @@
 
 /file/customImage.jpg   -                           MyView.customImage
 
+/someFile.txt           Main.someFile               -
+
 
 /customModel/           -                           view-with-custom-model.ftl
     customString: string value

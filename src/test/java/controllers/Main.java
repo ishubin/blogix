@@ -16,6 +16,7 @@
 package controllers;
 
 import java.io.File;
+import java.net.URISyntaxException;
 
 import models.Article;
 
@@ -35,5 +36,9 @@ public class Main {
     
     public static File file() {
         return new File(".");
+    }
+    
+    public static File someFile() throws URISyntaxException {
+        return new File(Main.class.getResource("/sample-files/someFileForViewlessRoute.txt").toURI());
     }
 }
