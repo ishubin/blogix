@@ -42,3 +42,14 @@ function func1 () {
     }
 }
 $$
+
+$$ html
+<html>
+    <head>
+        <title>This is text</title>
+    </head>
+    <body>
+        <div id="content">&lt;Special symbols &quot; &gt;</div>
+    </body>
+</html>
+$$

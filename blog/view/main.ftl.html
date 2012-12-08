@@ -7,8 +7,10 @@
         <title>${title}</title>
         <link rel="stylesheet" href="/public/main.css" media="screen" type="text/css">
         <link rel="stylesheet" href="/public/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/public/solarized_dark.css" media="screen" type="text/css">
         <meta name="viewport" content="width=device-width; initial-scale=1.0">
         <script src="/public/jquery-1.8.3.min.js"></script>
+        <script src="/public/highlight.pack.js"></script>
         <script>
             var _FULL = 1;
             var _MOBILE = 2;
@@ -62,6 +64,15 @@
                 }
             }
 
+            function highlightCodeBlocks() {
+                $("code.block").each(function (){
+                    var html = $(this).html();
+                    var className = $(this).attr("data-language");
+                    $(this).html("<pre><code class=\"" + className + "\">" + html + "</code></pre>");
+                    hljs.highlightBlock($(this).find("pre code").get(0));
+                });
+            }
+
             $(function(){
                 $(window).resize(globalResize);
                 globalResize();
@@ -71,6 +82,8 @@
                     window.location = "http://www.google.com/search?q=" + q;
                     return false;
                 });
+
+                highlightCodeBlocks();
             });
 
         

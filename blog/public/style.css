@@ -246,7 +246,7 @@ a.button-readmore {
 .article-content blockquote p {
     display:inline;
 }
-.article-content code {
+.article-content code.block {
     background: #293745;
     background: url('/public/code-back.png');
     padding: 0.5em;
