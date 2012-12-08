@@ -234,7 +234,7 @@ public class BlogixControllerTest {
         assertThat("title for post '" + postId + "' should be", post.getTitle(), is("Title 1"));
         assertThat("content for post '" + postId + "' should be", post.getContent(), is("Content 1\nPart 1\nContent 1 part 2"));
         assertThat("content preview part for '" + postId + "' should be", post.getContentPreview(), is("Content 1\nPart 1"));
-        assertThat("commentsAllowed for post '" + postId + "' should be", post.getAllowComments(), is(true));
+        assertThat("commentsAllowed for post '" + postId + "' should be", post.isAllowComments(), is(true));
         assertThat("date for post '" + postId + "' should be", post.getDate(), is(new Date(1325372400000L)));
         assertThat("categories for post '" + postId + "' should be", post.getCategories(), is(new String[]{"category1", "category2"}));
         assertThat("externalUrl for post '" + postId + "' should be", post.getExternalUrl(), is("www.google.com"));

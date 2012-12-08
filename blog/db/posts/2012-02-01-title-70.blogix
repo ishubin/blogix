@@ -5,6 +5,9 @@ title
 date
   2013-01-01 12:34
 ----
+allowComments
+    true
+----
 categories
   main, other
 =====

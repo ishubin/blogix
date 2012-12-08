@@ -121,19 +121,19 @@ public class ObjectReader<T> implements Reader<T> {
         if (type.equals(String.class)) {
             return fieldValue;
         }
-        else if (type.equals(Integer.class)) {
+        else if (type.equals(Integer.class) || type.equals(int.class)) {
             return Integer.parseInt(fieldValue.trim());
         }
-        else if (type.equals(Long.class)) {
+        else if (type.equals(Long.class) || type.equals(long.class)) {
             return Long.parseLong(fieldValue.trim());
         }
-        else if (type.equals(Float.class)) {
+        else if (type.equals(Float.class) || type.equals(float.class)) {
             return Float.parseFloat(fieldValue.trim());
         }
-        else if (type.equals(Double.class)) {
+        else if (type.equals(Double.class) || type.equals(double.class)) {
             return Double.parseDouble(fieldValue.trim());
         }
-        else if (type.equals(Boolean.class)) {
+        else if (type.equals(Boolean.class) || type.equals(boolean.class)) {
             return Boolean.parseBoolean(fieldValue.trim());
         }
         else if (type.equals(Date.class)) {

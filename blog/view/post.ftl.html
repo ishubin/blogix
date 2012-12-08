@@ -15,7 +15,9 @@
             </#if>
         </#list>
     </div>
-    <div id="comments">
-        <h3>Comments</h3>
+    <#if post.allowComments>
+        <div id="comments">
+            <h3>Comments</h3>
+        </div>
     </div>
 </div>

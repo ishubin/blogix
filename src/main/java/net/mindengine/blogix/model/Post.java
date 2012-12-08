@@ -25,7 +25,7 @@ public class Post implements Comparable<Post> {
 
     private String id;
     private String title;
-    private Boolean allowComments;
+    private boolean allowComments;
     private Date date;
     private String[] categories;
     private String externalUrl;
@@ -41,7 +41,7 @@ public class Post implements Comparable<Post> {
     public void setTitle(String title) {
         this.title = title;
     }
-
+    
     public String getId() {
         return id;
     }
@@ -73,11 +73,11 @@ public class Post implements Comparable<Post> {
         return CONTENT_PREVIEW_BREAKER_PATTERN.matcher(content).replaceAll("\n");
     }
 
-    public Boolean getAllowComments() {
+    public boolean isAllowComments() {
         return allowComments;
     }
 
-    public void setAllowComments(Boolean allowComments) {
+    public void setAllowComments(boolean allowComments) {
         this.allowComments = allowComments;
     }
 

@@ -11,7 +11,9 @@
     <div class="article">
         <div class="header">
             <span class="date">${post.date?date}</span>
-            <a href="/post/${post.id}/#comments">COMMENTS</a>
+            <#if post.allowComments >
+                <a href="/post/${post.id}/#comments">COMMENTS</a>
+            </#if>
         </div>
         <a class="title" href="/post/${post.id}/">${post.title?html}</a>
         <div class="article-content">
