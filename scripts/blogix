@@ -1,14 +1,17 @@
 #!/bin/bash
+set -e
 
-blogixCommand="java -jar blogix.jar"
 function run {
-    `$blogixCommand run`
+    java -jar blogix.jar run
 }
 function compile {
-    `$blogixCommand compile`
+    java -jar blogix.jar compile 
 }
-function export {
-    `$blogixCommand export`
+function fnexport {
+    java -jar blogix.jar export
+    if [[ -d public ]]; then
+        cp -r public export/public
+    fi
 }
 function help {
     echo "Usage: blogix [ run | compile | export | help]"
@@ -17,22 +20,27 @@ function help {
 
 case $1 in
     run)
+        shift
         run $@
         exit 0
         ;;
     compile)
+        shift
         compile $@
         exit 0
         ;;
     export)
-        export $@
+        shift
+        fnexport $@
         exit 0
         ;;
     help)
+        shift
         help $@
         exit 0
         ;;
     *)
+        shift
         echo "Unknown command: '$1'"
         help
         exit 0

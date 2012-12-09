@@ -21,17 +21,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.mindengine.blogix.config.BlogixConfig;
 import net.mindengine.blogix.db.Entry;
 import net.mindengine.blogix.db.EntryFilter;
 import net.mindengine.blogix.db.EntryList;
 import net.mindengine.blogix.db.FileDb;
 import net.mindengine.blogix.model.Category;
 import net.mindengine.blogix.model.Post;
+import net.mindengine.blogix.utils.BlogixFileUtils;
 
 public class BlogixProvider {
     
     private static final int DEFAULT_PAGES_PER_POST = 10;
-    private static final String BLOGIX_FILEDB_PATH = "blogix.filedb.path";
     private static final FileDb<Post> postsDb = createPostsDb(); 
     private static final FileDb<Category> categoriesDb = createCategoriesDb();
     private static final FileDb<Post> documentsDb = createDocumentsDb();
@@ -172,14 +173,10 @@ public class BlogixProvider {
     }
 
     private static <T extends Comparable<T>> FileDb<T> createDb(Class<T> objectClass, String directoryName) {
-        String filePath = getProperty(BLOGIX_FILEDB_PATH);
+        String filePath = BlogixConfig.getConfig().getBlogixFileDbPath();
         if (filePath == null) {
-            throw new IllegalArgumentException(BLOGIX_FILEDB_PATH + " property is not specified correctly");
+            throw new IllegalArgumentException("Blogix database is not specified correctly");
         }
-        return new FileDb<T>(objectClass, new File(filePath + File.separator + directoryName));
-    }
-    
-    private static String getProperty(String propertyName) {
-        return System.getProperty(propertyName);
+        return new FileDb<T>(objectClass, BlogixFileUtils.findFile(filePath + File.separator + directoryName));
     }
 }

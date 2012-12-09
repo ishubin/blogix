@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.mindengine.blogix.Blogix;
@@ -52,14 +53,15 @@ public class BlogixExporter {
     }
 
     public void exportAll() {
-        try {
-            for ( Route route : blogix.getRoutesContainer().getRoutes() ) {
+        for ( Route route : blogix.getRoutesContainer().getRoutes() ) {
+            try {
                 exportRoute(route);
             }
+            catch (Exception e) {
+                throw new RuntimeException("Could not export route " + route.getUrl().getOriginalUrl(), e);
+            }
         }
-        catch (Exception e) {
-            throw new RuntimeException("Could not export all routes", e);
-        }
+
     }
 
     private void exportRoute(Route route) throws Exception {
@@ -71,7 +73,7 @@ public class BlogixExporter {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     private void exportParameterizedRoute(Route route) throws Exception {
         if ( route.getProvider() == null ) {
             throw new NullPointerException("Provider is not specified for parameterized route " + route.getUrl().getOriginalUrl());
@@ -79,7 +81,7 @@ public class BlogixExporter {
         Method providerMethod = route.getProvider().getProviderMethod();
         Map[] urlParameters = (Map[]) providerMethod.invoke(null, new Object[]{});
         for (Map urlParameterMap : urlParameters) {
-            exportParameterizedRoute(route, (Map<String, String>) urlParameterMap);
+            exportParameterizedRoute(route, convertMapValueToString(urlParameterMap));
         }
     }
 
@@ -128,5 +130,17 @@ public class BlogixExporter {
         responseFile.createNewFile();
         responseOutputStream = new FileOutputStream(responseFile);
         return responseOutputStream;
+    }
+    
+    private Map<String, String> convertMapValueToString(Map<?,?> urlParameterMap) {
+        Map<String, String> map = new HashMap<String, String>();
+        
+        for (Map.Entry<?, ?> entry : urlParameterMap.entrySet()) {
+            if (entry.getValue() == null) {
+                throw new NullPointerException("Provider returns null value for key '" + entry.getKey() + "'");
+            }
+            map.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+        return map;
     }
 }
