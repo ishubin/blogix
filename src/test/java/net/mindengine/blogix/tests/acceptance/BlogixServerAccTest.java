@@ -83,7 +83,6 @@ public class BlogixServerAccTest {
         assertThat( threadOutput.toString(), is( "<Started>" ) );
     }
     
-    
     @Test( dependsOnMethods={"shouldLoadTestRequestSamples", "serverShouldStartupAndLockThread"},
             dataProvider="provideRequestUrlsWithExpectedResponses")
     public void serverShouldProcessRequestsAndGiveProperResponse(String requestUri, String expectedResponse) throws Exception {

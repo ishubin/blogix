@@ -24,4 +24,7 @@
 /customModel/           -                           view-with-custom-model.ftl
     customString: string value
     customNumber:   1234567890
-    customFloat:    123.2    
+    customFloat:    123.2
+    
+/current/uri/check     -                            view-for-current-uri-check.ftl
+/currenturi            -                            view-for-current-uri-check.ftl    

@@ -94,7 +94,7 @@ public class BlogixExporter {
             throw new IllegalArgumentException("Cannot export parameterized route " + route.getUrl().getOriginalUrl());
         }
 
-        blogix.processRoute(route, parametersMap, createFileOutputStreamForResponse(url));
+        blogix.processRoute(url, route, parametersMap, createFileOutputStreamForResponse(url));
     }
 
     private String extractPathToDirForFile(String fullPath) {
@@ -106,7 +106,8 @@ public class BlogixExporter {
     }
 
     private void exportSimpleRoute(Route route) throws Exception {
-        blogix.processRoute(route, createFileOutputStreamForResponse(route.getUrl().getOriginalUrl()));
+        String uri = route.getUrl().getOriginalUrl();
+        blogix.processRoute(uri, route, createFileOutputStreamForResponse(uri));
     }
     
     private FileOutputStream createFileOutputStreamForResponse(String url) throws IOException, FileNotFoundException {

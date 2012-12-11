@@ -121,13 +121,13 @@ public class Blogix {
         
         if ( route != null ) {
             Map<String, String> controllerArgs = createParametersMap(route.getUrl(), uri);
-            processRoute(route, controllerArgs, outputStream);
+            processRoute(uri, route, controllerArgs, outputStream);
         }
         else throw new IllegalArgumentException("Cannot find route for uri: " + uri);
     }
 
 
-    public void processRoute(Route route, Map<String,String> controllerArgs, OutputStream outputStream) throws Exception {
+    public void processRoute(String uri, Route route, Map<String,String> controllerArgs, OutputStream outputStream) throws Exception {
         Object objectModel = null;
         if ( route.getController() != null ) {
             objectModel = routeInvoker.invokeRoute(route, controllerArgs);
@@ -135,10 +135,13 @@ public class Blogix {
         
         String view = route.getView();
         if (view != null) {
-            viewResolver.resolveViewAndRender(route.getModel(), objectModel, view, outputStream);
+            
+            Map<String, Object> routeModel = createRouteModel(route, uri);
+            viewResolver.resolveViewAndRender(routeModel, objectModel, view, outputStream);
         }
         else resolveViewless(objectModel, outputStream);
     }
+
 
     /**
      * Resolves routes which do not have views. Can only resolve controllers which return file type.
@@ -157,8 +160,8 @@ public class Blogix {
         }
     }
 
-    public void processRoute(Route route, OutputStream outputStream) throws Exception  {
-        processRoute(route, EMPTY_CONTROLLER_ARGS, outputStream);
+    public void processRoute(String uri, Route route, OutputStream outputStream) throws Exception  {
+        processRoute(uri, route, EMPTY_CONTROLLER_ARGS, outputStream);
     }
 
     @SuppressWarnings("unchecked")
@@ -263,7 +266,44 @@ public class Blogix {
         return Collections.emptyMap();
     }
 
+
+    private Map<String, Object> createRouteModel(Route route, String uri) {
+        BlogixData data = new BlogixData();
+        data.setCurrentUri(uri);
+        data.setWayToRoot(findWayToRootFromUri(uri));
+        
+        
+        Map<String, Object> routeModel = route.getModel();
+        if (routeModel == null) {
+            routeModel = new HashMap<String, Object>();
+        }
+        
+        routeModel.put("blogix", data);
+        return routeModel;
+    }
     
+    private String findWayToRootFromUri(String uri) {
+        int amountOfSlashes = countAmountOfSlashesInUri(uri);
+        if (amountOfSlashes > 2) {
+            StringBuffer wayToRoot = new StringBuffer("..");
+            for (int i = 1; i < amountOfSlashes - 1; i++) {
+                wayToRoot.append("/..");
+            }
+            return wayToRoot.toString();
+        }
+        else return ".";
+    }
+
+    private int countAmountOfSlashesInUri(String uri) {
+        int amountOfSlashes = 0;
+        for (int i = 0; i < uri.length(); i++) {
+            if (uri.charAt(i) == '/') {
+                amountOfSlashes++;
+            }
+        }
+        return amountOfSlashes;
+    }
+
     private Route findRouteMatchingUri(String uri) {
         return routesContainer.findRouteMatchingUri(uri);        
     }
