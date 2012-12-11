@@ -284,7 +284,7 @@ public class Blogix {
     
     private String findWayToRootFromUri(String uri) {
         int amountOfSlashes = countAmountOfSlashesInUri(uri);
-        if (amountOfSlashes > 2) {
+        if (amountOfSlashes > 1) {
             StringBuffer wayToRoot = new StringBuffer("..");
             for (int i = 1; i < amountOfSlashes - 1; i++) {
                 wayToRoot.append("/..");
