@@ -48,7 +48,7 @@ public class BlogixMain {
     }
 
     private void export() throws IOException, URISyntaxException {
-        File destinationDir = new File("export");
+        File destinationDir = new File(System.getProperty("blogix.export.dest", "export"));
         if (!destinationDir.exists()) {
             destinationDir.mkdirs();
         }

@@ -5,12 +5,12 @@
             <#assign title="Blogix">
         </#if>
         <title>${title}</title>
-        <link rel="stylesheet" href="/public/main.css" media="screen" type="text/css">
-        <link rel="stylesheet" href="/public/style.css" media="screen" type="text/css">
-        <link rel="stylesheet" href="/public/solarized_dark.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="${blogix.wayToRoot}/public/main.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="${blogix.wayToRoot}/public/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="${blogix.wayToRoot}/public/solarized_dark.css" media="screen" type="text/css">
         <meta name="viewport" content="width=device-width; initial-scale=1.0">
-        <script src="/public/jquery-1.8.3.min.js"></script>
-        <script src="/public/highlight.pack.js"></script>
+        <script src="${blogix.wayToRoot}/public/jquery-1.8.3.min.js"></script>
+        <script src="${blogix.wayToRoot}/public/highlight.pack.js"></script>
         <script>
             var _FULL = 1;
             var _MOBILE = 2;
@@ -98,14 +98,14 @@
             </div><!-- #header-->
             <div id="navigation">
                 <ul id="nav">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/categories/">Categories</a>
-                    <li><a href="/archive/">Archive</a>
-                    <li><a href="/docs/about/">About</a>
+                    <li><a href="${blogix.wayToRoot}/">Home</a></li>
+                    <li><a href="${blogix.wayToRoot}/categories/">Categories</a>
+                    <li><a href="${blogix.wayToRoot}/archive/">Archive</a>
+                    <li><a href="${blogix.wayToRoot}/docs/about/">About</a>
                     <#if category??>
-                        <li><a href="/category/${category.id}/rss.xml">RSS</a>
+                        <li><a href="${blogix.wayToRoot}/category/${category.id}/rss.xml">RSS</a>
                     <#else>
-                        <li><a href="/rss.xml">RSS</a>
+                        <li><a href="${blogix.wayToRoot}/rss.xml">RSS</a>
                     </#if>
                 </ul>
                 <div id="navigationSelect" style="display:none;">
