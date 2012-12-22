@@ -1,0 +1,2 @@
+Usage: blogix delete <post | category | doc> "title of post"
+Deletes db entry with specified title and type

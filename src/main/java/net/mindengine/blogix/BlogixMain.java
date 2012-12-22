@@ -247,19 +247,19 @@ public class BlogixMain {
             error("Title should not be empty");
         }
         StringBuffer buff = new StringBuffer();
-        buff.append("----\n");
+        buff.append("--------------------------------\n");
         buff.append("title\n");
         buff.append("   ");
         buff.append(title);
         buff.append("\n");
-        buff.append("----\n");
+        buff.append("--------------------------------\n");
         buff.append("date\n");
         buff.append("   ");
         buff.append(currentDateInBlogixFormat());
         buff.append("\n");
-        buff.append("----\n");
-        buff.append("category\n");
-        buff.append("   main\n====\n");
+        buff.append("--------------------------------\n");
+        buff.append("categories\n");
+        buff.append("   main\n================================\n");
         
         String fileName = title.toLowerCase().replaceAll("\\s+", " ").replaceAll("\\s", "-");
         String fullPath = "db" + File.separator + folderName + File.separator + blogixDatePrefix() + fileName + _BLOGIX_SUFFIX;
@@ -277,7 +277,7 @@ public class BlogixMain {
 
 
     private static Object currentDateInBlogixFormat() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return sdf.format(new Date());
     }
 

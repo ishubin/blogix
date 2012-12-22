@@ -1,0 +1,2 @@
+Usage: blogix show <posts | categories | docs>
+Shows all entries in database for specified type.

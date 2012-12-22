@@ -3,4 +3,20 @@ set -e
 
 BLOGIX_ROOT=/opt/blogix
 BLOGIX_LIB=$BLOGIX_ROOT/blogix.jar
-java -cp lib/* -Dblogix.app.path="$BLOGIX_ROOT" -jar "$BLOGIX_LIB" "$@"
+
+
+if [[ $1 == "new" ]]; then
+    output=$( java -cp lib/* -Dblogix.app.path="$BLOGIX_ROOT" -jar "$BLOGIX_LIB" "$@" )
+    sc=$? 
+    if [[ $sc -eq "0" ]]; then
+        if [[ -n $( echo $output | grep "^created .*" ) ]]; then
+            file=$( echo $output | sed "s/created //g" )
+            echo "Created $file"
+            ${EDITOR:-vi} $file
+        fi
+    fi
+else
+    java -cp lib/* -Dblogix.app.path="$BLOGIX_ROOT" -jar "$BLOGIX_LIB" "$@"
+fi
+
+

@@ -1,8 +1,12 @@
 Usage: blogix <command> [<args>]
 The following commands are available:
+    init
     compile
     run
     export
-    db
+    new
+    show
+    delete
+    
     
 For more information on a specific command type: blogix help <command>

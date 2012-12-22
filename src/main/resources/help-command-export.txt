@@ -1,0 +1,2 @@
+Usage: blogix export [file-path]
+Export all resources of blogix web-app in current directory to either "export" directory or to the directory specified in command line.

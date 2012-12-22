@@ -1,0 +1,2 @@
+Usage: blogix new <post | category | doc> "title of a new post"
+Create a blogix db entry of specified type and opens created entry in default text editor. 

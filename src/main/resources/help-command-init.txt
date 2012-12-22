@@ -1,0 +1,2 @@
+Usage: blogix init <project-type>
+Project type can be one of the following: blog, dev-proj, dev-proj-ext

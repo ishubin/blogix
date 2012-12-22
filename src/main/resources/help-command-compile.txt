@@ -1,0 +1,2 @@
+Usage: blogix compile
+Compiles all src/*.java files to bin directory. This should be used before commands "run" and "export" if you have java files in "src" directory.

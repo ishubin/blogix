@@ -1,0 +1,2 @@
+Usage: blogix run
+Executes web server on port 8080 and runs blogix web-app in current directory.
