@@ -1,0 +1,9 @@
+This is a simple blog template.
+It has the following features:
+    - All posts browsing
+    - Categories browsing 
+    - RSS feed for main and for specific category
+    - Archive with all posts in it
+
+To start working with it just create .blogix files in db/posts directory
+

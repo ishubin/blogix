@@ -1,59 +1,6 @@
 #!/bin/bash
 set -e
 
-function run {
-    java -jar blogix.jar run
-}
-function compile {
-    java -jar blogix.jar compile 
-}
-function fnexport {
-    DEST=export
-    while getopts "d:" OPT 
-    do
-        case $OPT in 
-            d)
-                DEST=$OPTARG
-                ;;
-        esac
-    done
-    echo Exporting to $DEST
-    java -jar -Dblogix.export.dest=$DEST blogix.jar export
-    if [[ -d public ]]; then
-        cp -r public $DEST/public
-    fi
-}
-function help {
-    echo "Usage: blogix [ run | compile | export | help]"
-}
-
-
-case $1 in
-    run)
-        shift
-        run $@
-        exit 0
-        ;;
-    compile)
-        shift
-        compile $@
-        exit 0
-        ;;
-    export)
-        shift
-        fnexport $@
-        exit 0
-        ;;
-    help)
-        shift
-        help $@
-        exit 0
-        ;;
-    *)
-        shift
-        echo "Unknown command: '$1'"
-        help
-        exit 0
-        ;;
-esac
-help
+BLOGIX_ROOT=/opt/blogix
+BLOGIX_LIB=$BLOGIX_ROOT/blogix.jar
+java -cp lib/* -Dblogix.app.path="$BLOGIX_ROOT" -jar "$BLOGIX_LIB" "$@"

@@ -1,0 +1,8 @@
+Usage: blogix <command> [<args>]
+The following commands are available:
+    compile
+    run
+    export
+    db
+    
+For more information on a specific command type: blogix help <command>
