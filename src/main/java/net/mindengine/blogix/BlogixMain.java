@@ -258,10 +258,14 @@ public class BlogixMain {
         buff.append(currentDateInBlogixFormat());
         buff.append("\n");
         buff.append("--------------------------------\n");
+        buff.append("allowComments\n");
+        buff.append("   true");
+        buff.append("\n");
+        buff.append("--------------------------------\n");
         buff.append("categories\n");
-        buff.append("   main\n================================\n");
+        buff.append("   \n================================\n");
         
-        String fileName = title.toLowerCase().replaceAll("\\s+", " ").replaceAll("\\s", "-");
+        String fileName = title.toLowerCase().replaceAll("[^\\dA-Za-z ]", "").replaceAll("\\s+", "-");
         String fullPath = "db" + File.separator + folderName + File.separator + blogixDatePrefix() + fileName + _BLOGIX_SUFFIX;
         File file = new File(fullPath);
         file.createNewFile();

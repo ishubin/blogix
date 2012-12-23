@@ -374,6 +374,7 @@ a.button-readmore {
 --------------------------------------------------*/
 .tag-list {
     font-size: 0.8em;
+    margin-bottom:1.5pt;
 }
 .tag-list, .tag-list  span {
     color: #888;
