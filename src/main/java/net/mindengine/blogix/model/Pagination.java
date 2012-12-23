@@ -83,7 +83,11 @@ public class Pagination {
     }
 
     public static List<Page> create(int firstPage, int lastPage, int range, int currentPage) {
-        
+
+        if (firstPage >= lastPage) {
+            return null;
+        }
+
         if (currentPage > lastPage) {
             currentPage = lastPage;
         }

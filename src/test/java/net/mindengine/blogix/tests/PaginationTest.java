@@ -16,6 +16,8 @@
 package net.mindengine.blogix.tests;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.List;
 
@@ -50,6 +52,12 @@ public class PaginationTest {
                 page(1, INACTIVE),
                 page(2, ACTIVE),
                 page(3, ACTIVE)));
+    }
+    
+    @Test
+    public void pagination_forOnePage_shouldGive_Null() {
+        List<Pagination.Page> pagination = Pagination.create(1, 1, RANGE_OF_2, CURRENT_PAGE_1);
+        assertThat(pagination, is(nullValue()));
     }
 
     /**

@@ -20,45 +20,48 @@
             ${markup.apply(post.contentPreview)}
         </div>
         <div class="tag-list">
-            <span>Posted in</span>
-            <#list post.categories as category>
-                <#if allCategories[category]??>
-                    <a href="${blogix.wayToRoot}/category/${allCategories[category].id}/">${allCategories[category].name?html}</a><#if category_has_next>,</#if>
-                </#if>
-            </#list>
+            <#if post.categories??>
+                <span>Posted in</span>
+                <#list post.categories as category>
+                    <#if allCategories[category]??>
+                        <a href="${blogix.wayToRoot}/category/${allCategories[category].id}/">${allCategories[category].name?html}</a><#if category_has_next>,</#if>
+                    </#if>
+                </#list>
+            </#if>
         </div>
         <a class="button button-readmore" href="${blogix.wayToRoot}/post/${post.id}/">Read more</a>
     </div>
     </#list>
 </div>
 
-<div class="pagination-block">
-    <div class="page-navigation">
-        <#if currentPage gt 1 >
-            <a class="button" href="${prefixUrl}/page-${currentPage-1}/">&larr;</a>
-        <#else>
-            <span class="button disabled">&larr;</span>
-        </#if>
-        <#if currentPage lt pages >
-            <a class="button" href="${prefixUrl}/page-${currentPage+1}/">&rarr;</a>
-        <#else>
-            <span class="button disabled">&rarr;</span>
-        </#if>
-    </div>
-    <ul class="pagination">
-        <#list pagination as p>
-        <li>
-            <#if p.isEllipsis()>
-                <span class="ellipsis">...</span>
+<#if pagination??>
+    <div class="pagination-block">
+        <div class="page-navigation">
+            <#if currentPage gt 1 >
+                <a class="button" href="${prefixUrl}/page-${currentPage-1}/">&larr;</a>
             <#else>
-                <#if p.active>
-                    <a href="${prefixUrl}/page-${p.number}/">${p.number}</a>
-                <#else>
-                    <span>${p.number}</span>
-                </#if>
+                <span class="button disabled">&larr;</span>
             </#if>
-        </li>
-        </#list>
-    </ul>
-</div>
-
+            <#if currentPage lt pages >
+                <a class="button" href="${prefixUrl}/page-${currentPage+1}/">&rarr;</a>
+            <#else>
+                <span class="button disabled">&rarr;</span>
+            </#if>
+        </div>
+        <ul class="pagination">
+            <#list pagination as p>
+            <li>
+                <#if p.isEllipsis()>
+                    <span class="ellipsis">...</span>
+                <#else>
+                    <#if p.active>
+                        <a href="${prefixUrl}/page-${p.number}/">${p.number}</a>
+                    <#else>
+                        <span>${p.number}</span>
+                    </#if>
+                </#if>
+            </li>
+            </#list>
+        </ul>
+    </div>
+</#if>
