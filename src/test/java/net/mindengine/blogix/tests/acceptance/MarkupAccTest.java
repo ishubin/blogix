@@ -19,6 +19,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import net.mindengine.blogix.Blogix;
 import net.mindengine.blogix.config.BlogixConfig;
 import net.mindengine.blogix.markup.DummyMarkup;
@@ -51,7 +55,7 @@ public class MarkupAccTest {
     }
     
     @Test(dataProvider = "provideTextileMarkupData")
-    public void textileMarkup_shouldProcess_Textile_and_customBlocks(String description, String textileText, String expectedHtml) {
+    public void textileMarkup_shouldProcess_Textile_and_customBlocks(String description, String textileText, String expectedHtml) throws FileNotFoundException, IOException {
         TextileMarkup markup = new TextileMarkup();
         String processedText = markup.apply(textileText);
         assertThat(String.format("\"%s\" processed text should be", description), processedText, is(expectedHtml));
@@ -80,6 +84,8 @@ public class MarkupAccTest {
                 {"Should allow html blocks", "<nohtml>\n@@\n<script>alert(1);</script>\n@@", "<p>&lt;nohtml&gt;</p><script>alert(1);</script>\n"},
                 {"Code blocks", "<nohtml>\n$$ c++\n<script>\n\nalert(1);</script>\n$$", "<p>&lt;nohtml&gt;</p><code class=\"block\" data-language=\"c++\">&lt;script&gt;\n\nalert(1);&lt;/script&gt;\n</code>"},
                 {"Code block without language", "<nohtml>\n$$\n<script>\n\nalert(1);</script>\n$$", "<p>&lt;nohtml&gt;</p><code class=\"block\">&lt;script&gt;\n\nalert(1);&lt;/script&gt;\n</code>"},
+                {"Custom plugin-tags", "\n{@  my-custom-tag\n  var1: 1\n  var2: qwerty\n}\n", "<div>Custom tag is processed: 1, qwerty</div>"}
+                
         };
         //TODO finish samples
     }

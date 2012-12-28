@@ -20,11 +20,15 @@ import static java.util.regex.Pattern.compile;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import freemarker.template.Template;
 
 import net.mindengine.blogix.markup.converters.AsIsConverter;
 import net.mindengine.blogix.markup.converters.CodeBlockConverter;
 import net.mindengine.blogix.markup.converters.Converter;
+import net.mindengine.blogix.markup.converters.PluginsConverter;
 
 public class TextileParser {
     protected static final Converter DEFAULT_CONVERTER = new TextileConverter();
@@ -55,12 +59,6 @@ public class TextileParser {
         }
     }
     
-    @SuppressWarnings("serial")
-    private static final List<Rule> _rules = new LinkedList<Rule>() {{
-        add(new Rule(compile("\\@\\@"), "@@", new AsIsConverter()));
-        add(new Rule(compile("(\\$\\$ .*|\\$\\$)"), "$$", new CodeBlockConverter()));
-    }};
-    
     private class ConverterChunk {
         
         public ConverterChunk(Converter converter, String definition, String breaker) {
@@ -84,10 +82,22 @@ public class TextileParser {
             buffer.append(NEW_LINE);
         }
     }
-    
 
-    private List<ConverterChunk> chunks; 
+    private List<ConverterChunk> chunks;
+    private Map<String, Template> plugins; 
+    @SuppressWarnings("serial")
+    private List<Rule> _rules; 
     
+    public TextileParser(Map<String, Template> plugins) {
+        this.plugins = plugins;
+        
+        _rules = new LinkedList<Rule>() {{
+            add(new Rule(compile("\\@\\@"), "@@", new AsIsConverter()));
+            add(new Rule(compile("(\\$\\$ .*|\\$\\$)"), "$$", new CodeBlockConverter()));
+            add(new Rule(compile("\\{\\@ .*"), "}", new PluginsConverter(TextileParser.this.plugins)));
+        }};
+    }
+
     public String parse(Iterator<String> iterator) {
         chunks = new LinkedList<ConverterChunk>();
         ConverterChunk currentChunk = newChunk(defaultChunk());

@@ -22,10 +22,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.mindengine.blogix.compiler.BlogixCompiler;
 import net.mindengine.blogix.export.Exporter.BlogixExporter;
@@ -145,8 +146,7 @@ public class BlogixMain {
             File[] files = fileDir.listFiles();
             for (File file : files) {
                 if (file.isFile() && file.getName().endsWith(".blogix")) {
-                    String name = file.getName();
-                    System.out.println(name.substring(0, name.length() - 7));
+                    System.out.println(trimBlogixSuffixFromEntryFileName(file.getName()));
                 }
             }
         }
@@ -177,8 +177,11 @@ public class BlogixMain {
         if (args.length > 1) {
             String entryType = args[0];
             String title = args[1];
-            if (entryType.equals("post") || entryType.equals("doc")) {
-                createPostTo(entryType + "s", title);
+            if (entryType.equals("post")) {
+                createPost(title);
+            }
+            else if (entryType.equals("doc")) {
+                createDoc(title);
             }
             else if (entryType.equals("category")) {
                 createCategory(title);
@@ -210,6 +213,79 @@ public class BlogixMain {
         else error("Not enough arguments");
     }
     
+    @SuppressWarnings("unused")
+    private static void cmd_attach(String [] args) throws IOException {
+        if (args.length > 2) {
+            String entryType = args[0];
+            String id = args[1];
+            String entryFolder = getEntryFolderForType(entryType);
+            
+            if (id.equals("last")) {
+                id = getLastEntryInFolder(entryFolder);
+            }
+            if (entryExists(entryFolder, id)) {
+                for (int i = 2; i < args.length; i++) {
+                    attachFileToEntry(args[i], entryFolder, id);
+                }
+            }
+            else error("Entry '" + id + "' does not exist in " + entryFolder);
+            
+        }
+        else error("Not enough arguments");
+    }
+    
+    private static void attachFileToEntry(String filePath, String entryFolder, String id) throws IOException {
+        File fileSrc = new File(filePath);
+        if (fileSrc.exists()) {
+            String name = fileSrc.getName();
+            String destPath = "db" + File.separator + entryFolder + File.separator + id + "." + name;
+            File fileDest = new File(destPath);
+            FileUtils.copyFile(fileSrc, fileDest);
+            
+            info("Attached " + destPath);
+        }
+    }
+
+
+    private static boolean entryExists(String entryFolder, String id) {
+        return new File("db" + File.separator + entryFolder + File.separator + id + _BLOGIX_SUFFIX).exists();
+    }
+
+
+    //Returns id of entry with the latest creation date
+    private static String getLastEntryInFolder(String entryFolder) {
+        File folder = new File("db" + File.separator + entryFolder);
+        File[] files = folder.listFiles();
+        
+        ArrayList<File> entryFiles = new ArrayList<File>();
+        for (File file : files) {
+            if (file.getName().endsWith(_BLOGIX_SUFFIX)) {
+                entryFiles.add(file);
+            }
+        }
+        Collections.sort(entryFiles, byLastModified());
+        if (entryFiles.size() > 0) {
+            return trimBlogixSuffixFromEntryFileName(entryFiles.get(0).getName());
+        }
+        error("There are no entries in '" + entryFolder + "'");
+        return null;
+    }
+
+
+    private static Comparator<File> byLastModified() {
+        return new Comparator<File>() {
+            @Override
+            public int compare(File fileA, File fileB) {
+                int diff = (int) (fileB.lastModified() - fileA.lastModified());
+                if (diff == 0) {
+                    diff = fileB.getName().compareTo(fileA.getName());
+                }
+                return diff;
+            }
+        };
+    }
+
+
     private static boolean entryFolderExists(String entryFolder) {
         return new File("db" + File.separator + entryFolder).exists();
     }
@@ -242,7 +318,17 @@ public class BlogixMain {
     }
 
 
-    private static void createPostTo(String folderName, String title) throws Exception {
+    private static void createPost(String title) throws Exception {
+        String id = blogixDatePrefix() + convertTitleToId(title);
+        createPostTo("posts", id, title);
+    }
+    
+
+    private static void createDoc(String title) throws Exception {
+        createPostTo("docs", convertTitleToId(title), title);
+    }
+    
+    private static void createPostTo(String folderName, String id, String title) throws Exception {
         if (title.isEmpty()) {
             error("Title should not be empty");
         }
@@ -265,14 +351,17 @@ public class BlogixMain {
         buff.append("categories\n");
         buff.append("   \n================================\n");
         
-        String fileName = title.toLowerCase().replaceAll("[^\\dA-Za-z ]", "").replaceAll("\\s+", "-");
-        String fullPath = "db" + File.separator + folderName + File.separator + blogixDatePrefix() + fileName + _BLOGIX_SUFFIX;
+        
+        String fullPath = "db" + File.separator + folderName + File.separator + id + _BLOGIX_SUFFIX;
         File file = new File(fullPath);
         file.createNewFile();
         FileUtils.writeStringToFile(file, buff.toString());
         info("created " + fullPath);
     }
 
+    private static String convertTitleToId(String title) {
+        return title.toLowerCase().replaceAll("[^\\dA-Za-z\\.\\-]", "").replaceAll("\\s+", "-");
+    }
 
     private static String blogixDatePrefix() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -342,5 +431,9 @@ public class BlogixMain {
             method.invoke(NO_INSTANCE, new Object[]{args});
         }
         
+    }
+    
+    private static String trimBlogixSuffixFromEntryFileName(String name) {
+        return name.substring(0, name.length() - 7);
     }
 }
