@@ -15,6 +15,8 @@
 ******************************************************************************/
 package net.mindengine.blogix.markup.converters;
 
+import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class CodeBlockConverter implements Converter {
@@ -24,9 +26,25 @@ public class CodeBlockConverter implements Converter {
         StringBuffer buffer = new StringBuffer("<code class=\"block\"");
         buffer.append(dataLanguageFromDefinition(definition));
         buffer.append(">");
-        buffer.append(StringEscapeUtils.escapeHtml4(text));
+        buffer.append(escapeHtml4(convertCode(text)));
         buffer.append("</code>");
         return buffer.toString();
+    }
+
+    private String convertCode(String text) {
+        String lines[] = text.split("\\r?\\n");
+        StringBuffer result = new StringBuffer();
+        for (String line : lines) {
+            result.append(convertLine(line));
+            result.append("\n");
+        }
+        return result.toString();
+    }
+    private Object convertLine(String line) {
+        if (line.length() > 1 && line.charAt(0) == ' ' && line.charAt(1) != ' ') {
+            return line.substring(1);
+        }
+        return line;
     }
 
     private String dataLanguageFromDefinition(String definition) {
