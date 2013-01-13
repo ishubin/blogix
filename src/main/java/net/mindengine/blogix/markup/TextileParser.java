@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2012 Ivan Shubin http://mindengine.net
+* Copyright 2013 Ivan Shubin http://mindengine.net
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import javax.sound.sampled.Line;
 
 import freemarker.template.Template;
 
@@ -81,6 +83,9 @@ public class TextileParser {
             buffer.append(line);
             buffer.append(NEW_LINE);
         }
+        public boolean hasBreaker() {
+            return this.breaker != null && !this.breaker.isEmpty();
+        }
     }
 
     private List<ConverterChunk> chunks;
@@ -88,6 +93,7 @@ public class TextileParser {
     @SuppressWarnings("serial")
     private List<Rule> _rules; 
     
+    @SuppressWarnings("serial")
     public TextileParser(Map<String, Template> plugins) {
         this.plugins = plugins;
         
@@ -105,8 +111,13 @@ public class TextileParser {
         while (iterator.hasNext()) {
             String line = iterator.next();
             
-            if (newLineBreaksCurrentChunk(line, currentChunk)) {
-                currentChunk = newChunk(defaultChunk());
+            if (currentChunk.hasBreaker()) {
+                if (newLineBreaksCurrentChunk(line, currentChunk)) {
+                    currentChunk = newChunk(defaultChunk());
+                }
+                else {
+                    currentChunk.appendLine(line);
+                }
             }
             else {
                 Rule rule = checkIfLineAppliesToRule(line);

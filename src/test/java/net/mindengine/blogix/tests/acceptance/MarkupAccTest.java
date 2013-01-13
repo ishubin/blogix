@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2012 Ivan Shubin http://mindengine.net
+* Copyright 2013 Ivan Shubin http://mindengine.net
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -84,7 +84,8 @@ public class MarkupAccTest {
                 {"Should allow html blocks", "<nohtml>\n@@\n<script>alert(1);</script>\n@@", "<p>&lt;nohtml&gt;</p><script>alert(1);</script>\n"},
                 {"Code blocks", "<nohtml>\n$$ c++\n<script>\n\nalert(1);</script>\n$$", "<p>&lt;nohtml&gt;</p><code class=\"block\" data-language=\"c++\">&lt;script&gt;\n\nalert(1);&lt;/script&gt;\n</code>"},
                 {"Code block without language", "<nohtml>\n$$\n<script>\n\nalert(1);</script>\n$$", "<p>&lt;nohtml&gt;</p><code class=\"block\">&lt;script&gt;\n\nalert(1);&lt;/script&gt;\n</code>"},
-                {"Custom plugin-tags", "\n{@  my-custom-tag\n  var1: 1\n  var2: qwerty\n}\n", "<div>Custom tag is processed: 1, qwerty</div>"}
+                {"Custom plugin-tags", "\n{@  my-custom-tag\n  var1: 1\n  var2: qwerty\n}\n", "<div>Custom tag is processed: 1, qwerty</div>"},
+                {"Code blocks with plain html", "\n$$\n@@\n<div></div>\n@@\n$$\n", "<code class=\"block\">@@\n&lt;div&gt;&lt;/div&gt;\n@@\n</code>"}
                 
         };
         //TODO finish samples
