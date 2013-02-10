@@ -4,6 +4,7 @@
         <#if !title??>
             <#assign title="Blogix">
         </#if>
+
         <title>${title}</title>
         <link rel="stylesheet" href="${blogix.wayToRoot}/public/main.css" media="screen" type="text/css">
         <link rel="stylesheet" href="${blogix.wayToRoot}/public/style.css" media="screen" type="text/css">
@@ -69,7 +70,9 @@
                     var html = $(this).html();
                     var className = $(this).attr("data-language");
                     $(this).html("<pre><code class=\"" + className + "\">" + html + "</code></pre>");
-                    hljs.highlightBlock($(this).find("pre code").get(0));
+                    if (className != null && className != "") {
+                        hljs.highlightBlock($(this).find("pre code").get(0));
+                    }
                 });
             }
 

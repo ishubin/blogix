@@ -41,7 +41,7 @@ public class TextileMarkup implements Markup {
     Map<String, Template> plugins = new HashMap<String, Template>();
     
     public TextileMarkup() {
-        String textilePluginsFolder = BlogixConfig.getConfig().getTextilePluginsFolder();
+        String textilePluginsFolder = BlogixConfig.getConfig().getMarkupPluginsFolder();
         if (textilePluginsFolder!= null && !textilePluginsFolder.isEmpty()) {
             loadPluginsFromFolder(textilePluginsFolder);
         }

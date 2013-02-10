@@ -37,7 +37,7 @@ public class BlogixConfig {
     private Map<String, String> userCustomProperties;
     
     private static final BlogixConfig _instance = new BlogixConfig();
-    private static final String TEXTILE_PLUGINS_FOLDER = "textile.plugins.folder";
+    private static final String MARKUP_PLUGINS_FOLDER = "markup.plugins.folder";
     private BlogixConfig() {
         try {
             properties.load(FileUtils.openInputStream(BlogixFileUtils.findFile("conf/properties")));
@@ -116,8 +116,8 @@ public class BlogixConfig {
         return userCustomProperties;
     }
 
-    public String getTextilePluginsFolder() {
-        return (String) properties.getProperty(TEXTILE_PLUGINS_FOLDER);
+    public String getMarkupPluginsFolder() {
+        return (String) properties.getProperty(MARKUP_PLUGINS_FOLDER);
     }
     
     

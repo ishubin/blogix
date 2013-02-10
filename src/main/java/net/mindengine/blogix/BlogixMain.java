@@ -360,7 +360,7 @@ public class BlogixMain {
     }
 
     private static String convertTitleToId(String title) {
-        return title.toLowerCase().replaceAll("[^\\dA-Za-z\\.\\-]", "").replaceAll("\\s+", "-");
+        return title.toLowerCase().replaceAll("[^\\dA-Za-z\\.\\-]", " ").replaceAll("\\s+", "-");
     }
 
     private static String blogixDatePrefix() {

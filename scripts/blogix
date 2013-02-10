@@ -5,18 +5,37 @@ BLOGIX_ROOT=/opt/blogix
 BLOGIX_LIB=$BLOGIX_ROOT/blogix.jar
 
 
-if [[ $1 == "new" ]]; then
-    output=$( java -cp lib/* -Dblogix.app.path="$BLOGIX_ROOT" -jar "$BLOGIX_LIB" "$@" )
-    sc=$? 
-    if [[ $sc -eq "0" ]]; then
-        if [[ -n $( echo $output | grep "^created .*" ) ]]; then
-            file=$( echo $output | sed "s/created //g" )
-            echo "Created $file"
-            ${EDITOR:-vi} $file
+EDIT=${EDITOR:-vi}
+
+function error() {
+    echo "$@" 1>&2
+    exit 1
+}
+
+case $1 in
+    new)
+        output=$( java -cp lib/* -Dblogix.app.path="$BLOGIX_ROOT" -jar "$BLOGIX_LIB" "$@" )
+        sc=$? 
+        if [[ $sc -eq "0" ]]; then
+            if [[ -n $( echo $output | grep "^created .*" ) ]]; then
+                file=$( echo $output | sed "s/created //g" )
+                echo "Created $file"
+                ${EDITOR:-vi} "$file"
+            fi
+        fi 
+        ;;
+    edit)
+        name=$2
+        fileName=$( find . | grep -e "$name.*.blogix" | head -n 1)
+        if [[ -n $fileName ]]; then
+            echo "Found file $fileName"
+            $EDIT "$fileName"
+        else
+            error "There is no such document found"
         fi
-    fi
-else
-    java -cp lib/* -Dblogix.app.path="$BLOGIX_ROOT" -jar "$BLOGIX_LIB" "$@"
-fi
+        ;;
+    *)
+        java -cp lib/* -Dblogix.app.path="$BLOGIX_ROOT" -jar "$BLOGIX_LIB" "$@"
+        ;;  
 
-
+esac

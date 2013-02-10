@@ -1,6 +1,7 @@
 default.controller.packages = controllers,net.mindengine.blogix.blog.controllers
 default.provider.packages = providers,net.mindengine.blogix.blog.providers 
 markup.class = net.mindengine.blogix.markup.TextileMarkup
+markup.plugins.folder = markup-plugins
 
 public.path = public
 

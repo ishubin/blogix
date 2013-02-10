@@ -6,7 +6,7 @@ public.path = sample-files/public
 
 markup.class = net.mindengine.blogix.markup.TextileMarkup
 
-textile.plugins.folder = template-plugins
+markup.plugins.folder = template-plugins
 
 blogix.db.path = controller-test-data
 
