@@ -108,6 +108,13 @@ public class BlogixMain {
         }
         BlogixExporter exporter = new BlogixExporter(destinationDir);
         info("Exporting all routes to \"" + dest + "\"");
+        
+        File publicDir = new File("public");
+        if (publicDir.exists()) {
+            File publicExportDir = new File(destinationDir.getAbsolutePath() + File.separator + "public");
+            publicExportDir.mkdir();
+            FileUtils.copyDirectory(publicDir, publicExportDir);
+        }
         exporter.exportAll();
     }
 

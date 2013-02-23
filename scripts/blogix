@@ -26,7 +26,7 @@ case $1 in
         ;;
     edit)
         name=$2
-        fileName=$( find . | grep -e "$name.*.blogix" | head -n 1)
+        fileName=$( find db | grep -e "$name.*.blogix" | head -n 1)
         if [[ -n $fileName ]]; then
             echo "Found file $fileName"
             $EDIT "$fileName"
