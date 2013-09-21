@@ -24,6 +24,7 @@ import net.mindengine.blogix.utils.BlogixFileUtils;
 import org.apache.commons.io.FileUtils;
 
 public class BlogixConfig {
+    private static final String BLOGIX_SERVER_PORT = "blogix.server.port";
     private static final String CUSTOM_USER_PROPERTY_PREFIX = "custom.";
     private static final int CUSTOM_USER_PROPERTY_LENGTH = CUSTOM_USER_PROPERTY_PREFIX.length();
     private static final String MARKUP_CLASS = "markup.class";
@@ -118,6 +119,10 @@ public class BlogixConfig {
 
     public String getMarkupPluginsFolder() {
         return (String) properties.getProperty(MARKUP_PLUGINS_FOLDER);
+    }
+
+    public int getBlogixServerPort() {
+        return Integer.parseInt(properties.getProperty(BLOGIX_SERVER_PORT, "8080"));
     }
     
     

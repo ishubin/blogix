@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import net.mindengine.blogix.compiler.BlogixCompiler;
+import net.mindengine.blogix.config.BlogixConfig;
 import net.mindengine.blogix.export.Exporter.BlogixExporter;
 import net.mindengine.blogix.web.BlogixServer;
 
@@ -142,6 +143,7 @@ public class BlogixMain {
     @SuppressWarnings("unused")
     private static void cmd_run() throws Exception {
         BlogixServer server  = new BlogixServer();
+        server.setPort(BlogixConfig.getConfig().getBlogixServerPort());
         info("Launching blogix web server...");
         server.startServer();
     }
