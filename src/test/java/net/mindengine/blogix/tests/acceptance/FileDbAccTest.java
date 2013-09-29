@@ -57,35 +57,39 @@ public class FileDbAccTest {
     @Test
     public void shouldFindOnlyIdsForAllEntries() throws Exception {
         EntryList<String> ids = postDb.findAllIds();
-        assertThat(ids.size(), is(3));
+        assertThat(ids.size(), is(4));
         assertThat(ids.get(0), is("2012-01-30-some-title"));
         assertThat(ids.get(1), is("2012-02-01-some-title-2"));
         assertThat(ids.get(2), is("2012-03-02-some-title-3"));
+        assertThat(ids.get(3), is("2012-03-03-some-title-4"));
     }
     
     @Test
     public void shouldFindAllEntries() throws Exception {
         EntryList<Entry> entries = postDb.findAllEntries();
-        assertThat(entries.size(), is(3));
+        assertThat(entries.size(), is(4));
         assertThat(entries.get(0).id(), is("2012-01-30-some-title"));
         assertThat(entries.get(1).id(), is("2012-02-01-some-title-2"));
         assertThat(entries.get(2).id(), is("2012-03-02-some-title-3"));
+        assertThat(entries.get(3).id(), is("2012-03-03-some-title-4"));
     }
     
     @Test
     public void shouldFindOnlyIdsBySpecifiedIdRegexPattern() throws Exception {
         EntryList<String> ids = postDb.findAllIds("2012-(02|03).*");
-        assertThat(ids.size(), is(2));
+        assertThat(ids.size(), is(3));
         assertThat(ids.get(0), is("2012-02-01-some-title-2"));
         assertThat(ids.get(1), is("2012-03-02-some-title-3"));
+        assertThat(ids.get(2), is("2012-03-03-some-title-4"));
     }
     
     @Test
     public void shouldFindEntriesBySpecifiedIdRegexPattern() throws Exception {
         EntryList<Entry> entries = postDb.findAllEntries("2012-(02|03).*");
-        assertThat(entries.size(), is(2));
+        assertThat(entries.size(), is(3));
         assertThat(entries.get(0).id(), is("2012-02-01-some-title-2"));
         assertThat(entries.get(1).id(), is("2012-03-02-some-title-3"));
+        assertThat(entries.get(2).id(), is("2012-03-03-some-title-4"));
     }
     
     @Test
@@ -115,8 +119,15 @@ public class FileDbAccTest {
     @Test
     public void shouldFindAllEntriesAndMapToJavaClasses() throws Exception {
         EntryList<Post> posts = postDb.findAll();
-        assertThat(posts.size(), is(3));
+        assertThat(posts.size(), is(4));
         assertFirstPost(posts.get(0));
+    }
+    
+    @Test
+    public void shouldGiveNull_toArrayType_ifItWasEmpty_inEntryFile() throws Exception {
+        Post post = postDb.findById("2012-03-03-some-title-4");
+        assertThat(post, is(notNullValue()));
+        assertThat(post.getSections(), is(new String[]{}));
     }
     
     private void assertFirstPost(Post post) {

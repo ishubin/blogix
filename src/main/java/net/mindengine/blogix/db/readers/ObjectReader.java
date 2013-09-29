@@ -140,6 +140,10 @@ public class ObjectReader<T> implements Reader<T> {
             return parseDate(fieldValue);
         }
         else if (type.equals(String[].class)) {
+        	if (fieldValue.trim().isEmpty()) {
+        		return new String[]{};
+        	}
+        	
             String[] items = fieldValue.split(",");
             String[] array = new String[items.length];
             for( int i=0; i<array.length; i++) {
