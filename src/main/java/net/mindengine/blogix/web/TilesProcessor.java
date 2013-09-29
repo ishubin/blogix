@@ -35,11 +35,17 @@ public class TilesProcessor {
     }
 
     public String process(String tileName) throws TemplateException, IOException, URISyntaxException {
-        Tile subTile = findSubTile(tileName);
+	    Tile subTile = findSubTile(tileName);
         if ( subTile == null ) {
             throw new IllegalArgumentException("Cannot process tile: '" + tileName + "' for view '" + tile.getName() + "'");
         }
-        return tilesRenderer.renderTemplate(modelMap, subTile.getValue());
+        String tileValue = subTile.getValue();
+        
+        if (tileValue != null && !tileValue.trim().isEmpty()) {
+        	return tilesRenderer.renderTemplate(modelMap, tileValue);
+        }
+        else return "";
+	
     }
 
     private Tile findSubTile(String name) {
